@@ -1,5 +1,5 @@
 ﻿/**
- * Copyright 2011-2015 d-fens GmbH
+ * Copyright 2011-2016 d-fens GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,13 +33,19 @@ namespace biz.dfch.CS.Appclusive.Scheduler
 {
     public partial class AppclusiveSchedulerService : ServiceBase
     {
-        public ManualResetEvent fAbort = new ManualResetEvent(false);
-        ScheduledTaskWorker _worker;
+        private ManualResetEvent serviceAbortSignal = new ManualResetEvent(false);
+
+        ScheduledTaskWorker scheduledTaskWorker;
 
         public AppclusiveSchedulerService()
         {
             this.CanPauseAndContinue = true;
             InitializeComponent();
+        }
+
+        public void TerminateInteractiveService()
+        {
+            serviceAbortSignal.Set();
         }
 
         internal void OnStartInteractive(string[] args)
@@ -50,7 +56,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler
             try
             {
                 OnStart(args);
-                fAbort.WaitOne();
+                serviceAbortSignal.WaitOne();
                 Trace.WriteLine(string.Format("CancelKeyPress detected. Stopping interactive mode."));
             }
             catch (Exception ex)
@@ -86,7 +92,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler
 
                 var serverNotReachableRetries = Convert.ToInt32(ConfigurationManager.AppSettings["ServerNotReachableRetries"]);
 
-                _worker = new ScheduledTaskWorker(uri, managementUri, updateIntervalMinutes, serverNotReachableRetries);
+                scheduledTaskWorker = new ScheduledTaskWorker(uri, managementUri, updateIntervalMinutes, serverNotReachableRetries);
             }
             catch (Exception ex)
             {
@@ -101,7 +107,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler
             var fn = Method.fn();
             Trace.WriteLine("{0}.{1}", this.GetType().FullName, fn);
 
-            _worker.Active = false;
+            scheduledTaskWorker.IsActive = false;
 
             base.OnStop();
         }
@@ -111,7 +117,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler
             var fn = Method.fn();
             Trace.WriteLine("{0}.{1}", this.GetType().FullName, fn);
 
-            _worker.Active = false;
+            scheduledTaskWorker.IsActive = false;
 
             base.OnPause();
         }
@@ -121,8 +127,8 @@ namespace biz.dfch.CS.Appclusive.Scheduler
             var fn = Method.fn();
             Trace.WriteLine("{0}.{1}", this.GetType().FullName, fn);
 
-            _worker.Active = true;
-            _worker.UpdateScheduledTasks();
+            scheduledTaskWorker.IsActive = true;
+            scheduledTaskWorker.UpdateScheduledTasks();
 
             base.OnContinue();
         }
@@ -148,7 +154,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler
             var fn = Method.fn();
             Trace.WriteLine("{0}.{1}", this.GetType().FullName, fn);
 
-            _worker.Active = false;
+            scheduledTaskWorker.IsActive = false;
 
             base.OnShutdown();
         }

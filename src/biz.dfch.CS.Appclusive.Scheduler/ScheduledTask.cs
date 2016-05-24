@@ -31,43 +31,59 @@ namespace biz.dfch.CS.Appclusive.Scheduler
 {
     class ScheduledTask
     {
-        private bool _fInitialised = false;
-        private int _VersionDefault = 0;
+        private bool isInitialised = false;
+        private const int VERSION_DEFAULT = 0;
 
-        public ScheduledTaskParameters Parameters;
-        public DateTime NextSchedule = DateTime.MinValue;
+        public ScheduledTaskParameters Parameters { get; set; }
+        
+        private DateTime nextOccurrence = DateTime.MinValue;
+        public DateTime NextOccurrence
+        {
+            get { return nextOccurrence; }
+            set { nextOccurrence = value; }
+        }
+
         public string Username
         {
-            get { return _Credential.UserName; }
+            get 
+            { 
+                return credential.UserName; 
+            }
             set 
             {
                 if (value.Contains("\\"))
                 {
-                    var DomainUsername = value.Split('\\');
-                    _Credential.Domain = DomainUsername.First();
-                    _Credential.UserName = DomainUsername.Last();
+                    var domainUsername = value.Split('\\');
+                    Contract.Assert(null != domainUsername);
+                    Contract.Assert(2 == domainUsername.Count());
+
+                    credential.Domain = domainUsername.First();
+                    credential.UserName = domainUsername.Last();
                 }
                 else
                 {
-                    _Credential.UserName = value;
+                    credential.UserName = value;
                 }
             }
         }
+
         public string Password
         {
-            get { return _Credential.Password; }
-            set { _Credential.Password = value; }
+            get { return credential.Password; }
+            set { credential.Password = value; }
         }
+
         public string Domain
         {
-            get { return _Credential.Domain; }
-            set { _Credential.Domain = value; }
+            get { return credential.Domain; }
+            set { credential.Domain = value; }
         }
-        private NetworkCredential _Credential = new NetworkCredential();
+
+        private NetworkCredential credential = new NetworkCredential();
         public NetworkCredential Credential
         {
-            get { return _Credential; }
-            set { _Credential = value; }
+            get { return credential; }
+            set { credential = value; }
         }
 
         public ScheduledTask()
@@ -77,7 +93,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler
 
         public ScheduledTask(string parameters)
         {
-            this.Initialise(parameters, this._VersionDefault, true);
+            this.Initialise(parameters, VERSION_DEFAULT, true);
         }
 
         public ScheduledTask(string parameters, int version)
@@ -87,18 +103,19 @@ namespace biz.dfch.CS.Appclusive.Scheduler
 
         public bool Initialise(string parameters, bool fThrowException = false)
         {
-            return this.Initialise(parameters, this._VersionDefault, fThrowException);
+            return this.Initialise(parameters, VERSION_DEFAULT, fThrowException);
         }
 
         public bool Initialise(string parameters, int version, bool fThrowException = false)
         {
             Contract.Requires(!string.IsNullOrWhiteSpace(parameters));
-            Contract.Ensures(Contract.OldValue(parameters) == Contract.ValueAtReturn(out parameters));
-            Contract.Ensures(Contract.OldValue(version) == Contract.ValueAtReturn(out version));
-            Contract.Ensures(Contract.OldValue(fThrowException) == Contract.ValueAtReturn(out fThrowException));
+            Contract.Requires(VERSION_DEFAULT <= version);
 
             var fReturn = false;
-            if (_fInitialised) return fReturn;
+            if (isInitialised)
+            {
+                return fReturn;
+            }
 
             try
             {
@@ -118,59 +135,57 @@ namespace biz.dfch.CS.Appclusive.Scheduler
                     fReturn = false;
                 }
             }
-            finally
-            {
 
-            }
-            this._fInitialised = fReturn;
+            this.isInitialised = fReturn;
             return fReturn;
         }
 
-        public DateTime GetNextSchedule()
+        public DateTimeOffset GetNextSchedule()
         {
-            return GetNextSchedule(DateTime.Now);
+            return GetNextSchedule(DateTimeOffset.Now);
         }
 
-        public DateTime GetNextSchedule(DateTime withinThisMinute)
+        public DateTimeOffset GetNextSchedule(DateTimeOffset withinThisMinute)
         {
             Contract.Requires(null != withinThisMinute);
-            Contract.Ensures(Contract.OldValue(withinThisMinute) == Contract.ValueAtReturn(out withinThisMinute));
+            Contract.Ensures(null != Contract.Result<DateTimeOffset>());
 
-            var nextSchedule = DateTime.MinValue;
+            var nextOccurrence = DateTime.MinValue;
             try
             {
-                if (!this.Parameters.Active)
+                if (!this.Parameters.IsActive)
                 {
-                    return DateTime.MinValue;
+                    return DateTimeOffset.MinValue;
                 }
+
                 var schedule = CrontabSchedule.Parse(this.Parameters.CrontabExpression);
-                var now = withinThisMinute;
-                var startMinute = new DateTime(now.Year, 1, 1, 0, 0, 0);
-                //var endMinute = now.AddMinutes(1).AddSeconds(-1);
-                var endMinute = now;
-                nextSchedule = schedule.GetNextOccurrences(startMinute, endMinute).LastOrDefault();
-                if (null == nextSchedule)
+                
+                var startMinute = new DateTime(withinThisMinute.Year, 1, 1, 0, 0, 0);
+                nextOccurrence = schedule.GetNextOccurrences(startMinute, withinThisMinute.DateTime).LastOrDefault();
+                if (null == nextOccurrence)
                 {
                     Debug.WriteLine(string.Format(
                         "{0}: Getting next occurrence for time range '{1}-{2}' [{3}] FAILED. Check CrontabExpression or time range.", 
                         this.Parameters.CommandLine, 
                         startMinute.ToString("yyyy-MM-dd HH:mm:ss.fffzzz"), 
-                        endMinute.ToString("yyyy-MM-dd HH:mm:ss.fffzzz"), 
+                        withinThisMinute.ToString("yyyy-MM-dd HH:mm:ss.fffzzz"), 
                         this.Parameters.CrontabExpression
                         ));
-                    return DateTime.MinValue;
+                    return DateTimeOffset.MinValue;
                 }
-                if(nextSchedule.Minute < now.Minute)
+                
+                if(nextOccurrence.Minute < withinThisMinute.Minute)
                 {
-                    return DateTime.MinValue;
+                    return DateTimeOffset.MinValue;
                 }
-                this.NextSchedule = nextSchedule;
-                return this.NextSchedule;
+
+                this.nextOccurrence = nextOccurrence;
+                return this.nextOccurrence;
             }
             catch (CrontabException ex)
             {
                 Debug.WriteLine(string.Format("{0}@{1}: {2}\r\n{3}", ex.GetType().Name, ex.Source, ex.Message, ex.StackTrace));
-                return DateTime.MinValue;
+                return DateTimeOffset.MinValue;
             }
             catch (Exception ex)
             {
@@ -182,21 +197,22 @@ namespace biz.dfch.CS.Appclusive.Scheduler
         [Pure]
         public bool IsScheduledToRun()
         {
-            return IsScheduledToRun(DateTime.Now);
+            return IsScheduledToRun(DateTimeOffset.Now);
         }
 
         [Pure]
-        public bool IsScheduledToRun(DateTime withinThisMinute)
+        public bool IsScheduledToRun(DateTimeOffset withinThisMinute)
         {
             Contract.Requires(null != withinThisMinute);
-            Contract.Ensures(Contract.OldValue(withinThisMinute) == Contract.ValueAtReturn(out withinThisMinute));
 
             var fReturn = false;
+
             var nextSchedule = GetNextSchedule(withinThisMinute);
-            if(!nextSchedule.Equals(DateTime.MinValue))
+            if(!nextSchedule.Equals(DateTimeOffset.MinValue))
             {
                 fReturn = true;
             }
+            
             return fReturn;
         }
     }

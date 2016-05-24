@@ -1,5 +1,5 @@
 ﻿/**
- * Copyright 2011-2015 d-fens GmbH
+ * Copyright 2011-2016 d-fens GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ using System.Threading.Tasks;
 using System.Management;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using biz.dfch.CS.Utilities.General;
 using biz.dfch.CS.Utilities.Logging;
 using biz.dfch.CS.Appclusive.Api.Core;
 using biz.dfch.CS.Appclusive.Api.Diagnostics;
@@ -35,59 +36,64 @@ namespace biz.dfch.CS.Appclusive.Scheduler
 {
     class ScheduledTaskWorker
     {
-        private const int _updateIntervalMinutesDefault = 5;
-        private int _updateIntervalMinutes;
-        private const int _serverNotReachableRetriesDefault = 3;
-        private int _serverNotReachableRetryMinutes;
-        bool _fInitialised = false;
-        DateTime _lastInitialised;
-        private DateTime _lastUpdate = DateTime.Now;
-        private Timer _stateTimer = null;
-        private TimerCallback _timerDelegate;
-        private List<ScheduledTask> _list = new List<ScheduledTask>();
-        private Uri _uri;
-        private Diagnostics _svcDiagnostics;
-        private Core _svcCore;
-        private string _managementUri = Environment.MachineName;
+        private const int UPDATE_INTERVAL_IN_MINUTES_DEFAULT = 5;
+        private int updateIntervalInMinutes;
 
-        private bool _active = true;
-        public bool Active
+        private const int SERVER_NOT_REACHABLE_RETRIES_DEFAULT = 3;
+        private int serverNotReachableRetriesInMinutes;
+        
+        bool isInitialised = false;
+        DateTimeOffset lastInitialisedDate;
+        private DateTimeOffset lastUpdated = DateTimeOffset.Now;
+        
+        private Timer stateTimer = null;
+        private TimerCallback timerCallback;
+
+        private readonly List<ScheduledTask> scheduledTasks = new List<ScheduledTask>();
+        private Uri uri;
+
+        private biz.dfch.CS.Appclusive.Api.Diagnostics.Diagnostics svcDiagnostics;
+        private biz.dfch.CS.Appclusive.Api.Core.Core svcCore;
+        
+        private readonly string managementUri = Environment.MachineName;
+
+        public bool IsActive { get; set; }
+
+        public ScheduledTaskWorker(string uri, string managementUri, int updateIntervalMinutes, int serverNotReachableRetries)
         {
-            get { return _active; }
-            set { _active = value; }
+            Trace.WriteLine(Method.fn());
+
+            this.Initialise(uri, managementUri, updateIntervalMinutes, serverNotReachableRetries, true);
         }
 
-        public ScheduledTaskWorker(string Uri, string ManagementUri, int UpdateIntervalMinutes, int ServerNotReachableRetries)
-        {
-            Debug.WriteLine("{0}:{1}.{2}", this.GetType().Namespace, this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name);
-
-            this.Initialise(Uri, ManagementUri, UpdateIntervalMinutes, ServerNotReachableRetries, true);
-        }
         public bool UpdateScheduledTasks()
         {
-            Debug.WriteLine("{0}:{1}.{2}", this.GetType().Namespace, this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name);
+            Trace.WriteLine(Method.fn());
 
             var fReturn = false;
 
-            if (!_active) return fReturn;
+            if (!IsActive)
+            {
+                return fReturn;
+            }
 
             ManagementUri mgmtUri = null;
             try
             {
-                var Now = DateTime.Now;
+                var now = DateTimeOffset.Now;
                 // DFTODO - read from App.config
-                mgmtUri = _svcCore.ManagementUris
+                mgmtUri = svcCore.ManagementUris
                     .Where
                     (
-                        e => e.Name.Equals(_managementUri, StringComparison.OrdinalIgnoreCase) &&
+                        e => e.Name.Equals(managementUri, StringComparison.OrdinalIgnoreCase) &&
                         e.Type.Equals("biz.dfch.CS.Appclusive.Scheduler", StringComparison.OrdinalIgnoreCase)
                     )
                     .SingleOrDefault();
 
                 if(null == mgmtUri)
                 {
-                    Debug.WriteLine("{0}: ManagementUri not found at '{1}'. Will retry later.", _managementUri, _svcDiagnostics.BaseUri);
-                    if (_serverNotReachableRetryMinutes <= (Now - _lastUpdate).TotalMinutes)
+                    Debug.WriteLine("{0}: ManagementUri not found at '{1}'. Will retry later.", managementUri, svcDiagnostics.BaseUri);
+                    if (serverNotReachableRetriesInMinutes <= (now - lastUpdated).TotalMinutes)
                     {
                         throw new TimeoutException();
                     }
@@ -95,56 +101,56 @@ namespace biz.dfch.CS.Appclusive.Scheduler
                 }
 
                 var jtoken = JToken.Parse(mgmtUri.Value);
-                lock (_list)
+                lock (scheduledTasks)
                 {
-                    _list.Clear();
+                    scheduledTasks.Clear();
                     if (jtoken is JArray)
                     {
                         var ja = JArray.Parse(mgmtUri.Value);
                         foreach (var j in ja)
                         {
-                            Debug.WriteLine(string.Format("{0}: Adding '{1}' ...", _managementUri, mgmtUri.Value));
-                            _list.Add(extractTask(j));
+                            Debug.WriteLine(string.Format("{0}: Adding '{1}' ...", managementUri, mgmtUri.Value));
+                            scheduledTasks.Add(ExtractTask(j));
                         }
                     }
                     else if (jtoken is JObject)
                     {
-                        Debug.WriteLine(string.Format("{0}: Adding '{1}' ...", _managementUri, mgmtUri.Value));
-                        _list.Add(extractTask(jtoken));
+                        Debug.WriteLine(string.Format("{0}: Adding '{1}' ...", managementUri, mgmtUri.Value));
+                        scheduledTasks.Add(ExtractTask(jtoken));
                     }
                 }
             }
             catch(InvalidOperationException ex)
             {
                 Trace.WriteException(ex.Message, ex);
-                Debug.WriteLine(string.Format("{0}: ManagementUri not found at '{1}'. Aborting ...", _managementUri, _svcDiagnostics.BaseUri.AbsoluteUri));
+                Debug.WriteLine("{0}: ManagementUri not found at '{1}'. Aborting ...", managementUri, svcDiagnostics.BaseUri.AbsoluteUri);
                 throw;
             }
             catch (TimeoutException ex)
             {
                 Trace.WriteException(ex.Message, ex);
-                Debug.WriteLine(string.Format("{0}: Timeout retrieving ManagementUri at '{1}'. Aborting ...", _managementUri, _svcDiagnostics.BaseUri.AbsoluteUri));
+                Debug.WriteLine(string.Format("{0}: Timeout retrieving ManagementUri at '{1}'. Aborting ...", managementUri, svcDiagnostics.BaseUri.AbsoluteUri));
                 throw;
             }
             finally
             {
                 if(null != mgmtUri)
                 {
-                    _svcDiagnostics.Detach(mgmtUri);
+                    svcDiagnostics.Detach(mgmtUri);
                 }
             }
 Success :
-            _lastInitialised = DateTime.Now;
+            lastInitialisedDate = DateTimeOffset.Now;
             fReturn = true;
             return fReturn;
         }
 
-        private ScheduledTask extractTask(JToken taskParameters)
+        private ScheduledTask ExtractTask(JToken taskParameters)
         {
             Contract.Requires(null != taskParameters);
 
             var task = new ScheduledTask(taskParameters.ToString());
-            var mgmtCredential = _svcCore.ManagementCredentials
+            var mgmtCredential = svcCore.ManagementCredentials
                 .Where
                 (
                     e => e.Name.Equals(task.Parameters.ManagementCredential, StringComparison.OrdinalIgnoreCase)
@@ -154,7 +160,7 @@ Success :
             task.Username = mgmtCredential.Username;
             task.Password = mgmtCredential.Password;
 
-            _svcCore.Detach(mgmtCredential);
+            svcCore.Detach(mgmtCredential);
             return task;
         }
 
@@ -165,40 +171,38 @@ Success :
             Contract.Requires(0 <= updateIntervalMinutes);
             Contract.Requires(0 <= serverNotReachableRetries);
 
-            Contract.Ensures(Contract.OldValue(uri) == Contract.ValueAtReturn(out uri));
-            Contract.Ensures(Contract.OldValue(managementUri) == Contract.ValueAtReturn(out managementUri));
-            Contract.Ensures(Contract.OldValue(updateIntervalMinutes) == Contract.ValueAtReturn(out updateIntervalMinutes));
-            Contract.Ensures(Contract.OldValue(serverNotReachableRetries) == Contract.ValueAtReturn(out serverNotReachableRetries));
-
-            Debug.WriteLine("{0}:{1}.{2}", this.GetType().Namespace, this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name);
+            Trace.WriteLine(Method.fn());
 
             var fReturn = false;
-            if (_fInitialised) return fReturn;
+            if (isInitialised)
+            {
+                return fReturn;
+            }
 
             try
             {
-                _updateIntervalMinutes = (0 != updateIntervalMinutes) ? updateIntervalMinutes : _updateIntervalMinutesDefault;
-                _serverNotReachableRetryMinutes = _updateIntervalMinutes * (0 != serverNotReachableRetries ? serverNotReachableRetries : _serverNotReachableRetriesDefault);
+                updateIntervalInMinutes = (0 != updateIntervalMinutes) ? updateIntervalMinutes : UPDATE_INTERVAL_IN_MINUTES_DEFAULT;
+                serverNotReachableRetriesInMinutes = updateIntervalInMinutes * (0 != serverNotReachableRetries ? serverNotReachableRetries : SERVER_NOT_REACHABLE_RETRIES_DEFAULT);
 
-                _uri = new Uri(uri);
-                Debug.WriteLine(string.Format("Uri: '{0}'", this._uri.AbsoluteUri));
-                _managementUri = managementUri;
+                this.uri = new Uri(uri);
+                Debug.WriteLine(string.Format("Uri: '{0}'", this.uri.AbsoluteUri));
+                managementUri = managementUri;
 
-                _svcDiagnostics = new Diagnostics(new Uri(string.Format("{0}Diagnostics", _uri.AbsoluteUri)));
-                _svcDiagnostics.Credentials = System.Net.CredentialCache.DefaultNetworkCredentials;
-                _svcDiagnostics.Format.UseJson();
+                svcDiagnostics = new Diagnostics(new Uri(string.Format("{0}api/Diagnostics", this.uri.AbsoluteUri)));
+                svcDiagnostics.Credentials = System.Net.CredentialCache.DefaultNetworkCredentials;
+                svcDiagnostics.Format.UseJson();
 
-                _svcCore = new Core(new Uri(string.Format("{0}api/Core", _uri.AbsoluteUri)));
-                _svcCore.Credentials = System.Net.CredentialCache.DefaultNetworkCredentials;
-                _svcCore.Format.UseJson();
+                svcCore = new biz.dfch.CS.Appclusive.Api.Core.Core(new Uri(string.Format("{0}api/Core", this.uri.AbsoluteUri)));
+                svcCore.Credentials = System.Net.CredentialCache.DefaultNetworkCredentials;
+                svcCore.Format.UseJson();
 
                 UpdateScheduledTasks();
 
-                _timerDelegate = new TimerCallback(this.RunTasks);
-                //var MilliSecondsToWait = (60 - DateTime.now.Second) * 1000;
+                timerCallback = new TimerCallback(this.RunTasks);
+                //var MilliSecondsToWait = (60 - DateTimeOffset.now.Second) * 1000;
                 //Debug.WriteLine(string.Format("Waiting {0}ms for begin of next minute ...", MilliSecondsToWait));
                 //System.Threading.Thread.Sleep(MilliSecondsToWait);
-                _stateTimer = new Timer(_timerDelegate, null, 1000, (1000 * 60) - 20);
+                stateTimer = new Timer(timerCallback, null, 1000, (1000 * 60) - 20);
                 
                 fReturn = true;
             }
@@ -214,46 +218,45 @@ Success :
                     fReturn = false;
                 }
             }
-            finally
-            {
-                // N/A
-            }
-            this._fInitialised = fReturn;
-            this._active = fReturn;
+
+            this.isInitialised = fReturn;
+            this.IsActive = fReturn;
             return fReturn;
         }
 
         ~ScheduledTaskWorker()
         {
-            Debug.WriteLine("{0}:{1}.{2}", this.GetType().Namespace, this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name);
+            Trace.WriteLine(Method.fn());
 
-            if (null != this._stateTimer)
+            if (null == this.stateTimer)
             {
-                _stateTimer.Dispose();
+                return;
             }
+            
+            stateTimer.Dispose();
         }
 
         // The state object is necessary for a TimerCallback.
         protected void RunTasks(object stateObject)
         {
             var fReturn = false;
-            var now = DateTime.Now;
+            var now = DateTimeOffset.Now;
 
-            if (!_active || !_fInitialised) return;
+            if (!IsActive || !isInitialised)
+            {
+                return;
+            }
 
-            Debug.WriteLine("{0}:{1}.{2}", this.GetType().Namespace, this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name);
+            Trace.WriteLine(Method.fn());
             try
             {
-                lock (_list)
+                lock (scheduledTasks)
                 {
-                    //Debug.WriteLine(string.Format("Iterating list ... '{0}'", _list.Count));
-                    foreach (var task in _list)
+                    foreach (var task in scheduledTasks)
                     {
-                        //var nextSchedule = task.GetNextSchedule();
-                        //Debug.WriteLine(string.Format("Checked '{0}' [{1}].", task.Parameters.CommandLine, nextSchedule.ToString()));
                         if (task.IsScheduledToRun(now))
                         {
-                            Debug.WriteLine(string.Format("Invoking '{0}' as '{1}' [{2}] ...", task.Parameters.CommandLine, task.Username, task.NextSchedule.ToString()));
+                            Debug.WriteLine(string.Format("Invoking '{0}' as '{1}' [{2}] ...", task.Parameters.CommandLine, task.Username, task.NextOccurrence.ToString()));
 
                             // DFTODO - check if this call is blocking
                             biz.dfch.CS.Utilities.Process.StartProcess(task.Parameters.CommandLine, task.Parameters.WorkingDirectory, task.Credential);
@@ -261,7 +264,7 @@ Success :
                     }
                 }
 
-                if (_updateIntervalMinutes <= (now - _lastInitialised).TotalMinutes)
+                if (updateIntervalInMinutes <= (now - lastInitialisedDate).TotalMinutes)
                 {
                     fReturn = UpdateScheduledTasks();
                 }
@@ -269,7 +272,7 @@ Success :
             catch (TimeoutException ex)
             {
                 Trace.WriteException(ex.Message, ex);
-                var msg = string.Format("{0}: Timeout retrieving ManagementUri at '{1}'. Aborting ...", _managementUri, _svcDiagnostics.BaseUri.AbsoluteUri);
+                var msg = string.Format("{0}: Timeout retrieving ManagementUri at '{1}'. Aborting ...", managementUri, svcDiagnostics.BaseUri.AbsoluteUri);
                 Trace.WriteLine(msg);
                 Environment.FailFast(msg);
                 throw;

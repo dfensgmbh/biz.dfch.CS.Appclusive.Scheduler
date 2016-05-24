@@ -1,5 +1,5 @@
 ﻿/**
- * Copyright 2011-2015 d-fens GmbH
+ * Copyright 2011-2016 d-fens GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler
         {
             var fn = Method.fn();
             Debug.WriteLine("{0}: Environment.UserInteractive '{1}'", fn, Environment.UserInteractive);
+            
             if (Environment.UserInteractive)
             {
                 var service = new AppclusiveSchedulerService();
@@ -42,19 +43,19 @@ namespace biz.dfch.CS.Appclusive.Scheduler
                 Console.CancelKeyPress += delegate(object sender, ConsoleCancelEventArgs e)
                 {
                     e.Cancel = true;
-                    service.fAbort.Set();
+                    service.TerminateInteractiveService();
                 };
 
                 service.OnStartInteractive(args);
             }
             else
             {
-                ServiceBase[] ServicesToRun;
-                ServicesToRun = new ServiceBase[] 
+                ServiceBase[] servicesToRun;
+                servicesToRun = new ServiceBase[] 
                 { 
                     new AppclusiveSchedulerService() 
                 };
-                ServiceBase.Run(ServicesToRun);
+                ServiceBase.Run(servicesToRun);
             }
         }
     }

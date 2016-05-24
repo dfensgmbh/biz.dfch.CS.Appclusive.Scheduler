@@ -1,5 +1,5 @@
 ﻿/**
- * Copyright 2011-2015 d-fens GmbH
+ * Copyright 2011-2016 d-fens GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,35 +24,14 @@ namespace biz.dfch.CS.Appclusive.Scheduler
 {
     class ScheduledTaskParameters
     {
-        bool _Active;
-        public bool Active
-        {
-            get { return _Active; }
-            set { _Active = value; }
-        }
-        string _CrontabExpression;
-        public string CrontabExpression
-        {
-            get { return _CrontabExpression; }
-            set { _CrontabExpression = value; }
-        }
-        string _CommandLine;
-        public string CommandLine
-        {
-            get { return _CommandLine; }
-            set { _CommandLine = value; }
-        }
-        string _WorkingDirectory;
-        public string WorkingDirectory
-        {
-            get { return _WorkingDirectory; }
-            set { _WorkingDirectory = value; }
-        }
-        string _ManagementCredential;
-        public string ManagementCredential
-        {
-            get { return _ManagementCredential; }
-            set { _ManagementCredential = value; }
-        }
+        public bool IsActive { get; set; }
+
+        public string CrontabExpression { get; set; }
+
+        public string CommandLine { get; set; }
+
+        public string WorkingDirectory { get; set; }
+
+        public string ManagementCredential { get; set; }
     }
 }
