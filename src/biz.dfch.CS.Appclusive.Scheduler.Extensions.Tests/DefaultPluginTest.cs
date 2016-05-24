@@ -11,12 +11,14 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
     public class DefaultPluginTest
     {
         [TestMethod]
+        [ExpectContractFailure]
         public void RequiresTest()
         {
             Contract.Requires(false == true);
         }
 
         [TestMethod]
+        [ExpectContractFailure]
         public void AssertTest()
         {
             Contract.Assert(false == true);
