@@ -152,13 +152,15 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="ISchedulerPluginTest.cs" />
+    <Compile Include="CodeContractTest.cs" />
     <Compile Include="DefaultPluginTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\biz.dfch.CS.Appclusive.Scheduler.Contracts\biz.dfch.CS.Appclusive.Scheduler.Contracts.csproj">
+    <ProjectReference Include="..\biz.dfch.CS.Appclusive.Scheduler.Public\biz.dfch.CS.Appclusive.Scheduler.Public.csproj">
       <Project>{f3e50a54-395d-4e02-bde6-edea3c3cf578}</Project>
-      <Name>biz.dfch.CS.Appclusive.Scheduler.Contracts</Name>
+      <Name>biz.dfch.CS.Appclusive.Scheduler.Public</Name>
     </ProjectReference>
     <ProjectReference Include="..\biz.dfch.CS.Appclusive.Scheduler.Extensions\biz.dfch.CS.Appclusive.Scheduler.Extensions.csproj">
       <Project>{2ee216bb-08a6-4070-adff-38aa49b184c3}</Project>

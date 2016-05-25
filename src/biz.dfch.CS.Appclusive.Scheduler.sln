@@ -3,17 +3,20 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "biz.dfch.CS.Appclusive.Scheduler", "biz.dfch.CS.Appclusive.Scheduler\biz.dfch.CS.Appclusive.Scheduler.csproj", "{ED3CBDAE-82B0-43EA-BE69-B0CAD148A209}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "biz.dfch.CS.Appclusive.Scheduler.Core", "biz.dfch.CS.Appclusive.Scheduler.Core\biz.dfch.CS.Appclusive.Scheduler.Core.csproj", "{ED3CBDAE-82B0-43EA-BE69-B0CAD148A209}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F3E50A54-395D-4E02-BDE6-EDEA3C3CF578} = {F3E50A54-395D-4E02-BDE6-EDEA3C3CF578}
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "biz.dfch.CS.Appclusive.Scheduler.Tests", "biz.dfch.CS.Appclusive.Scheduler.Tests\biz.dfch.CS.Appclusive.Scheduler.Tests.csproj", "{8F48316C-FD5A-44DC-82AC-E20490FAC6E4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "biz.dfch.CS.Appclusive.Scheduler.Core.Tests", "biz.dfch.CS.Appclusive.Scheduler.Core.Tests\biz.dfch.CS.Appclusive.Scheduler.Core.Tests.csproj", "{8F48316C-FD5A-44DC-82AC-E20490FAC6E4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "biz.dfch.CS.Appclusive.Scheduler.Contracts", "biz.dfch.CS.Appclusive.Scheduler.Contracts\biz.dfch.CS.Appclusive.Scheduler.Contracts.csproj", "{F3E50A54-395D-4E02-BDE6-EDEA3C3CF578}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "biz.dfch.CS.Appclusive.Scheduler.Public", "biz.dfch.CS.Appclusive.Scheduler.Public\biz.dfch.CS.Appclusive.Scheduler.Public.csproj", "{F3E50A54-395D-4E02-BDE6-EDEA3C3CF578}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "biz.dfch.CS.Appclusive.Scheduler.Extensions", "biz.dfch.CS.Appclusive.Scheduler.Extensions\biz.dfch.CS.Appclusive.Scheduler.Extensions.csproj", "{2EE216BB-08A6-4070-ADFF-38AA49B184C3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests", "biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests\biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests.csproj", "{D3FBB76D-242B-48F0-809C-6AE40EAEE02D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "biz.dfch.CS.Appclusive.Scheduler.Contracts.Tests", "biz.dfch.CS.Appclusive.Scheduler.Contracts.Tests\biz.dfch.CS.Appclusive.Scheduler.Contracts.Tests.csproj", "{623ECA49-601B-42F2-B37E-DB300106DB96}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "biz.dfch.CS.Appclusive.Scheduler.Public.Tests", "biz.dfch.CS.Appclusive.Scheduler.Public.Tests\biz.dfch.CS.Appclusive.Scheduler.Public.Tests.csproj", "{623ECA49-601B-42F2-B37E-DB300106DB96}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

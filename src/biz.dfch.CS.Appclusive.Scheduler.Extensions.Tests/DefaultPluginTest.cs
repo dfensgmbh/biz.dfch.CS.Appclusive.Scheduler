@@ -4,6 +4,9 @@ using System.Diagnostics.Contracts;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Telerik.JustMock;
 using biz.dfch.CS.Utilities.Testing;
+using System.Collections.Specialized;
+using biz.dfch.CS.Appclusive.Scheduler.Public;
+using System.Collections.Generic;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
 {
@@ -11,44 +14,9 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
     public class DefaultPluginTest
     {
         [TestMethod]
-        [ExpectContractFailure]
-        public void RequiresTest()
-        {
-            Contract.Requires(false == true);
-        }
-
-        [TestMethod]
-        [ExpectContractFailure]
-        public void AssertTest()
-        {
-            Contract.Assert(false == true);
-        }
-
-        [TestMethod]
-        [ExpectContractFailure]
-        public void LogThrowsContractException()
-        {
-            // Arrange
-            var sut = new DefaultPlugin();
-            //var message = string.Empty;
-            string message = null;
-
-            //Mock.SetupStatic(typeof(DateTimeOffset), Behavior.Loose);
-            //Mock.Arrange(() => Trace.WriteLine(Arg.Is<string>(message)))
-            //    .OccursNever();
-
-            // Act
-            sut.Log(message);
-
-            // Assert
-            //Mock.Assert(() => Trace.WriteLine(Arg.Is<string>(message)));
-        }
-
-        [TestMethod]
         public void LogSucceeds()
         {
             // Arrange
-            var sut = new DefaultPlugin();
             var message = "arbitrary-message";
 
             Mock.SetupStatic(typeof(DateTimeOffset), Behavior.Loose);
@@ -56,10 +24,69 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
                 .OccursOnce();
 
             // Act
+            var sut = new DefaultPlugin();
             sut.Log(message);
 
             // Assert
             Mock.Assert(() => Trace.WriteLine(Arg.Is<string>(message)));
+        }
+
+        [TestMethod]
+        public void UpdateConfigurationSucceeds()
+        {
+            // Arrange
+            var configuration = new Dictionary<string, object>();
+
+            Mock.SetupStatic(typeof(DateTimeOffset), Behavior.Loose);
+            Mock.Arrange(() => Trace.WriteLine(Arg.IsAny<string>()))
+                .OccursOnce();
+
+            // Act
+            var sut = new DefaultPlugin();
+            var result = sut.UpdateConfiguration(configuration);
+
+            // Assert
+            Assert.IsTrue(result);
+
+            Mock.Assert(() => Trace.WriteLine(Arg.IsAny<string>()));
+        }
+
+        [TestMethod]
+        public void InvokeConfigurationSucceeds()
+        {
+            // Arrange
+            var data = new Dictionary<string, object>();
+            var key1 = "arbitrary-key1";
+            var value1 = "arbitrary-value";
+            data.Add(key1, value1);
+            var key2 = "arbitrary-key2";
+            var value2 = 42;
+            data.Add(key2, value2);
+            var key3 = "arbitrary-key3";
+            var value3 = new object();
+            data.Add(key3, value3);
+
+            var jobResult = new JobResult();
+
+            Mock.SetupStatic(typeof(DateTimeOffset), Behavior.Loose);
+            Mock.Arrange(() => Trace.WriteLine(Arg.IsAny<string>()))
+                .OccursOnce();
+
+            // Act
+            var sut = new DefaultPlugin();
+            var result = sut.Invoke(data, ref jobResult);
+
+            // Assert
+            Assert.IsTrue(result);
+            Assert.IsNotNull(jobResult);
+            Assert.IsTrue(jobResult.Description.Contains(key1));
+            Assert.IsTrue(jobResult.Description.Contains(value1.ToString()));
+            Assert.IsTrue(jobResult.Description.Contains(key2));
+            Assert.IsTrue(jobResult.Description.Contains(value2.ToString()));
+            Assert.IsTrue(jobResult.Description.Contains(key3));
+            Assert.IsTrue(jobResult.Description.Contains(value3.ToString()));
+
+            Mock.Assert(() => Trace.WriteLine(Arg.IsAny<string>()));
         }
     }
 }

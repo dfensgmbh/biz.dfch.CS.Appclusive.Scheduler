@@ -1,4 +1,19 @@
-﻿using System.Collections.Specialized;
+﻿/**
+ * Copyright 2016 d-fens GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 using System.Diagnostics.Contracts;
 using System;
 using System.Collections.Generic;
@@ -7,15 +22,16 @@ using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
-using biz.dfch.CS.Appclusive.Scheduler.Contracts;
+using biz.dfch.CS.Appclusive.Scheduler.Public;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
 {
     [Export(typeof(ISchedulerPlugin))]
     [ExportMetadata("Type", "Default")]
+    [ExportMetadata("Priority", int.MinValue)]
     public class DefaultPlugin : ISchedulerPlugin
     {
-        public StringDictionary Configuration { get; set; }
+        public Dictionary<string, object> Configuration { get; set; }
 
         public void Log(string message)
         {
@@ -24,7 +40,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
             return;
         }
 
-        public bool UpdateConfiguration(StringDictionary configuration)
+        public bool UpdateConfiguration(Dictionary<string, object> configuration)
         {
             var fReturn = false;
         
@@ -37,8 +53,8 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
                 message.AppendFormat("{0}: '{1}'", item.Key, item.Value ?? item.Value.ToString());
                 message.AppendLine();
             }
-            message.AppendLine("DefaultPlugin.UpdatingConfiguration COMPLETED.");
             message.AppendLine();
+            message.AppendLine("DefaultPlugin.UpdatingConfiguration COMPLETED.");
             
             Trace.WriteLine(message.ToString());
 
@@ -47,7 +63,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
             return fReturn;
         }
 
-        public bool Invoke(StringDictionary data, ref JobResult jobResult)
+        public bool Invoke(Dictionary<string, object> data, ref JobResult jobResult)
         {
             Contract.Requires("1" == jobResult.Version);
             Contract.Ensures(jobResult.IsValid());
