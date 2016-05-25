@@ -1,5 +1,5 @@
 ﻿/**
- * Copyright 2011-2016 d-fens GmbH
+ * Copyright 2015-2016 d-fens GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,24 +14,29 @@
  * limitations under the License.
  */
 
+
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Web;
 
-namespace biz.dfch.CS.Appclusive.Scheduler
+namespace biz.dfch.CS.Appclusive.Scheduler.Public
 {
-    class ScheduledTaskParameters
+    public class JobResult : BaseDto
     {
-        public bool IsActive { get; set; }
+        public JobResult()
+        {
+            Version = "1";
+        }
 
-        public string CrontabExpression { get; set; }
-
-        public string CommandLine { get; set; }
-
-        public string WorkingDirectory { get; set; }
-
-        public string ManagementCredential { get; set; }
+        [Required]
+        public string Version { get; set; }
+        public bool Succeeded { get; set; }
+        public int Code { get; set; }
+        [Required]
+        public string Message { get; set; }
+        public string Description { get; set; }
+        public JobResult InnerJobResult { get; set; }
     }
 }

@@ -27,7 +27,7 @@ using System.Threading.Tasks;
 using System.Web;
 using biz.dfch.CS.Utilities.Logging;
 
-namespace biz.dfch.CS.Appclusive.Scheduler
+namespace biz.dfch.CS.Appclusive.Scheduler.Core
 {
     class ScheduledTask
     {

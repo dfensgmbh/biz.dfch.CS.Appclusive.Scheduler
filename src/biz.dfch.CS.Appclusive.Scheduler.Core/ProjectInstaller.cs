@@ -6,7 +6,7 @@ using System.Configuration.Install;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace biz.dfch.CS.Appclusive.Scheduler
+namespace biz.dfch.CS.Appclusive.Scheduler.Core
 {
     [RunInstaller(true)]
     public partial class ProjectInstaller : System.Configuration.Install.Installer

@@ -32,7 +32,7 @@ using biz.dfch.CS.Utilities.Logging;
 using biz.dfch.CS.Appclusive.Api.Core;
 using biz.dfch.CS.Appclusive.Api.Diagnostics;
 
-namespace biz.dfch.CS.Appclusive.Scheduler
+namespace biz.dfch.CS.Appclusive.Scheduler.Core
 {
     class ScheduledTaskWorker
     {

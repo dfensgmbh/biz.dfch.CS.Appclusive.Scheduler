@@ -29,7 +29,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace biz.dfch.CS.Appclusive.Scheduler
+namespace biz.dfch.CS.Appclusive.Scheduler.Core
 {
     public partial class AppclusiveSchedulerService : ServiceBase
     {

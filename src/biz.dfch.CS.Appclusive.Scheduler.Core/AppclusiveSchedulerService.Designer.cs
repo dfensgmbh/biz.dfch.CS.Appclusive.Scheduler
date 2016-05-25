@@ -1,4 +1,4 @@
-﻿namespace biz.dfch.CS.Appclusive.Scheduler
+﻿namespace biz.dfch.CS.Appclusive.Scheduler.Core
 {
     partial class AppclusiveSchedulerService
     {

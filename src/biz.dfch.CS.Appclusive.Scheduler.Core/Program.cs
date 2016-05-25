@@ -24,7 +24,7 @@ using System.Threading.Tasks;
 using biz.dfch.CS.Utilities.General;
 using biz.dfch.CS.Utilities.Logging;
 
-namespace biz.dfch.CS.Appclusive.Scheduler
+namespace biz.dfch.CS.Appclusive.Scheduler.Core
 {
     static class Program
     {
