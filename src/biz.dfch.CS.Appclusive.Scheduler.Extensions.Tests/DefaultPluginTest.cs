@@ -19,7 +19,6 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
             // Arrange
             var message = "arbitrary-message";
 
-            Mock.SetupStatic(typeof(DateTimeOffset), Behavior.Loose);
             Mock.Arrange(() => Trace.WriteLine(Arg.Is<string>(message)))
                 .OccursOnce();
 
@@ -37,7 +36,6 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
             // Arrange
             var configuration = new Dictionary<string, object>();
 
-            Mock.SetupStatic(typeof(DateTimeOffset), Behavior.Loose);
             Mock.Arrange(() => Trace.WriteLine(Arg.IsAny<string>()))
                 .OccursOnce();
 
@@ -68,7 +66,6 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
 
             var jobResult = new JobResult();
 
-            Mock.SetupStatic(typeof(DateTimeOffset), Behavior.Loose);
             Mock.Arrange(() => Trace.WriteLine(Arg.IsAny<string>()))
                 .OccursOnce();
 
