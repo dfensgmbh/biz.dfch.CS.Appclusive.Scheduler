@@ -153,6 +153,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="ScheduledTaskWorkerConfigurationTest.cs" />
     <Compile Include="ISchedulerPluginTest.cs" />
     <Compile Include="CodeContractTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

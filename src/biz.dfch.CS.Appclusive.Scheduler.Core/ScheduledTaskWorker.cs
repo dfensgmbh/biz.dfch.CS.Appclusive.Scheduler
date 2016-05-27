@@ -36,11 +36,14 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
 {
     class ScheduledTaskWorker
     {
-        private const int UPDATE_INTERVAL_IN_MINUTES_DEFAULT = 5;
-        private int updateIntervalInMinutes;
+        //private const int UPDATE_INTERVAL_IN_MINUTES_DEFAULT = 5;
+        //private int updateIntervalInMinutes;
 
-        private const int SERVER_NOT_REACHABLE_RETRIES_DEFAULT = 3;
-        private int serverNotReachableRetriesInMinutes;
+        //private const int SERVER_NOT_REACHABLE_RETRIES_DEFAULT = 3;
+        //private int serverNotReachableRetriesInMinutes;
+        
+        //private readonly string managementUri = Environment.MachineName;
+        //private Uri uri;
         
         bool isInitialised = false;
         DateTimeOffset lastInitialisedDate;
@@ -50,20 +53,19 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
         private TimerCallback timerCallback;
 
         private readonly List<ScheduledTask> scheduledTasks = new List<ScheduledTask>();
-        private Uri uri;
 
         private biz.dfch.CS.Appclusive.Api.Diagnostics.Diagnostics svcDiagnostics;
         private biz.dfch.CS.Appclusive.Api.Core.Core svcCore;
-        
-        private readonly string managementUri = Environment.MachineName;
+
+        private ScheduledTaskWorkerConfiguration configuration;
 
         public bool IsActive { get; set; }
 
-        public ScheduledTaskWorker(string uri, string managementUri, int updateIntervalMinutes, int serverNotReachableRetries)
+        public ScheduledTaskWorker(ScheduledTaskWorkerConfiguration configuration)
         {
             Trace.WriteLine(Method.fn());
 
-            this.Initialise(uri, managementUri, updateIntervalMinutes, serverNotReachableRetries, true);
+            this.Initialise(configuration, true);
         }
 
         public bool UpdateScheduledTasks()
@@ -81,19 +83,18 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             try
             {
                 var now = DateTimeOffset.Now;
-                // DFTODO - read from App.config
                 mgmtUri = svcCore.ManagementUris
                     .Where
                     (
-                        e => e.Name.Equals(managementUri, StringComparison.OrdinalIgnoreCase) &&
+                        e => e.Name.Equals(configuration.ManagementUriName, StringComparison.OrdinalIgnoreCase) &&
                         e.Type.Equals("biz.dfch.CS.Appclusive.Scheduler", StringComparison.OrdinalIgnoreCase)
                     )
                     .SingleOrDefault();
 
                 if(null == mgmtUri)
                 {
-                    Debug.WriteLine("{0}: ManagementUri not found at '{1}'. Will retry later.", managementUri, svcDiagnostics.BaseUri);
-                    if (serverNotReachableRetriesInMinutes <= (now - lastUpdated).TotalMinutes)
+                    Trace.WriteLine("{0}: ManagementUri not found at '{1}'. Will retry later.", configuration.ManagementUriName, svcDiagnostics.BaseUri);
+                    if (configuration.ServerNotReachableRetries <= (now - lastUpdated).TotalMinutes)
                     {
                         throw new TimeoutException();
                     }
@@ -109,13 +110,13 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
                         var ja = JArray.Parse(mgmtUri.Value);
                         foreach (var j in ja)
                         {
-                            Debug.WriteLine(string.Format("{0}: Adding '{1}' ...", managementUri, mgmtUri.Value));
+                            Debug.WriteLine(string.Format("{0}: Adding '{1}' ...", configuration.ManagementUriName, mgmtUri.Value));
                             scheduledTasks.Add(ExtractTask(j));
                         }
                     }
                     else if (jtoken is JObject)
                     {
-                        Debug.WriteLine(string.Format("{0}: Adding '{1}' ...", managementUri, mgmtUri.Value));
+                        Debug.WriteLine(string.Format("{0}: Adding '{1}' ...", configuration.ManagementUriName, mgmtUri.Value));
                         scheduledTasks.Add(ExtractTask(jtoken));
                     }
                 }
@@ -123,13 +124,13 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             catch(InvalidOperationException ex)
             {
                 Trace.WriteException(ex.Message, ex);
-                Debug.WriteLine("{0}: ManagementUri not found at '{1}'. Aborting ...", managementUri, svcDiagnostics.BaseUri.AbsoluteUri);
+                Debug.WriteLine("{0}: ManagementUri not found at '{1}'. Aborting ...", configuration.ManagementUriName, svcDiagnostics.BaseUri.AbsoluteUri);
                 throw;
             }
             catch (TimeoutException ex)
             {
                 Trace.WriteException(ex.Message, ex);
-                Debug.WriteLine(string.Format("{0}: Timeout retrieving ManagementUri at '{1}'. Aborting ...", managementUri, svcDiagnostics.BaseUri.AbsoluteUri));
+                Debug.WriteLine(string.Format("{0}: Timeout retrieving ManagementUri at '{1}'. Aborting ...", configuration.ManagementUriName, svcDiagnostics.BaseUri.AbsoluteUri));
                 throw;
             }
             finally
@@ -164,12 +165,9 @@ Success :
             return task;
         }
 
-        protected bool Initialise(string uri, string managementUri, int updateIntervalMinutes, int serverNotReachableRetries, bool fThrowException)
+        protected bool Initialise(ScheduledTaskWorkerConfiguration configuration, bool fThrowException)
         {
-            Contract.Requires(!string.IsNullOrWhiteSpace(uri));
-            Contract.Requires(!string.IsNullOrWhiteSpace(managementUri));
-            Contract.Requires(0 <= updateIntervalMinutes);
-            Contract.Requires(0 <= serverNotReachableRetries);
+            Contract.Requires(configuration.IsValid());
 
             Trace.WriteLine(Method.fn());
 
@@ -181,27 +179,19 @@ Success :
 
             try
             {
-                updateIntervalInMinutes = (0 != updateIntervalMinutes) ? updateIntervalMinutes : UPDATE_INTERVAL_IN_MINUTES_DEFAULT;
-                serverNotReachableRetriesInMinutes = updateIntervalInMinutes * (0 != serverNotReachableRetries ? serverNotReachableRetries : SERVER_NOT_REACHABLE_RETRIES_DEFAULT);
+                Debug.WriteLine(string.Format("Uri: '{0}'", configuration.Uri.AbsoluteUri));
 
-                this.uri = new Uri(uri);
-                Debug.WriteLine(string.Format("Uri: '{0}'", this.uri.AbsoluteUri));
-                managementUri = managementUri;
-
-                svcDiagnostics = new Diagnostics(new Uri(string.Format("{0}api/Diagnostics", this.uri.AbsoluteUri)));
+                svcDiagnostics = new Diagnostics(new Uri(string.Format("{0}api/Diagnostics", configuration.Uri.AbsoluteUri)));
                 svcDiagnostics.Credentials = System.Net.CredentialCache.DefaultNetworkCredentials;
                 svcDiagnostics.Format.UseJson();
 
-                svcCore = new biz.dfch.CS.Appclusive.Api.Core.Core(new Uri(string.Format("{0}api/Core", this.uri.AbsoluteUri)));
+                svcCore = new biz.dfch.CS.Appclusive.Api.Core.Core(new Uri(string.Format("{0}api/Core", configuration.Uri.AbsoluteUri)));
                 svcCore.Credentials = System.Net.CredentialCache.DefaultNetworkCredentials;
                 svcCore.Format.UseJson();
 
                 UpdateScheduledTasks();
 
                 timerCallback = new TimerCallback(this.RunTasks);
-                //var MilliSecondsToWait = (60 - DateTimeOffset.now.Second) * 1000;
-                //Debug.WriteLine(string.Format("Waiting {0}ms for begin of next minute ...", MilliSecondsToWait));
-                //System.Threading.Thread.Sleep(MilliSecondsToWait);
                 stateTimer = new Timer(timerCallback, null, 1000, (1000 * 60) - 20);
                 
                 fReturn = true;
@@ -258,13 +248,12 @@ Success :
                         {
                             Debug.WriteLine(string.Format("Invoking '{0}' as '{1}' [{2}] ...", task.Parameters.CommandLine, task.Username, task.NextOccurrence.ToString()));
 
-                            // DFTODO - check if this call is blocking
                             biz.dfch.CS.Utilities.Process.StartProcess(task.Parameters.CommandLine, task.Parameters.WorkingDirectory, task.Credential);
                         }
                     }
                 }
 
-                if (updateIntervalInMinutes <= (now - lastInitialisedDate).TotalMinutes)
+                if (configuration.UpdateIntervalInMinutes <= (now - lastInitialisedDate).TotalMinutes)
                 {
                     fReturn = UpdateScheduledTasks();
                 }
@@ -272,7 +261,7 @@ Success :
             catch (TimeoutException ex)
             {
                 Trace.WriteException(ex.Message, ex);
-                var msg = string.Format("{0}: Timeout retrieving ManagementUri at '{1}'. Aborting ...", managementUri, svcDiagnostics.BaseUri.AbsoluteUri);
+                var msg = string.Format("{0}: Timeout retrieving ManagementUri at '{1}'. Aborting ...", configuration.ManagementUriName, svcDiagnostics.BaseUri.AbsoluteUri);
                 Trace.WriteLine(msg);
                 Environment.FailFast(msg);
                 throw;

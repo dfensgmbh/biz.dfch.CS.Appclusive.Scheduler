@@ -132,6 +132,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseDto.cs" />
+    <Compile Include="IConfigurationLoader.cs" />
+    <Compile Include="ContractClassForIConfigurationLoader.cs" />
     <Compile Include="JobResult.cs" />
     <Compile Include="ContractClassForISchedulerPlugin.cs" />
     <Compile Include="ISchedulerPlugin.cs" />

@@ -180,6 +180,8 @@
     <Compile Include="AppclusiveSchedulerService.Designer.cs">
       <DependentUpon>AppclusiveSchedulerService.cs</DependentUpon>
     </Compile>
+    <Compile Include="ScheduledTaskWorkerConfigurationLoader.cs" />
+    <Compile Include="ScheduledTaskWorkerConfiguration.cs" />
     <Compile Include="ProjectInstaller.cs">
       <SubType>Component</SubType>
     </Compile>

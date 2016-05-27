@@ -73,32 +73,10 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
         {
             var fn = Method.fn();
             Trace.WriteLine("{0}.{1}", this.GetType().FullName, fn);
-            try
-            {
-                var uri = string.Empty;
-                uri = ConfigurationManager.AppSettings["Uri"];
-                if (2 <= args.Length)
-                {
-                    uri = args[0];
-                }
-                Contract.Assert(!string.IsNullOrWhiteSpace(uri), "Uri: Parameter validation FAILED.");
 
-                var managementUri = string.Empty;
-                managementUri = ConfigurationManager.AppSettings["ManagementUri"];
-                if (2 <= args.Length) managementUri = args[1];
-                Contract.Assert(!string.IsNullOrWhiteSpace(managementUri), "ManagementUri: Parameter validation FAILED.");
+            var configuration = new ScheduledTaskWorkerConfiguration(new ScheduledTaskWorkerConfigurationLoader(), args);
+            scheduledTaskWorker = new ScheduledTaskWorker(configuration);
 
-                var updateIntervalMinutes = Convert.ToInt32(ConfigurationManager.AppSettings["UpdateIntervalMinutes"]);
-
-                var serverNotReachableRetries = Convert.ToInt32(ConfigurationManager.AppSettings["ServerNotReachableRetries"]);
-
-                scheduledTaskWorker = new ScheduledTaskWorker(uri, managementUri, updateIntervalMinutes, serverNotReachableRetries);
-            }
-            catch (Exception ex)
-            {
-                Trace.WriteException(ex.Message, ex);
-                Environment.FailFast(ex.Message, ex);
-            }
             base.OnStart(args);
         }
 
