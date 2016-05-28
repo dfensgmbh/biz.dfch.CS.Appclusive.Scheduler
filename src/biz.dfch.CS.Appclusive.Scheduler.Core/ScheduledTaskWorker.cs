@@ -65,7 +65,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
         {
             Trace.WriteLine(Method.fn());
 
-            this.Initialise(configuration, true);
+            this.Ctor(configuration);
         }
 
         public bool UpdateScheduledTasks()
@@ -165,7 +165,7 @@ Success :
             return task;
         }
 
-        protected bool Initialise(ScheduledTaskWorkerConfiguration configuration, bool fThrowException)
+        protected void Ctor(ScheduledTaskWorkerConfiguration configuration)
         {
             Contract.Requires(configuration.IsValid());
 
@@ -174,7 +174,7 @@ Success :
             var fReturn = false;
             if (isInitialised)
             {
-                return fReturn;
+                return;
             }
 
             try
@@ -198,20 +198,12 @@ Success :
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(string.Format("{0}@{1}: {2}\r\n{3}", ex.GetType().Name, ex.Source, ex.Message, ex.StackTrace));
-                if (fThrowException)
-                {
-                    throw;
-                }
-                else
-                {
-                    fReturn = false;
-                }
+                Trace.WriteException(ex.Message, ex);
             }
 
             this.isInitialised = fReturn;
             this.IsActive = fReturn;
-            return fReturn;
+            return;
         }
 
         ~ScheduledTaskWorker()
@@ -258,6 +250,7 @@ Success :
                     fReturn = UpdateScheduledTasks();
                 }
             }
+            // why do we handle a timeout exception here ?!
             catch (TimeoutException ex)
             {
                 Trace.WriteException(ex.Message, ex);
