@@ -31,11 +31,9 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
         {
             Contract.Requires(configuration is ScheduledTaskWorkerConfiguration);
             
+            parameters = parameters ?? new Dictionary<string, object>();
+
             var cfg = configuration as ScheduledTaskWorkerConfiguration;
-            if(null == parameters)
-            {
-                parameters = new Dictionary<string, object>();
-            }
 
             cfg.UpdateIntervalInMinutes = 
                 (0 != cfg.UpdateIntervalInMinutes) ? 

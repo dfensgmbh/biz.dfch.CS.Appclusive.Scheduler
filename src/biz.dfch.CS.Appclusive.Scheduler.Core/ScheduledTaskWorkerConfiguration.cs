@@ -66,52 +66,10 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
                     parameters.Add(string.Format("arg{0}", c), arg);
                 }
             }
+
             loader.Initialise(this, parameters);
-        }
 
-        public override bool IsValid()
-        {
-            return base.IsValid();
-        }
-
-        public bool Initialise(string[] args)
-        {
-            try
-            {
-                UpdateIntervalInMinutes = 
-                    (0 != UpdateIntervalInMinutes) ? 
-                    UpdateIntervalInMinutes : 
-                    ScheduledTaskWorkerConfiguration.UPDATE_INTERVAL_IN_MINUTES_DEFAULT;
-
-                ServerNotReachableRetries = 
-                    UpdateIntervalInMinutes * (0 != ServerNotReachableRetries ?
-                    ServerNotReachableRetries : 
-                    ScheduledTaskWorkerConfiguration.SERVER_NOT_REACHABLE_RETRIES_DEFAULT);
-
-                var uri = string.Empty;
-                uri = ConfigurationManager.AppSettings["Uri"];
-                if (2 <= args.Length)
-                {
-                    uri = args[0];
-                }
-                Contract.Assert(!string.IsNullOrWhiteSpace(uri), "Uri: Parameter validation FAILED.");
-                Uri = new Uri(uri);
-
-                ManagementUriName = ConfigurationManager.AppSettings["ManagementUri"];
-                if (2 <= args.Length) ManagementUriName = args[1];
-                Contract.Assert(!string.IsNullOrWhiteSpace(ManagementUriName), "ManagementUri: Parameter validation FAILED.");
-
-                UpdateIntervalInMinutes = Convert.ToInt32(ConfigurationManager.AppSettings["UpdateIntervalMinutes"]);
-
-                ServerNotReachableRetries = Convert.ToInt32(ConfigurationManager.AppSettings["ServerNotReachableRetries"]);
-
-            }
-            catch (Exception ex)
-            {
-                Trace.WriteException(ex.Message, ex);
-            }
-            
-            return default(bool);
+            return;
         }
     }
 }
