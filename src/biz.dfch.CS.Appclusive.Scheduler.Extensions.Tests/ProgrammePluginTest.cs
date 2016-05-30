@@ -27,7 +27,7 @@ using System.Diagnostics;
 using biz.dfch.CS.Utilities.Testing;
 using biz.dfch.CS.Appclusive.Scheduler.Public;
 
-namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
+namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
 {
     [TestClass]
     public class ProgrammePluginTest

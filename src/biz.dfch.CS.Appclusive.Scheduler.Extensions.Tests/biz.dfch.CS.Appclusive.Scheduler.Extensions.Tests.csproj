@@ -155,6 +155,7 @@
     <Compile Include="ISchedulerPluginTest.cs" />
     <Compile Include="CodeContractTest.cs" />
     <Compile Include="DefaultPluginTest.cs" />
+    <Compile Include="ProgrammePluginTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
