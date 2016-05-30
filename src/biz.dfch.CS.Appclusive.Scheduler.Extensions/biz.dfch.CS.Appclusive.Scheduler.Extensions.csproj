@@ -144,8 +144,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ProgrammePluginInvokeData.cs" />
     <Compile Include="ProgrammePluginTest.cs" />
+    <Compile Include="ProgrammePluginInvokeParameters.cs" />
     <Compile Include="ProgrammePlugin.cs" />
     <Compile Include="DefaultPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
