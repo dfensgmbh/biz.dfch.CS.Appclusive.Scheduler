@@ -31,29 +31,10 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
         }
 
         [TestMethod]
-        public void UpdateConfigurationSucceeds()
-        {
-            // Arrange
-            var configuration = new SchedulerPluginParameters();
-
-            Mock.Arrange(() => Trace.WriteLine(Arg.IsAny<string>()))
-                .OccursOnce();
-
-            // Act
-            var sut = new DefaultPlugin();
-            var result = sut.UpdateConfiguration(configuration);
-
-            // Assert
-            Assert.IsTrue(result);
-
-            Mock.Assert(() => Trace.WriteLine(Arg.IsAny<string>()));
-        }
-
-        [TestMethod]
         public void InvokeConfigurationSucceeds()
         {
             // Arrange
-            var parameters = new SchedulerPluginParameters();
+            var parameters = new DictionaryParameters();
             var key1 = "arbitrary-key1";
             var value1 = "arbitrary-value";
             parameters.Add(key1, value1);

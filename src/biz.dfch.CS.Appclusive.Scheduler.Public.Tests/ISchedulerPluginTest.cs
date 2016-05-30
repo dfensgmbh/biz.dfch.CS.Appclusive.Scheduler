@@ -28,19 +28,14 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public.Tests
     {
         class SchedulerPluginImpl : ISchedulerPlugin
         {
-            public SchedulerPluginParameters Configuration { get; set; }
+            public DictionaryParameters Configuration { get; set; }
 
             public void Log(string message)
             {
                 throw new NotImplementedException();
             }
 
-            public bool UpdateConfiguration(SchedulerPluginParameters configuration)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool Invoke(SchedulerPluginParameters parameters, ref JobResult jobResult)
+            public bool Invoke(DictionaryParameters parameters, ref JobResult jobResult)
             {
                 jobResult = null;
                 
@@ -50,11 +45,26 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public.Tests
 
         [TestMethod]
         [ExpectContractFailure]
+        public void LogEmptyThrowsContractException()
+        {
+            // Arrange
+            var sut = new SchedulerPluginImpl();
+            var message = string.Empty;
+
+            // Act
+            sut.Log(message);
+
+            // Assert
+            Assert.Fail("CodeContracts are not enabled.");
+        }
+
+        [TestMethod]
+        [ExpectContractFailure]
         public void ConfigurationSetNullThrowsContractException()
         {
             // Arrange
             var sut = new SchedulerPluginImpl();
-            var configuration = default(SchedulerPluginParameters);
+            var configuration = default(DictionaryParameters);
 
             // Act
             sut.Configuration = configuration;
@@ -79,41 +89,11 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public.Tests
 
         [TestMethod]
         [ExpectContractFailure]
-        public void LogEmptyThrowsContractException()
-        {
-            // Arrange
-            var sut = new SchedulerPluginImpl();
-            var message = string.Empty;
-
-            // Act
-            sut.Log(message);
-
-            // Assert
-            Assert.Fail("CodeContracts are not enabled.");
-        }
-
-        [TestMethod]
-        [ExpectContractFailure]
-        public void UpdateConfigurationNullThrowsContractException()
-        {
-            // Arrange
-            var sut = new SchedulerPluginImpl();
-            var configuration = default(SchedulerPluginParameters);
-
-            // Act
-            sut.UpdateConfiguration(configuration);
-
-            // Assert
-            Assert.Fail("CodeContracts are not enabled.");
-        }
-
-        [TestMethod]
-        [ExpectContractFailure]
         public void InvokeDataNullThrowsContractException()
         {
             // Arrange
             var sut = new SchedulerPluginImpl();
-            var parameters = default(SchedulerPluginParameters);
+            var parameters = default(DictionaryParameters);
             var jobResult = new JobResult();
 
             // Act
@@ -129,7 +109,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public.Tests
         {
             // Arrange
             var sut = new SchedulerPluginImpl();
-            var parameters = new SchedulerPluginParameters();
+            var parameters = new DictionaryParameters();
             var jobResult = default(JobResult);
 
             // Act
@@ -145,7 +125,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public.Tests
         {
             // Arrange
             var sut = new SchedulerPluginImpl();
-            var parameters = new SchedulerPluginParameters();
+            var parameters = new DictionaryParameters();
             var jobResult = new JobResult();
 
             // Act

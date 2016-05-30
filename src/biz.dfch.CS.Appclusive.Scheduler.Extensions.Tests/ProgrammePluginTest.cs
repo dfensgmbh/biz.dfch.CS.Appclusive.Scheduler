@@ -60,7 +60,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
         public void InvokeWithMissingCommandLineThrowsContractException()
         {
             // Arrange
-            var parameters = new SchedulerPluginParameters();
+            var parameters = new DictionaryParameters();
             parameters.Add("missing-parameter-CommandLine", "arbitrary-string");
             parameters.Add("WorkingDirectory", "arbitrary-string");
             parameters.Add("Credential", CredentialCache.DefaultCredentials);
@@ -79,7 +79,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
         public void InvokeWithMissingWorkingDirectoryThrowsContractException()
         {
             // Arrange
-            var parameters = new SchedulerPluginParameters();
+            var parameters = new DictionaryParameters();
             parameters.Add("CommandLine", "arbitrary-string");
             parameters.Add("missing-parameter-WorkingDirectory", "arbitrary-string");
             parameters.Add("Credential", CredentialCache.DefaultCredentials);
@@ -98,7 +98,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
         public void InvokeWithMissingCredentialThrowsContractException()
         {
             // Arrange
-            var parameters = new SchedulerPluginParameters();
+            var parameters = new DictionaryParameters();
             parameters.Add("CommandLine", "arbitrary-string");
             parameters.Add("WorkingDirectory", "arbitrary-string");
             parameters.Add("missing-parameter-Credential", CredentialCache.DefaultCredentials);
@@ -117,7 +117,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
         public void InvokeWithInvalidTypeCommandLineThrowsContractException()
         {
             // Arrange
-            var parameters = new SchedulerPluginParameters();
+            var parameters = new DictionaryParameters();
             parameters.Add("CommandLine", new InvalidObject());
             parameters.Add("WorkingDirectory", "arbitrary-string");
             parameters.Add("Credential", CredentialCache.DefaultCredentials);
@@ -136,7 +136,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
         public void InvokeWithInvalidTypeWorkingDirectoryThrowsContractException()
         {
             // Arrange
-            var parameters = new SchedulerPluginParameters();
+            var parameters = new DictionaryParameters();
             parameters.Add("CommandLine", "arbitrary-string");
             parameters.Add("WorkingDirectory", new InvalidObject());
             parameters.Add("Credential", CredentialCache.DefaultCredentials);
@@ -155,7 +155,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
         public void InvokeWithInvalidTypeCredentialThrowsContractException()
         {
             // Arrange
-            var parameters = new SchedulerPluginParameters();
+            var parameters = new DictionaryParameters();
             parameters.Add("CommandLine", "arbitrary-string");
             parameters.Add("WorkingDirectory", "arbitrary-string");
             parameters.Add("Credential", new object());
@@ -176,7 +176,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
             var commandLine = "arbitrary-string";
             var workingDirectory = "arbitrary-string";
             var credential = new NetworkCredential("arbitrary-user", "arbitrary-password", "arbitrary-domain");
-            var parameters = new SchedulerPluginParameters();
+            var parameters = new DictionaryParameters();
             parameters.Add("CommandLine", commandLine);
             parameters.Add("WorkingDirectory", workingDirectory);
             parameters.Add("Credential", credential);
@@ -216,7 +216,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
             var commandLine = "arbitrary-string";
             var workingDirectory = "arbitrary-string";
             var credential = new NetworkCredential("arbitrary-user", "arbitrary-password", "arbitrary-domain");
-            var parameters = new SchedulerPluginParameters();
+            var parameters = new DictionaryParameters();
             parameters.Add("CommandLine", commandLine);
             parameters.Add("WorkingDirectory", workingDirectory);
             parameters.Add("Credential", credential);
@@ -257,14 +257,14 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
         public void UpdateConfigurationSucceeds()
         {
             // Arrange
-            var configuration = new SchedulerPluginParameters();
+            var configuration = new DictionaryParameters();
 
             // Act
             var sut = new ProgrammePlugin();
-            var result = sut.UpdateConfiguration(configuration);
+            sut.Configuration = configuration;
 
             // Assert
-            Assert.IsTrue(result);
+            Assert.AreEqual(configuration, sut.Configuration);
         }
     }
 }

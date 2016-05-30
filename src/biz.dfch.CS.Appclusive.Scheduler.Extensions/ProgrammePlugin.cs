@@ -31,33 +31,16 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
     [ExportMetadata("Priority", int.MaxValue)]
     public class ProgrammePlugin : ISchedulerPlugin
     {
-        public SchedulerPluginParameters Configuration
-        {
-            get
-            {
-                // TODO: Implement this property getter
-                throw new NotImplementedException();
-            }
-            set
-            {
-                // TODO: Implement this property setter
-                throw new NotImplementedException();
-            }
-        }
+        public DictionaryParameters Configuration { get; set; }
 
         public void Log(string message)
         {
             Trace.WriteLine(message);
         }
 
-        public bool UpdateConfiguration(SchedulerPluginParameters configuration)
+        public bool Invoke(DictionaryParameters parameters, ref JobResult jobResult)
         {
-            // TODO: Implement this method
-            throw new NotImplementedException();
-        }
-
-        public bool Invoke(SchedulerPluginParameters parameters, ref JobResult jobResult)
-        {
+            Contract.Requires(parameters.ContainsKey("CommandLine"));
             var invocationParameters = parameters.Convert<ProgrammePluginInvokeParameters>();
 
             try
@@ -68,6 +51,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
                     invocationParameters.Credential);
                 jobResult.Succeeded = true;
                 jobResult.Code = 0;
+                jobResult.Message = invocationParameters.CommandLine;
             }
             catch(Exception ex)
             {

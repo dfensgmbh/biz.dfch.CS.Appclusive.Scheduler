@@ -132,7 +132,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseDto.cs" />
-    <Compile Include="SchedulerPluginParameters.cs" />
+    <Compile Include="DictionaryParameters.cs" />
     <Compile Include="IConfigurationLoader.cs" />
     <Compile Include="ContractClassForIConfigurationLoader.cs" />
     <Compile Include="JobResult.cs" />

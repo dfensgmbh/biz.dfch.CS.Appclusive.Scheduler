@@ -57,7 +57,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
 
         public ScheduledTaskWorkerConfiguration(IConfigurationLoader loader, string[] args)
         {
-            var parameters = new SchedulerPluginParameters();
+            var parameters = new DictionaryParameters();
             if(null != args)
             {
                 for(var c = 0; c < args.Count(); c++)

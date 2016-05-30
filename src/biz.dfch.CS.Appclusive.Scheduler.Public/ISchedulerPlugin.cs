@@ -24,12 +24,10 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public
     [ContractClass(typeof(ContractClassForISchedulerPlugin))]
     public interface ISchedulerPlugin
     {
-        SchedulerPluginParameters Configuration { get; set; }
+        DictionaryParameters Configuration { get; set; }
         
         void Log(string message);
         
-        bool UpdateConfiguration(SchedulerPluginParameters configuration);
-
-        bool Invoke(SchedulerPluginParameters parameters, ref JobResult jobResult);
+        bool Invoke(DictionaryParameters parameters, ref JobResult jobResult);
     }
 }
