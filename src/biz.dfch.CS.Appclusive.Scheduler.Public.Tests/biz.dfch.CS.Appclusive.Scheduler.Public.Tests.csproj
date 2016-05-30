@@ -153,6 +153,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="InvalidObject.cs" />
     <Compile Include="IConfigurationLoaderTest.cs" />
     <Compile Include="ISchedulerPluginTest.cs" />
     <Compile Include="CodeContractTest.cs" />

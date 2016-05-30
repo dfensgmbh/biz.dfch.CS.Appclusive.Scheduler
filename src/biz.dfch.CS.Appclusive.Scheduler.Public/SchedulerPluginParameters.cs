@@ -20,6 +20,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Public
@@ -48,9 +49,13 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public
                     {
                         propertyValue = dictionaryPropertyValue;
                     }
-                    else
+                    else if(dictionaryPropertyValue is IConvertible)
                     {
                         propertyValue = System.Convert.ChangeType(dictionaryPropertyValue, propertyType);
+                    }
+                    else
+                    {
+                        propertyValue = dictionaryPropertyValue;
                     }
                     propInfo.SetValue(t, propertyValue, null);
 

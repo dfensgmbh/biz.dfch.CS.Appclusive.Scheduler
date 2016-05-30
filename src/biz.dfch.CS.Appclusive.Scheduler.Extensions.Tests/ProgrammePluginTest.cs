@@ -26,6 +26,7 @@ using Telerik.JustMock;
 using System.Diagnostics;
 using biz.dfch.CS.Utilities.Testing;
 using biz.dfch.CS.Appclusive.Scheduler.Public;
+using biz.dfch.CS.Appclusive.Scheduler.Public.Tests;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
 {
@@ -117,7 +118,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
         {
             // Arrange
             var parameters = new SchedulerPluginParameters();
-            parameters.Add("CommandLine", 42);
+            parameters.Add("CommandLine", new InvalidObject());
             parameters.Add("WorkingDirectory", "arbitrary-string");
             parameters.Add("Credential", CredentialCache.DefaultCredentials);
             var jobResult = new JobResult();
@@ -137,7 +138,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
             // Arrange
             var parameters = new SchedulerPluginParameters();
             parameters.Add("CommandLine", "arbitrary-string");
-            parameters.Add("WorkingDirectory", 42);
+            parameters.Add("WorkingDirectory", new InvalidObject());
             parameters.Add("Credential", CredentialCache.DefaultCredentials);
             var jobResult = new JobResult();
 
@@ -174,7 +175,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
             // Arrange
             var commandLine = "arbitrary-string";
             var workingDirectory = "arbitrary-string";
-            NetworkCredential credential = (NetworkCredential) CredentialCache.DefaultCredentials;
+            var credential = new NetworkCredential("arbitrary-user", "arbitrary-password", "arbitrary-domain");
             var parameters = new SchedulerPluginParameters();
             parameters.Add("CommandLine", commandLine);
             parameters.Add("WorkingDirectory", workingDirectory);
@@ -214,7 +215,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
             // Arrange
             var commandLine = "arbitrary-string";
             var workingDirectory = "arbitrary-string";
-            NetworkCredential credential = (NetworkCredential) CredentialCache.DefaultCredentials;
+            var credential = new NetworkCredential("arbitrary-user", "arbitrary-password", "arbitrary-domain");
             var parameters = new SchedulerPluginParameters();
             parameters.Add("CommandLine", commandLine);
             parameters.Add("WorkingDirectory", workingDirectory);
@@ -251,6 +252,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
             Assert.IsFalse(string.IsNullOrWhiteSpace(jobResult.Description));
         }
 
+        [Ignore]
         [TestMethod]
         public void UpdateConfigurationSucceeds()
         {

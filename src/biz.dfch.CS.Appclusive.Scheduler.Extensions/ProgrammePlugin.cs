@@ -58,22 +58,14 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
 
         public bool Invoke(SchedulerPluginParameters parameters, ref JobResult jobResult)
         {
-            Contract.Requires(parameters.ContainsKey("CommandLine"));
-            Contract.Requires(parameters.ContainsKey("WorkingDirectory"));
-            Contract.Requires(parameters.ContainsKey("Credential"));
-
-            Contract.Assert(parameters["CommandLine"] is string);
-            var commandLine = parameters["CommandLine"] as string;
-
-            Contract.Assert(parameters["WorkingDirectory"] is string);
-            var workingDirectory = parameters["WorkingDirectory"] as string;
-            
-            Contract.Assert(parameters["Credential"] is NetworkCredential);
-            var credential = parameters["Credential"] as NetworkCredential;
+            var invocationParameters = parameters.Convert<ProgrammePluginInvokeParameters>();
 
             try
             {
-                var result = biz.dfch.CS.Utilities.Process.StartProcess(commandLine, workingDirectory, credential);
+                var result = biz.dfch.CS.Utilities.Process.StartProcess(
+                    invocationParameters.CommandLine, 
+                    invocationParameters.WorkingDirectory, 
+                    invocationParameters.Credential);
                 jobResult.Succeeded = true;
                 jobResult.Code = 0;
             }
