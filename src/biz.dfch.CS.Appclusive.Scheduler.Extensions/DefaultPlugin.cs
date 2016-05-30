@@ -31,7 +31,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
     [ExportMetadata("Priority", int.MinValue)]
     public class DefaultPlugin : ISchedulerPlugin
     {
-        public Dictionary<string, object> Configuration { get; set; }
+        public SchedulerPluginParameters Configuration { get; set; }
 
         public void Log(string message)
         {
@@ -40,7 +40,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
             return;
         }
 
-        public bool UpdateConfiguration(Dictionary<string, object> configuration)
+        public bool UpdateConfiguration(SchedulerPluginParameters configuration)
         {
             var fReturn = false;
         
@@ -63,7 +63,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
             return fReturn;
         }
 
-        public bool Invoke(Dictionary<string, object> data, ref JobResult jobResult)
+        public bool Invoke(SchedulerPluginParameters parameters, ref JobResult jobResult)
         {
             Contract.Requires("1" == jobResult.Version);
             Contract.Ensures(jobResult.IsValid());
@@ -74,7 +74,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
             message.AppendLine("DefaultPlugin.Invoke ...");
             message.AppendLine();
 
-            foreach(KeyValuePair<string, object> item in data)
+            foreach(KeyValuePair<string, object> item in parameters)
             {
                 message.AppendFormat("{0}: '{1}'", item.Key, item.Value ?? item.Value.ToString());
                 message.AppendLine();

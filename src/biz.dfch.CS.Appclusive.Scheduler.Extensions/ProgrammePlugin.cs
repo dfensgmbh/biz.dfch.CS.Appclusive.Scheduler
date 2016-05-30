@@ -31,7 +31,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
     [ExportMetadata("Priority", int.MaxValue)]
     public class ProgrammePlugin : ISchedulerPlugin
     {
-        public Dictionary<string, object> Configuration
+        public SchedulerPluginParameters Configuration
         {
             get
             {
@@ -50,26 +50,26 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
             Trace.WriteLine(message);
         }
 
-        public bool UpdateConfiguration(Dictionary<string, object> configuration)
+        public bool UpdateConfiguration(SchedulerPluginParameters configuration)
         {
             // TODO: Implement this method
             throw new NotImplementedException();
         }
 
-        public bool Invoke(Dictionary<string, object> data, ref JobResult jobResult)
+        public bool Invoke(SchedulerPluginParameters parameters, ref JobResult jobResult)
         {
-            Contract.Requires(data.ContainsKey("CommandLine"));
-            Contract.Requires(data.ContainsKey("WorkingDirectory"));
-            Contract.Requires(data.ContainsKey("Credential"));
+            Contract.Requires(parameters.ContainsKey("CommandLine"));
+            Contract.Requires(parameters.ContainsKey("WorkingDirectory"));
+            Contract.Requires(parameters.ContainsKey("Credential"));
 
-            Contract.Assert(data["CommandLine"] is string);
-            var commandLine = data["CommandLine"] as string;
+            Contract.Assert(parameters["CommandLine"] is string);
+            var commandLine = parameters["CommandLine"] as string;
 
-            Contract.Assert(data["WorkingDirectory"] is string);
-            var workingDirectory = data["WorkingDirectory"] as string;
+            Contract.Assert(parameters["WorkingDirectory"] is string);
+            var workingDirectory = parameters["WorkingDirectory"] as string;
             
-            Contract.Assert(data["Credential"] is NetworkCredential);
-            var credential = data["Credential"] as NetworkCredential;
+            Contract.Assert(parameters["Credential"] is NetworkCredential);
+            var credential = parameters["Credential"] as NetworkCredential;
 
             try
             {

@@ -59,15 +59,15 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
         public void InvokeWithMissingCommandLineThrowsContractException()
         {
             // Arrange
-            var data = new Dictionary<string, object>();
-            data.Add("missing-parameter-CommandLine", "arbitrary-string");
-            data.Add("WorkingDirectory", "arbitrary-string");
-            data.Add("Credential", CredentialCache.DefaultCredentials);
+            var parameters = new SchedulerPluginParameters();
+            parameters.Add("missing-parameter-CommandLine", "arbitrary-string");
+            parameters.Add("WorkingDirectory", "arbitrary-string");
+            parameters.Add("Credential", CredentialCache.DefaultCredentials);
             var jobResult = new JobResult();
 
             // Act
             var sut = new ProgrammePlugin();
-            var result = sut.Invoke(data, ref jobResult);
+            var result = sut.Invoke(parameters, ref jobResult);
 
             // Assert
             // N/A
@@ -78,15 +78,15 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
         public void InvokeWithMissingWorkingDirectoryThrowsContractException()
         {
             // Arrange
-            var data = new Dictionary<string, object>();
-            data.Add("CommandLine", "arbitrary-string");
-            data.Add("missing-parameter-WorkingDirectory", "arbitrary-string");
-            data.Add("Credential", CredentialCache.DefaultCredentials);
+            var parameters = new SchedulerPluginParameters();
+            parameters.Add("CommandLine", "arbitrary-string");
+            parameters.Add("missing-parameter-WorkingDirectory", "arbitrary-string");
+            parameters.Add("Credential", CredentialCache.DefaultCredentials);
             var jobResult = new JobResult();
 
             // Act
             var sut = new ProgrammePlugin();
-            var result = sut.Invoke(data, ref jobResult);
+            var result = sut.Invoke(parameters, ref jobResult);
 
             // Assert
             // N/A
@@ -97,15 +97,15 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
         public void InvokeWithMissingCredentialThrowsContractException()
         {
             // Arrange
-            var data = new Dictionary<string, object>();
-            data.Add("CommandLine", "arbitrary-string");
-            data.Add("WorkingDirectory", "arbitrary-string");
-            data.Add("missing-parameter-Credential", CredentialCache.DefaultCredentials);
+            var parameters = new SchedulerPluginParameters();
+            parameters.Add("CommandLine", "arbitrary-string");
+            parameters.Add("WorkingDirectory", "arbitrary-string");
+            parameters.Add("missing-parameter-Credential", CredentialCache.DefaultCredentials);
             var jobResult = new JobResult();
 
             // Act
             var sut = new ProgrammePlugin();
-            var result = sut.Invoke(data, ref jobResult);
+            var result = sut.Invoke(parameters, ref jobResult);
 
             // Assert
             // N/A
@@ -116,15 +116,15 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
         public void InvokeWithInvalidTypeCommandLineThrowsContractException()
         {
             // Arrange
-            var data = new Dictionary<string, object>();
-            data.Add("CommandLine", 42);
-            data.Add("WorkingDirectory", "arbitrary-string");
-            data.Add("Credential", CredentialCache.DefaultCredentials);
+            var parameters = new SchedulerPluginParameters();
+            parameters.Add("CommandLine", 42);
+            parameters.Add("WorkingDirectory", "arbitrary-string");
+            parameters.Add("Credential", CredentialCache.DefaultCredentials);
             var jobResult = new JobResult();
 
             // Act
             var sut = new ProgrammePlugin();
-            var result = sut.Invoke(data, ref jobResult);
+            var result = sut.Invoke(parameters, ref jobResult);
 
             // Assert
             // N/A
@@ -135,15 +135,15 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
         public void InvokeWithInvalidTypeWorkingDirectoryThrowsContractException()
         {
             // Arrange
-            var data = new Dictionary<string, object>();
-            data.Add("CommandLine", "arbitrary-string");
-            data.Add("WorkingDirectory", 42);
-            data.Add("Credential", CredentialCache.DefaultCredentials);
+            var parameters = new SchedulerPluginParameters();
+            parameters.Add("CommandLine", "arbitrary-string");
+            parameters.Add("WorkingDirectory", 42);
+            parameters.Add("Credential", CredentialCache.DefaultCredentials);
             var jobResult = new JobResult();
 
             // Act
             var sut = new ProgrammePlugin();
-            var result = sut.Invoke(data, ref jobResult);
+            var result = sut.Invoke(parameters, ref jobResult);
 
             // Assert
             // N/A
@@ -154,15 +154,15 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
         public void InvokeWithInvalidTypeCredentialThrowsContractException()
         {
             // Arrange
-            var data = new Dictionary<string, object>();
-            data.Add("CommandLine", "arbitrary-string");
-            data.Add("WorkingDirectory", "arbitrary-string");
-            data.Add("Credential", new object());
+            var parameters = new SchedulerPluginParameters();
+            parameters.Add("CommandLine", "arbitrary-string");
+            parameters.Add("WorkingDirectory", "arbitrary-string");
+            parameters.Add("Credential", new object());
             var jobResult = new JobResult();
 
             // Act
             var sut = new ProgrammePlugin();
-            var result = sut.Invoke(data, ref jobResult);
+            var result = sut.Invoke(parameters, ref jobResult);
 
             // Assert
             // N/A
@@ -175,10 +175,10 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
             var commandLine = "arbitrary-string";
             var workingDirectory = "arbitrary-string";
             NetworkCredential credential = (NetworkCredential) CredentialCache.DefaultCredentials;
-            var data = new Dictionary<string, object>();
-            data.Add("CommandLine", commandLine);
-            data.Add("WorkingDirectory", workingDirectory);
-            data.Add("Credential", credential);
+            var parameters = new SchedulerPluginParameters();
+            parameters.Add("CommandLine", commandLine);
+            parameters.Add("WorkingDirectory", workingDirectory);
+            parameters.Add("Credential", credential);
             var jobResult = new JobResult();
 
             Mock.SetupStatic(typeof(biz.dfch.CS.Utilities.Process));
@@ -194,7 +194,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
 
             // Act
             var sut = new ProgrammePlugin();
-            var result = sut.Invoke(data, ref jobResult);
+            var result = sut.Invoke(parameters, ref jobResult);
 
             // Assert
             Mock.Assert(
@@ -215,10 +215,10 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
             var commandLine = "arbitrary-string";
             var workingDirectory = "arbitrary-string";
             NetworkCredential credential = (NetworkCredential) CredentialCache.DefaultCredentials;
-            var data = new Dictionary<string, object>();
-            data.Add("CommandLine", commandLine);
-            data.Add("WorkingDirectory", workingDirectory);
-            data.Add("Credential", credential);
+            var parameters = new SchedulerPluginParameters();
+            parameters.Add("CommandLine", commandLine);
+            parameters.Add("WorkingDirectory", workingDirectory);
+            parameters.Add("Credential", credential);
             var jobResult = new JobResult();
 
             Mock.SetupStatic(typeof(biz.dfch.CS.Utilities.Process));
@@ -235,7 +235,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
 
             // Act
             var sut = new ProgrammePlugin();
-            var result = sut.Invoke(data, ref jobResult);
+            var result = sut.Invoke(parameters, ref jobResult);
 
             // Assert
             Mock.Assert(
@@ -255,7 +255,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
         public void UpdateConfigurationSucceeds()
         {
             // Arrange
-            var configuration = new Dictionary<string, object>();
+            var configuration = new SchedulerPluginParameters();
 
             // Act
             var sut = new ProgrammePlugin();

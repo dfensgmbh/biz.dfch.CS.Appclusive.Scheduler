@@ -34,7 +34,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
         public void UpdateConfigurationSucceeds()
         {
             // Arrange
-            var configuration = new Dictionary<string, object>();
+            var configuration = new SchedulerPluginParameters();
 
             Mock.Arrange(() => Trace.WriteLine(Arg.IsAny<string>()))
                 .OccursOnce();
@@ -53,16 +53,16 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
         public void InvokeConfigurationSucceeds()
         {
             // Arrange
-            var data = new Dictionary<string, object>();
+            var parameters = new SchedulerPluginParameters();
             var key1 = "arbitrary-key1";
             var value1 = "arbitrary-value";
-            data.Add(key1, value1);
+            parameters.Add(key1, value1);
             var key2 = "arbitrary-key2";
             var value2 = 42;
-            data.Add(key2, value2);
+            parameters.Add(key2, value2);
             var key3 = "arbitrary-key3";
             var value3 = new object();
-            data.Add(key3, value3);
+            parameters.Add(key3, value3);
 
             var jobResult = new JobResult();
 
@@ -71,7 +71,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
 
             // Act
             var sut = new DefaultPlugin();
-            var result = sut.Invoke(data, ref jobResult);
+            var result = sut.Invoke(parameters, ref jobResult);
 
             // Assert
             Assert.IsTrue(result);

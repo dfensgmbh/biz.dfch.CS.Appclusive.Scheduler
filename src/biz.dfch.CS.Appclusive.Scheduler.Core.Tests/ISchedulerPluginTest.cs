@@ -29,19 +29,19 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
     {
         class SchedulerPluginImpl : ISchedulerPlugin
         {
-            public Dictionary<string, object> Configuration { get; set; }
+            public SchedulerPluginParameters Configuration { get; set; }
 
             public void Log(string message)
             {
                 throw new NotImplementedException();
             }
 
-            public bool UpdateConfiguration(Dictionary<string, object> configuration)
+            public bool UpdateConfiguration(SchedulerPluginParameters configuration)
             {
                 throw new NotImplementedException();
             }
 
-            public bool Invoke(Dictionary<string, object> data, ref JobResult jobResult)
+            public bool Invoke(SchedulerPluginParameters parameters, ref JobResult jobResult)
             {
                 jobResult = null;
                 
@@ -55,7 +55,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
         {
             // Arrange
             var sut = new SchedulerPluginImpl();
-            var configuration = default(Dictionary<string, object>);
+            var configuration = default(SchedulerPluginParameters);
 
             // Act
             sut.Configuration = configuration;
@@ -99,7 +99,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
         {
             // Arrange
             var sut = new SchedulerPluginImpl();
-            var configuration = default(Dictionary<string, object>);
+            var configuration = default(SchedulerPluginParameters);
 
             // Act
             sut.UpdateConfiguration(configuration);
@@ -114,11 +114,11 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
         {
             // Arrange
             var sut = new SchedulerPluginImpl();
-            var data = default(Dictionary<string, object>);
+            var parameters = default(SchedulerPluginParameters);
             var jobResult = new JobResult();
 
             // Act
-            sut.Invoke(data, ref jobResult);
+            sut.Invoke(parameters, ref jobResult);
 
             // Assert
             Assert.Fail("CodeContracts are not enabled.");
@@ -130,11 +130,11 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
         {
             // Arrange
             var sut = new SchedulerPluginImpl();
-            var data = new Dictionary<string, object>();
+            var parameters = new SchedulerPluginParameters();
             var jobResult = default(JobResult);
 
             // Act
-            sut.Invoke(data, ref jobResult);
+            sut.Invoke(parameters, ref jobResult);
 
             // Assert
             Assert.Fail("CodeContracts are not enabled.");
@@ -146,11 +146,11 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
         {
             // Arrange
             var sut = new SchedulerPluginImpl();
-            var data = new Dictionary<string, object>();
+            var parameters = new SchedulerPluginParameters();
             var jobResult = new JobResult();
 
             // Act
-            sut.Invoke(data, ref jobResult);
+            sut.Invoke(parameters, ref jobResult);
 
             // Assert
             Assert.Fail("CodeContracts are not enabled.");

@@ -24,13 +24,13 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public
     [ContractClassFor(typeof(ISchedulerPlugin))]
     abstract class ContractClassForISchedulerPlugin : ISchedulerPlugin
     {
-        public Dictionary<string, object> Configuration
+        public SchedulerPluginParameters Configuration
         {
             get
             {
-                Contract.Ensures(null != Contract.Result<Dictionary<string, object>>());
+                Contract.Ensures(null != Contract.Result<SchedulerPluginParameters>());
 
-                return default(Dictionary<string, object>);
+                return default(SchedulerPluginParameters);
             }
             set
             {
@@ -45,16 +45,16 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public
             return;
         }
 
-        public bool UpdateConfiguration(Dictionary<string, object> configuration)
+        public bool UpdateConfiguration(SchedulerPluginParameters configuration)
         {
             Contract.Requires(null != configuration);
 
             return default(bool);
         }
 
-        public bool Invoke(Dictionary<string, object> data, ref JobResult jobResult)
+        public bool Invoke(SchedulerPluginParameters parameters, ref JobResult jobResult)
         {
-            Contract.Requires(null != data);
+            Contract.Requires(null != parameters);
             Contract.Requires(null != jobResult);
             Contract.Ensures(null != jobResult);
 
