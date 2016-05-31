@@ -24,11 +24,11 @@ using System.ComponentModel.Composition;
 using System.Diagnostics;
 using biz.dfch.CS.Appclusive.Scheduler.Public;
 
-namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
+namespace biz.dfch.CS.Appclusive.Scheduler.Core
 {
     [Export(typeof(ISchedulerPlugin))]
     [ExportMetadata("Type", "Default")]
-    [ExportMetadata("Priority", int.MinValue + 1)]
+    [ExportMetadata("Priority", int.MinValue)]
     public class DefaultPlugin : ISchedulerPlugin
     {
         private DictionaryParameters configuration;

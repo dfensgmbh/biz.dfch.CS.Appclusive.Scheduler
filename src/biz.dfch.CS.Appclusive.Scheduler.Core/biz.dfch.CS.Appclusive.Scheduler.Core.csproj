@@ -181,6 +181,7 @@
     <Compile Include="AppclusiveSchedulerService.Designer.cs">
       <DependentUpon>AppclusiveSchedulerService.cs</DependentUpon>
     </Compile>
+    <Compile Include="DefaultPlugin.cs" />
     <Compile Include="PluginLoaderConfigurationFromAppSettingsLoader.cs" />
     <Compile Include="PluginLoader.cs" />
     <Compile Include="Logger.cs" />
