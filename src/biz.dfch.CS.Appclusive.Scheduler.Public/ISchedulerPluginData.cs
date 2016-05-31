@@ -26,6 +26,6 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public
     {
         string Type { get; }
 
-        int Priority { get; set; }
+        int Priority { get; }
     }
 }
