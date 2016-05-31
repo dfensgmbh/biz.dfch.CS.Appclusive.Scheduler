@@ -30,7 +30,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public.Tests
     {
         class ConfigurationLoaderImpl : IConfigurationLoader
         {
-            public void Initialise(BaseDto configuration, Dictionary<string, object> parameters)
+            public void Initialise(BaseDto configuration, DictionaryParameters parameters)
             {
                 Contract.Requires(configuration is ConfigurationImpl);
 
@@ -81,7 +81,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public.Tests
         {
             // Arrange
             ConfigurationImpl configuration = null;
-            Dictionary<string, object> parameters = default(Dictionary<string, object>);
+            var parameters = default(DictionaryParameters);
 
             // Act
             var sut = new ConfigurationLoaderImpl();
@@ -94,7 +94,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public.Tests
         {
             // Arrange
             WrongConfigurationImpl configuration = new WrongConfigurationImpl();
-            Dictionary<string, object> parameters = default(Dictionary<string, object>);
+            var parameters = default(DictionaryParameters);
 
             // Act
             var sut = new ConfigurationLoaderImpl();
@@ -106,7 +106,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public.Tests
         {
             // Arrange
             ConfigurationImpl configuration = new ConfigurationImpl();
-            Dictionary<string, object> parameters = default(Dictionary<string, object>);
+            var parameters = default(DictionaryParameters);
 
             // Act
             var sut = new ConfigurationLoaderImpl();

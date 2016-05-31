@@ -25,7 +25,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public
     [ContractClassFor(typeof(IConfigurationLoader))]
     abstract class ContractClassForIConfigurationLoader : IConfigurationLoader
     {
-        public void Initialise(BaseDto configuration, Dictionary<string, object> parameters)
+        public void Initialise(BaseDto configuration, DictionaryParameters parameters)
         {
             Contract.Requires(null != configuration);
             Contract.Ensures(null != configuration);

@@ -27,11 +27,11 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
 {
     public class ScheduledTaskWorkerConfigurationLoader : IConfigurationLoader
     {
-        public void Initialise(BaseDto configuration, Dictionary<string, object> parameters)
+        public void Initialise(BaseDto configuration, DictionaryParameters parameters)
         {
             Contract.Requires(configuration is ScheduledTaskWorkerConfiguration);
             
-            parameters = parameters ?? new Dictionary<string, object>();
+            parameters = parameters ?? new DictionaryParameters();
 
             var cfg = configuration as ScheduledTaskWorkerConfiguration;
 

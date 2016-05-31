@@ -26,6 +26,6 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public
     [ContractClass(typeof(ContractClassForIConfigurationLoader))]
     public interface IConfigurationLoader
     {
-        void Initialise(BaseDto configuration, Dictionary<string, object> parameters);
+        void Initialise(BaseDto configuration, DictionaryParameters parameters);
     }
 }
