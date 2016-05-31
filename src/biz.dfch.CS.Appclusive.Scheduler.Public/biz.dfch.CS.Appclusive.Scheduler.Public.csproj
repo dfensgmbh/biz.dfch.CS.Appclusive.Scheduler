@@ -132,6 +132,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseDto.cs" />
+    <Compile Include="ContractClassForILogger.cs" />
+    <Compile Include="ILogger.cs" />
     <Compile Include="DictionaryParameters.cs" />
     <Compile Include="IConfigurationLoader.cs" />
     <Compile Include="ContractClassForIConfigurationLoader.cs" />
