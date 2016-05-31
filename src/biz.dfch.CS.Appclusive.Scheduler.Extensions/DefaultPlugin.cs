@@ -71,6 +71,15 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
 
             var fReturn = false;
 
+            if(!IsActive)
+            {
+                jobResult.Succeeded = fReturn;
+                jobResult.Code = 1;
+                jobResult.Message = "Plugin inactive";
+
+                return fReturn;
+            }
+
             var message = new StringBuilder();
             message.AppendLine("DefaultPlugin.Invoke ...");
             message.AppendLine();

@@ -47,6 +47,38 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
         }
 
         [TestMethod]
+        public void InvokeWithIsActiveFalseReturnsFalse()
+        {
+            // Arrange
+            var jobResult = new JobResult();
+            var logger = new Logger();
+            var sut = new DefaultPlugin();
+            sut.Initialise(new DictionaryParameters(), logger, false);
+
+            // Act
+            var result = sut.Invoke(new DictionaryParameters(), ref jobResult);
+
+            // Assert
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        [ExpectContractFailure]
+        public void InvokeIsInitialisedFalseThrowsContractException()
+        {
+            // Arrange
+            var jobResult = new JobResult();
+            var sut = new DefaultPlugin();
+            //sut.Initialise(new DictionaryParameters(), new Logger(), true);
+
+            // Act
+            sut.Invoke(new DictionaryParameters(), ref jobResult);
+
+            // Assert
+            // N/A
+        }
+
+        [TestMethod]
         public void GetAndSetConfigurationSucceeds()
         {
             // Arrange
@@ -86,9 +118,6 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
 
             var jobResult = new JobResult();
 
-            Mock.Arrange(() => Trace.WriteLine(Arg.IsAny<string>()))
-                .OccursOnce();
-
             // Act
             var sut = new DefaultPlugin();
             sut.Initialise(new DictionaryParameters(), new Logger(), true);
@@ -103,8 +132,6 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
             Assert.IsTrue(jobResult.Description.Contains(value2.ToString()));
             Assert.IsTrue(jobResult.Description.Contains(key3));
             Assert.IsTrue(jobResult.Description.Contains(value3.ToString()));
-
-            Mock.Assert(() => Trace.WriteLine(Arg.IsAny<string>()));
         }
     }
 }

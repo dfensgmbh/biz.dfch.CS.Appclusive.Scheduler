@@ -54,7 +54,15 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
 
         public override bool Invoke(DictionaryParameters parameters, ref JobResult jobResult)
         {
-            Contract.Requires(parameters.ContainsKey("CommandLine"));
+            var fReturn = false;
+
+            if(!IsActive)
+            {
+                jobResult.Succeeded = fReturn;
+                jobResult.Code = 1;
+                jobResult.Message = "Plugin inactive";
+            }
+            
             var invocationParameters = parameters.Convert<ProgrammePluginInvokeParameters>();
 
             try
@@ -63,13 +71,16 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
                     invocationParameters.CommandLine, 
                     invocationParameters.WorkingDirectory, 
                     invocationParameters.Credential);
-                jobResult.Succeeded = true;
+
+                fReturn = true;
+
+                jobResult.Succeeded = fReturn;
                 jobResult.Code = 0;
                 jobResult.Message = invocationParameters.CommandLine;
             }
             catch(Exception ex)
             {
-                jobResult.Succeeded = false;
+                jobResult.Succeeded = fReturn;
                 jobResult.Code = ex.HResult;
                 jobResult.Message = ex.Message;
                 jobResult.Description = ex.StackTrace;
