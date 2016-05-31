@@ -136,6 +136,8 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Configuration" />
     <Reference Include="Telerik.JustMock">
       <HintPath>../JustMock/Telerik.JustMock.dll</HintPath>
     </Reference>
@@ -153,6 +155,10 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="DefaultPluginTest.cs" />
+    <Compile Include="PluginLoaderConfigurationFromAppSettingsLoaderTest.cs" />
+    <Compile Include="PluginLoaderConfigurationTest.cs" />
+    <Compile Include="PluginLoaderTest.cs" />
     <Compile Include="ScheduledTaskWorkerConfigurationTest.cs" />
     <Compile Include="ISchedulerPluginTest.cs" />
     <Compile Include="CodeContractTest.cs" />
