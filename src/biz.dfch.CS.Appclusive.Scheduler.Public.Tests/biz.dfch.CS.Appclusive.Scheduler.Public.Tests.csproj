@@ -153,6 +153,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="DictionaryParametersTest.cs" />
     <Compile Include="ILoggerTest.cs" />
     <Compile Include="InvalidObject.cs" />
     <Compile Include="IConfigurationLoaderTest.cs" />

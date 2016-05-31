@@ -90,6 +90,25 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public
             return t;
         }
 
+        public DictionaryParameters Convert<T>(T obj)
+            where T : BaseDto
+        {
+            Contract.Requires(null != obj);
+            Contract.Ensures(null != Contract.Result<DictionaryParameters>());
+
+            var propInfos = obj.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            Contract.Assert(null != propInfos);
+
+            foreach (var propInfo in propInfos)
+            {
+                var value = propInfo.GetValue(obj, null);
+
+                this.Add(propInfo.Name, value);
+            }
+
+            return this;
+        }
+
         public string SerializeObject()
         {
             return JsonConvert.SerializeObject(this);
