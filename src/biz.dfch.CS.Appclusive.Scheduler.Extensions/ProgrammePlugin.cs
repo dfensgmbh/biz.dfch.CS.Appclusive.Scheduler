@@ -29,10 +29,10 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
     [Export(typeof(ISchedulerPlugin))]
     [ExportMetadata("Type", "Programme")]
     [ExportMetadata("Priority", int.MaxValue)]
-    public class ProgrammePlugin : ISchedulerPlugin
+    public class ProgrammePlugin : SchedulerPluginBase
     {
         private DictionaryParameters configuration;
-        public DictionaryParameters Configuration 
+        public override DictionaryParameters Configuration 
         { 
             get
             {
@@ -40,11 +40,9 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
             }
             set
             {
-                configuration = value;
+                configuration = UpdateConfiguration(value);
             }
         }
-
-        public ILogger Logger { get; set; }
 
         private DictionaryParameters UpdateConfiguration(DictionaryParameters parameters)
         {

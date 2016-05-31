@@ -20,10 +20,10 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
             // Arrange
             var message = "arbitrary-message";
             var logger = new Logger();
+            var sut = new DefaultPlugin();
+            sut.Initialise(new DictionaryParameters(), logger, true);
 
             // Act
-            var sut = new DefaultPlugin();
-            sut.Logger = logger;
             sut.Logger.WriteLine(message);
 
             // Assert
@@ -71,10 +71,11 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
             var jobResult = new JobResult();
 
             Mock.Arrange(() => Trace.WriteLine(Arg.IsAny<string>()))
-                .OccursOnce();
+                .MustBeCalled();
 
             // Act
             var sut = new DefaultPlugin();
+            sut.Initialise(new DictionaryParameters(), new Logger(), true);
             var result = sut.Invoke(parameters, ref jobResult);
 
             // Assert

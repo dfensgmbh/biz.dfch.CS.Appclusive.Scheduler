@@ -128,7 +128,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
             var jobResult = new JobResult();
 
             var plugin = plugins[0].Value;
-            plugin.Logger = new Logger();
+            plugin.Initialise(parameters, new Logger(), true);
 
             // Act
             var result = plugin.Invoke(parameters, ref jobResult);
@@ -169,7 +169,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
             var plugins = new InnerClassWithPluginLoader().Load();
             
             var plugin = plugins[0].Value;
-            plugin.Logger = new Logger();
+            plugin.Initialise(parameters, new Logger(), true);
 
             // Act
             var result = plugin.Invoke(parameters, ref jobResult);

@@ -28,14 +28,15 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
     [TestClass]
     public class ISchedulerPluginTest
     {
-        class SchedulerPluginImpl : ISchedulerPlugin
+        class SchedulerPluginImpl : SchedulerPluginBase
         {
-            public DictionaryParameters Configuration { get; set; }
-
-            public ILogger Logger { get; set; }
-
-            public bool Invoke(DictionaryParameters parameters, ref JobResult jobResult)
+            public override bool Invoke(DictionaryParameters parameters, ref JobResult jobResult)
             {
+                if(!IsActive)
+                {
+                    return false;
+                }
+
                 jobResult = null;
                 
                 return true;
@@ -48,10 +49,10 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
             // Arrange
             var message = "arbitrary-message";
             var logger = new Logger();
+            var sut = new DefaultPlugin();
+            sut.Initialise(new DictionaryParameters(), logger, true);
 
             // Act
-            var sut = new DefaultPlugin();
-            sut.Logger = logger;
             sut.Logger.WriteLine(message);
 
             // Assert
@@ -92,10 +93,10 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
         public void LogEmptyThrowsContractException()
         {
             // Arrange
-            var sut = new SchedulerPluginImpl();
             var message = string.Empty;
+            var sut = new SchedulerPluginImpl();
             var logger = new Logger();
-            sut.Logger = logger;
+            sut.Initialise(new DictionaryParameters(), logger, true);
 
             // Act
             sut.Logger.WriteLine(message);
@@ -125,6 +126,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
         {
             // Arrange
             var sut = new SchedulerPluginImpl();
+            sut.Initialise(new DictionaryParameters(), new Logger(), true);
             var parameters = default(DictionaryParameters);
             var jobResult = new JobResult();
 

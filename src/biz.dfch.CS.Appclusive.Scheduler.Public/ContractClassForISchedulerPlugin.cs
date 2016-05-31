@@ -39,7 +39,21 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public
             }
         }
 
-        public ILogger Logger { get; set; }
+        public abstract bool IsInitialised { get; }
+        
+        public bool IsActive 
+        { 
+            get
+            {
+                return default(bool);
+            } 
+            set
+            {
+                Contract.Requires(IsInitialised);
+            } 
+        }
+
+        public abstract ILogger Logger { get; }
 
         [ContractInvariantMethod]
         private void ContractInvariantMethod()
@@ -47,8 +61,17 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public
             Contract.Invariant(null != Logger);
         }
 
+        public bool Initialise(DictionaryParameters parameters, ILogger logger, bool activate)
+        {
+            Contract.Requires(null != parameters);
+            Contract.Requires(null != logger);
+
+            return default(bool);
+        }
+
         public bool Invoke(DictionaryParameters parameters, ref JobResult jobResult)
         {
+            Contract.Requires(IsInitialised);
             Contract.Requires(null != parameters);
             Contract.Requires(null != jobResult);
             Contract.Ensures(null != jobResult);

@@ -29,10 +29,10 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
     [Export(typeof(ISchedulerPlugin))]
     [ExportMetadata("Type", "Default")]
     [ExportMetadata("Priority", int.MinValue)]
-    public class DefaultPlugin : ISchedulerPlugin
+    public class DefaultPlugin : SchedulerPluginBase
     {
         private DictionaryParameters configuration;
-        public DictionaryParameters Configuration 
+        public override DictionaryParameters Configuration 
         { 
             get
             {
@@ -43,8 +43,6 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
                 configuration = UpdateConfiguration(value);
             }
         }
-
-        public ILogger Logger { get; set; }
 
         private DictionaryParameters UpdateConfiguration(DictionaryParameters configuration)
         {
@@ -67,7 +65,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             return this.configuration;
         }
 
-        public bool Invoke(DictionaryParameters parameters, ref JobResult jobResult)
+        public override bool Invoke(DictionaryParameters parameters, ref JobResult jobResult)
         {
             Contract.Requires("1" == jobResult.Version);
 

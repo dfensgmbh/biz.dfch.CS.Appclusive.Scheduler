@@ -40,10 +40,10 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
             // Arrange
             var message = "arbitrary-message";
             var logger = new Logger();
+            var sut = new DefaultPlugin();
+            sut.Initialise(new DictionaryParameters(), logger, true);
 
             // Act
-            var sut = new DefaultPlugin();
-            sut.Logger = logger;
             sut.Logger.WriteLine(message);
 
             // Assert

@@ -27,14 +27,15 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public.Tests
     [TestClass]
     public class ISchedulerPluginTest
     {
-        class SchedulerPluginImpl : ISchedulerPlugin
+        class SchedulerPluginImpl : SchedulerPluginBase
         {
-            public DictionaryParameters Configuration { get; set; }
-
-            public ILogger Logger { get; set; }
-
-            public bool Invoke(DictionaryParameters parameters, ref JobResult jobResult)
+            public override bool Invoke(DictionaryParameters parameters, ref JobResult jobResult)
             {
+                if(!IsActive)
+                {
+                    return false;
+                }
+
                 jobResult = null;
                 
                 return true;
@@ -46,11 +47,11 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public.Tests
         {
             // Arrange
             var message = "arbitrary-message";
+            var sut = new SchedulerPluginImpl();
             var logger = new Logger();
+            sut.Initialise(new DictionaryParameters(), logger, true);
 
             // Act
-            var sut = new SchedulerPluginImpl();
-            sut.Logger = logger;
             sut.Logger.WriteLine(message);
 
             // Assert
@@ -62,10 +63,10 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public.Tests
         public void LogEmptyThrowsContractException()
         {
             // Arrange
-            var sut = new SchedulerPluginImpl();
             var message = string.Empty;
+            var sut = new SchedulerPluginImpl();
             var logger = new Logger();
-            sut.Logger = logger;
+            sut.Initialise(new DictionaryParameters(), logger, true);
 
             // Act
             sut.Logger.WriteLine(message);
