@@ -39,11 +39,12 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public
             }
         }
 
-        void ISchedulerPlugin.Log(string message)
-        {
-            Contract.Requires(!string.IsNullOrWhiteSpace(message));
+        public ILogger Logger { get; set; }
 
-            return;
+        [ContractInvariantMethod]
+        private void ContractInvariantMethod()
+        {
+            Contract.Invariant(null != Logger);
         }
 
         public bool Invoke(DictionaryParameters parameters, ref JobResult jobResult)

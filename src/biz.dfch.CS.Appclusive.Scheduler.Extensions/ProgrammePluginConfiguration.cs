@@ -16,18 +16,20 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Net;
+using System.Text;
+using System.Threading.Tasks;
+using biz.dfch.CS.Appclusive.Scheduler.Public;
 
-namespace biz.dfch.CS.Appclusive.Scheduler.Public
+namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
 {
-    [ContractClass(typeof(ContractClassForISchedulerPlugin))]
-    public interface ISchedulerPlugin
+    public class ProgrammePluginConfiguration : BaseDto
     {
-        DictionaryParameters Configuration { get; set; }
-        
-        ILogger Logger { get; set; }
-
-        bool Invoke(DictionaryParameters parameters, ref JobResult jobResult);
+        public string Description { get; set; }
+        [Required]
+        public NetworkCredential Credential { get; set; }
     }
 }

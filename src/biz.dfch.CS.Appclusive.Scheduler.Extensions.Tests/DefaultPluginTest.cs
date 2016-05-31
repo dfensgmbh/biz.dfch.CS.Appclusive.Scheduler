@@ -7,6 +7,7 @@ using biz.dfch.CS.Utilities.Testing;
 using System.Collections.Specialized;
 using biz.dfch.CS.Appclusive.Scheduler.Public;
 using System.Collections.Generic;
+using biz.dfch.CS.Appclusive.Scheduler.Core;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
 {
@@ -18,16 +19,38 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
         {
             // Arrange
             var message = "arbitrary-message";
-
-            Mock.Arrange(() => Trace.WriteLine(Arg.Is<string>(message)))
-                .OccursOnce();
+            var logger = new Logger();
 
             // Act
             var sut = new DefaultPlugin();
-            sut.Log(message);
+            sut.Logger = logger;
+            sut.Logger.WriteLine(message);
 
             // Assert
-            Mock.Assert(() => Trace.WriteLine(Arg.Is<string>(message)));
+            // N/A
+        }
+
+        [TestMethod]
+        public void GetAndSetConfigurationSucceeds()
+        {
+            // Arrange
+            var configuration = new DictionaryParameters();
+            var key1 = "arbitrary-key1";
+            var value1 = "arbitrary-value";
+            configuration.Add(key1, value1);
+            var key2 = "arbitrary-key2";
+            var value2 = 42;
+            configuration.Add(key2, value2);
+            var key3 = "arbitrary-key3";
+            var value3 = new object();
+            configuration.Add(key3, value3);
+
+            // Act
+            var sut = new DefaultPlugin();
+            sut.Configuration = configuration;
+
+            // Assert
+            Assert.AreEqual(configuration, sut.Configuration);
         }
 
         [TestMethod]

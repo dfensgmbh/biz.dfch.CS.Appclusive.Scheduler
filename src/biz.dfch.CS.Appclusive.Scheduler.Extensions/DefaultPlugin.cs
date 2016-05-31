@@ -44,12 +44,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
             }
         }
 
-        public void Log(string message)
-        {
-            Trace.WriteLine(message);
-
-            return;
-        }
+        public ILogger Logger { get; set; }
 
         private DictionaryParameters UpdateConfiguration(DictionaryParameters configuration)
         {

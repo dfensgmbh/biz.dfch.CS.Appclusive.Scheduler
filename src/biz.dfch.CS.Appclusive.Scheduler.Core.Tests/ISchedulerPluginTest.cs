@@ -31,10 +31,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
         {
             public DictionaryParameters Configuration { get; set; }
 
-            public void Log(string message)
-            {
-                throw new NotImplementedException();
-            }
+            public ILogger Logger { get; set; }
 
             public bool Invoke(DictionaryParameters parameters, ref JobResult jobResult)
             {
@@ -80,9 +77,11 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
             // Arrange
             var sut = new SchedulerPluginImpl();
             var message = string.Empty;
+            var logger = new Logger();
+            sut.Logger = logger;
 
             // Act
-            sut.Log(message);
+            sut.Logger.WriteLine(message);
 
             // Assert
             Assert.Fail("CodeContracts are not enabled.");
@@ -90,7 +89,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
 
         [TestMethod]
         [ExpectContractFailure]
-        public void UpdateConfigurationNullThrowsContractException()
+        public void SetConfigurationNullThrowsContractException()
         {
             // Arrange
             var sut = new SchedulerPluginImpl();

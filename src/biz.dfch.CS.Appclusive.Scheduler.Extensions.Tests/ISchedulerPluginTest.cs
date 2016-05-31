@@ -18,6 +18,7 @@ using System;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using biz.dfch.CS.Appclusive.Scheduler.Core;
 using biz.dfch.CS.Utilities.Testing;
 using System.Collections.Generic;
 using biz.dfch.CS.Appclusive.Scheduler.Public;
@@ -31,10 +32,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
         {
             public DictionaryParameters Configuration { get; set; }
 
-            public void Log(string message)
-            {
-                throw new NotImplementedException();
-            }
+            public ILogger Logger { get; set; }
 
             public bool Invoke(DictionaryParameters parameters, ref JobResult jobResult)
             {
@@ -44,6 +42,22 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
             }
         }
 
+        [TestMethod]
+        public void LogSucceeds()
+        {
+            // Arrange
+            var message = "arbitrary-message";
+            var logger = new Logger();
+
+            // Act
+            var sut = new DefaultPlugin();
+            sut.Logger = logger;
+            sut.Logger.WriteLine(message);
+
+            // Assert
+            // N/A
+        }
+        
         [TestMethod]
         [ExpectContractFailure]
         public void ConfigurationSetNullThrowsContractException()
@@ -80,9 +94,11 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
             // Arrange
             var sut = new SchedulerPluginImpl();
             var message = string.Empty;
+            var logger = new Logger();
+            sut.Logger = logger;
 
             // Act
-            sut.Log(message);
+            sut.Logger.WriteLine(message);
 
             // Assert
             Assert.Fail("CodeContracts are not enabled.");
@@ -90,7 +106,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
 
         [TestMethod]
         [ExpectContractFailure]
-        public void UpdateConfigurationNullThrowsContractException()
+        public void SetConfigurationNullThrowsContractException()
         {
             // Arrange
             var sut = new SchedulerPluginImpl();

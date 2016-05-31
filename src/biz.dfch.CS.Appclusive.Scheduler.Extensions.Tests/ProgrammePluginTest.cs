@@ -24,6 +24,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Telerik.JustMock;
 using System.Diagnostics;
+using biz.dfch.CS.Appclusive.Scheduler.Core;
 using biz.dfch.CS.Utilities.Testing;
 using biz.dfch.CS.Appclusive.Scheduler.Public;
 using biz.dfch.CS.Appclusive.Scheduler.Public.Tests;
@@ -37,22 +38,16 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
         public void LogSucceeds()
         {
             // Arrange
-            string message = "tralala";
-            string result = string.Empty;
-
-            Mock.SetupStatic(typeof(Trace));
-            
-            Mock.Arrange(() => Trace.WriteLine(Arg.Is<string>(message)))
-                .DoInstead((string traceMessage) => result = traceMessage)
-                .OccursOnce();
+            var message = "arbitrary-message";
+            var logger = new Logger();
 
             // Act
-            var sut = new ProgrammePlugin();
-            sut.Log(message);
+            var sut = new DefaultPlugin();
+            sut.Logger = logger;
+            sut.Logger.WriteLine(message);
 
             // Assert
-            Mock.Assert(() => Trace.WriteLine(Arg.Is<string>(message)));
-            Assert.AreEqual(result, message);
+            // N/A
         }
 
         [TestMethod]
@@ -230,8 +225,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
                     Arg.Is<string>(workingDirectory),
                     Arg.Is<NetworkCredential>(credential))
                 )
-                .DoInstead(() => { throw new InvalidOperationException(); })
-                .Returns(default(Dictionary<string, string>))
+                .Throws<InvalidOperationException>()
                 .OccursOnce();
 
             // Act
@@ -254,7 +248,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
 
         [Ignore]
         [TestMethod]
-        public void UpdateConfigurationSucceeds()
+        public void SetConfigurationSucceeds()
         {
             // Arrange
             var configuration = new DictionaryParameters();
@@ -262,6 +256,21 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
             // Act
             var sut = new ProgrammePlugin();
             sut.Configuration = configuration;
+
+            // Assert
+            Assert.AreEqual(configuration, sut.Configuration);
+        }
+
+        [Ignore]
+        [TestMethod]
+        public void GetConfigurationSucceeds()
+        {
+            // Arrange
+            var configuration = new DictionaryParameters();
+
+            // Act
+            var sut = new ProgrammePlugin();
+            configuration = sut.Configuration;
 
             // Assert
             Assert.AreEqual(configuration, sut.Configuration);

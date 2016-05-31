@@ -144,6 +144,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ProgrammePluginConfiguration.cs" />
     <Compile Include="ProgrammePluginInvokeParameters.cs" />
     <Compile Include="ProgrammePlugin.cs" />
     <Compile Include="DefaultPlugin.cs" />

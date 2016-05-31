@@ -31,11 +31,27 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
     [ExportMetadata("Priority", int.MaxValue)]
     public class ProgrammePlugin : ISchedulerPlugin
     {
-        public DictionaryParameters Configuration { get; set; }
+        private DictionaryParameters configuration;
+        public DictionaryParameters Configuration 
+        { 
+            get
+            {
+                return configuration;
+            }
+            set
+            {
+                configuration = value;
+            }
+        }
 
-        public void Log(string message)
+        public ILogger Logger { get; set; }
+
+        private DictionaryParameters UpdateConfiguration(DictionaryParameters parameters)
         {
-            Trace.WriteLine(message);
+            Contract.Requires(parameters.IsValid());
+
+            configuration = parameters;
+            return configuration;
         }
 
         public bool Invoke(DictionaryParameters parameters, ref JobResult jobResult)
