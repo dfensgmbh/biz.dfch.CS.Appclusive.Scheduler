@@ -52,7 +52,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
             return configuration;
         }
 
-        public bool Invoke(DictionaryParameters parameters, ref JobResult jobResult)
+        public override bool Invoke(DictionaryParameters parameters, ref JobResult jobResult)
         {
             Contract.Requires(parameters.ContainsKey("CommandLine"));
             var invocationParameters = parameters.Convert<ProgrammePluginInvokeParameters>();
