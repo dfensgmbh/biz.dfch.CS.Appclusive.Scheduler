@@ -69,7 +69,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public
             return default(bool);
         }
 
-        public bool Invoke(DictionaryParameters parameters, ref JobResult jobResult)
+        public bool Invoke(DictionaryParameters parameters, IInvocationResult jobResult)
         {
             Contract.Requires(IsInitialised);
             Contract.Requires(null != parameters);

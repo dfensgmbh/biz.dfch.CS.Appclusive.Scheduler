@@ -43,7 +43,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public
 
         public virtual ILogger Logger { get; private set; }
 
-        public virtual bool Invoke(DictionaryParameters parameters, ref JobResult jobResult)
+        public virtual bool Invoke(DictionaryParameters parameters, IInvocationResult jobResult)
         {
             return default(bool);
         }

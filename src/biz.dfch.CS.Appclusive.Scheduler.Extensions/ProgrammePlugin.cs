@@ -53,7 +53,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
             return configuration;
         }
 
-        public override bool Invoke(DictionaryParameters parameters, ref JobResult jobResult)
+        public override bool Invoke(DictionaryParameters parameters, IInvocationResult jobResult)
         {
             var fReturn = false;
 

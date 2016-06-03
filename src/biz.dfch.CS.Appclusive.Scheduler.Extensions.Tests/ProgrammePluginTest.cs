@@ -63,7 +63,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
 
             // Act
             var sut = new ProgrammePlugin();
-            var result = sut.Invoke(parameters, ref jobResult);
+            var result = sut.Invoke(parameters, jobResult);
 
             // Assert
             // N/A
@@ -82,7 +82,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
 
             // Act
             var sut = new ProgrammePlugin();
-            var result = sut.Invoke(parameters, ref jobResult);
+            var result = sut.Invoke(parameters, jobResult);
 
             // Assert
             // N/A
@@ -101,7 +101,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
 
             // Act
             var sut = new ProgrammePlugin();
-            var result = sut.Invoke(parameters, ref jobResult);
+            var result = sut.Invoke(parameters, jobResult);
 
             // Assert
             // N/A
@@ -120,7 +120,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
 
             // Act
             var sut = new ProgrammePlugin();
-            var result = sut.Invoke(parameters, ref jobResult);
+            var result = sut.Invoke(parameters, jobResult);
 
             // Assert
             // N/A
@@ -139,7 +139,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
 
             // Act
             var sut = new ProgrammePlugin();
-            var result = sut.Invoke(parameters, ref jobResult);
+            var result = sut.Invoke(parameters, jobResult);
 
             // Assert
             // N/A
@@ -158,7 +158,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
 
             // Act
             var sut = new ProgrammePlugin();
-            var result = sut.Invoke(parameters, ref jobResult);
+            var result = sut.Invoke(parameters, jobResult);
 
             // Assert
             // N/A
@@ -191,7 +191,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
             // Act
             var sut = new ProgrammePlugin();
             sut.Initialise(new DictionaryParameters(), new Logger(), true);
-            var result = sut.Invoke(parameters, ref jobResult);
+            var result = sut.Invoke(parameters, jobResult);
 
             // Assert
             Mock.Assert(
@@ -232,7 +232,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
             // Act
             var sut = new ProgrammePlugin();
             sut.Initialise(new DictionaryParameters(), new Logger(), true);
-            var result = sut.Invoke(parameters, ref jobResult);
+            var result = sut.Invoke(parameters, jobResult);
 
             // Assert
             Mock.Assert(

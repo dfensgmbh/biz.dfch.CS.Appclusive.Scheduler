@@ -29,7 +29,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public.Tests
     {
         class SchedulerPluginImpl : SchedulerPluginBase
         {
-            public override bool Invoke(DictionaryParameters parameters, ref JobResult jobResult)
+            public override bool Invoke(DictionaryParameters parameters, IInvocationResult jobResult)
             {
                 if(!IsActive)
                 {
@@ -114,7 +114,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public.Tests
             var jobResult = new JobResult();
 
             // Act
-            sut.Invoke(parameters, ref jobResult);
+            sut.Invoke(parameters, jobResult);
 
             // Assert
             Assert.Fail("CodeContracts are not enabled.");
@@ -127,10 +127,10 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public.Tests
             // Arrange
             var sut = new SchedulerPluginImpl();
             var parameters = new DictionaryParameters();
-            var jobResult = default(JobResult);
+            var jobResult = default(IInvocationResult);
 
             // Act
-            sut.Invoke(parameters, ref jobResult);
+            sut.Invoke(parameters, jobResult);
 
             // Assert
             Assert.Fail("CodeContracts are not enabled.");
@@ -146,7 +146,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public.Tests
             var jobResult = new JobResult();
 
             // Act
-            sut.Invoke(parameters, ref jobResult);
+            sut.Invoke(parameters, jobResult);
 
             // Assert
             Assert.Fail("CodeContracts are not enabled.");

@@ -131,7 +131,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
             plugin.Initialise(parameters, new Logger(), true);
 
             // Act
-            var result = plugin.Invoke(parameters, ref jobResult);
+            var result = plugin.Invoke(parameters, jobResult);
 
             // Assert
             Assert.IsTrue(result);
@@ -172,7 +172,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
             plugin.Initialise(parameters, new Logger(), true);
 
             // Act
-            var result = plugin.Invoke(parameters, ref jobResult);
+            var result = plugin.Invoke(parameters, jobResult);
 
             // Assert
             Assert.IsTrue(result);

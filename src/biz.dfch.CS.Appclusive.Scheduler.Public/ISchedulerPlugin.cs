@@ -55,6 +55,6 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public
         // the main method of the plugin 
         // will be used by the host of the plugin to perform 
         // operations via the plugin
-        bool Invoke(DictionaryParameters parameters, ref JobResult jobResult);
+        bool Invoke(DictionaryParameters parameters, IInvocationResult jobResult);
     }
 }

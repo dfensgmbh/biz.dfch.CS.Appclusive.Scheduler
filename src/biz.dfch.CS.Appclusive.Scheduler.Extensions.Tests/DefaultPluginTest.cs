@@ -76,7 +76,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
             // Act
             var sut = new DefaultPlugin();
             sut.Initialise(new DictionaryParameters(), new Logger(), true);
-            var result = sut.Invoke(parameters, ref jobResult);
+            var result = sut.Invoke(parameters, jobResult);
 
             // Assert
             Assert.IsTrue(result);

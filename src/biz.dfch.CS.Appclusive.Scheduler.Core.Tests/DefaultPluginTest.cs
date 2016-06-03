@@ -56,7 +56,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
             sut.Initialise(new DictionaryParameters(), logger, false);
 
             // Act
-            var result = sut.Invoke(new DictionaryParameters(), ref jobResult);
+            var result = sut.Invoke(new DictionaryParameters(), jobResult);
 
             // Assert
             Assert.IsFalse(result);
@@ -72,7 +72,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
             //sut.Initialise(new DictionaryParameters(), new Logger(), true);
 
             // Act
-            sut.Invoke(new DictionaryParameters(), ref jobResult);
+            sut.Invoke(new DictionaryParameters(), jobResult);
 
             // Assert
             // N/A
@@ -121,7 +121,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
             // Act
             var sut = new DefaultPlugin();
             sut.Initialise(new DictionaryParameters(), new Logger(), true);
-            var result = sut.Invoke(parameters, ref jobResult);
+            var result = sut.Invoke(parameters, jobResult);
 
             // Assert
             Assert.IsTrue(result);
