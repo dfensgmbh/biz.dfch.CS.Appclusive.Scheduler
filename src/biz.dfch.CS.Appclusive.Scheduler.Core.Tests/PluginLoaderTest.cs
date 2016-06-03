@@ -140,7 +140,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
 
         class InnerClassWithPluginLoader
         {
-            public List<Lazy<ISchedulerPlugin, ISchedulerPluginData>> Load()
+            public List<Lazy<IAppclusivePlugin, IAppclusivePluginData>> Load()
             {
                 var sut = new PluginLoader(loader);
                 sut.Initialise();

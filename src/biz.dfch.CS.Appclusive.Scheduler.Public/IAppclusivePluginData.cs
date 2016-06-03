@@ -23,8 +23,12 @@ using System.Threading.Tasks;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Public
 {
-    public interface ISchedulerPluginData : IAppclusivePluginData
+    public interface IAppclusivePluginData
     {
-        // N/A
+        string Type { get; }
+
+        int Priority { get; }
+
+        string Role { get; }
     }
 }

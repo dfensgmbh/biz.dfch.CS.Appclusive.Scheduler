@@ -26,9 +26,10 @@ using biz.dfch.CS.Appclusive.Scheduler.Public;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Core
 {
-    [Export(typeof(ISchedulerPlugin))]
+    [Export(typeof(IAppclusivePlugin))]
     [ExportMetadata("Type", "Default")]
     [ExportMetadata("Priority", int.MinValue)]
+    [ExportMetadata("Role", "default")]
     public class DefaultPlugin : SchedulerPluginBase
     {
         private DictionaryParameters configuration;

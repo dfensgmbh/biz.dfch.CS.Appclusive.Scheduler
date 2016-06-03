@@ -34,7 +34,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
         public bool IsInitialised { get; private set; }
 
         [ImportMany]
-        private IEnumerable<Lazy<ISchedulerPlugin, ISchedulerPluginData>> pluginsAvailable;
+        private IEnumerable<Lazy<IAppclusivePlugin, IAppclusivePluginData>> pluginsAvailable;
 
         public PluginLoader()
         {
@@ -88,12 +88,12 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             IsInitialised = true;
         }
 
-        public List<Lazy<ISchedulerPlugin, ISchedulerPluginData>> Load()
+        public List<Lazy<IAppclusivePlugin, IAppclusivePluginData>> Load()
         {
             Contract.Requires(IsInitialised);
-            Contract.Ensures(0 < Contract.Result<List<Lazy<ISchedulerPlugin, ISchedulerPluginData>>>().Count);
+            Contract.Ensures(0 < Contract.Result<List<Lazy<IAppclusivePlugin, IAppclusivePluginData>>>().Count);
 
-            var plugins = new List<Lazy<ISchedulerPlugin, ISchedulerPluginData>>();
+            var plugins = new List<Lazy<IAppclusivePlugin, IAppclusivePluginData>>();
             foreach(var plugin in pluginsAvailable.OrderByDescending(p => p.Metadata.Priority))
             {
                 var isPluginToBeAdded =

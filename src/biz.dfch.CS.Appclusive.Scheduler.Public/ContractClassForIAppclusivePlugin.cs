@@ -13,16 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Public
 {
-    [ContractClassFor(typeof(ISchedulerPlugin))]
-    abstract class ContractClassForISchedulerPlugin : ISchedulerPlugin
+    [ContractClassFor(typeof(IAppclusivePlugin))]
+    public abstract class ContractClassForIAppclusivePlugin : IAppclusivePlugin
     {
         public DictionaryParameters Configuration
         {
@@ -40,7 +41,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public
         }
 
         public abstract bool IsInitialised { get; }
-        
+
         public bool IsActive 
         { 
             get
@@ -52,7 +53,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public
                 Contract.Requires(IsInitialised);
             } 
         }
-
+        
         public abstract ILogger Logger { get; }
 
         [ContractInvariantMethod]
@@ -78,6 +79,20 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public
             Contract.Ensures(jobResult.IsValid());
 
             return default(bool);
+        }
+
+        public string GetName()
+        {
+            Contract.Ensures(null != Contract.Result<string>());
+
+            return default(string);
+        }
+
+        public Version GetVersion()
+        {
+            Contract.Ensures(null != Contract.Result<Version>());
+
+            return default(Version);
         }
     }
 }

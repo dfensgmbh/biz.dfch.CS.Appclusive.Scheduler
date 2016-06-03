@@ -18,43 +18,13 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Public
 {
-    [ContractClass(typeof(ContractClassForISchedulerPlugin))]
-    public interface ISchedulerPlugin
+    public interface ISchedulerPlugin : IAppclusivePlugin
     {
-        // this property holds the configuration needed by 
-        // the plugin
-        // an update (set) operation on this property must 
-        // be treated as a refresh operation of the 
-        // configuration settings
-        DictionaryParameters Configuration { get; set; }
-
-        // this flag must be set to true by the plugin after 
-        // the Initialise method has been called an if initialisation 
-        // has been successful
-        bool IsInitialised { get; }
-
-        // the host of the plugin must call this method to initialise 
-        // the plugin before the first use of Invoke
-        // parameters and logger
-        bool Initialise(DictionaryParameters parameters, ILogger logger, bool activate);
-
-        // toggling this flag will enable or disable
-        // the plugin
-        // the plugin must only operate when this flag
-        // is set to true
-        bool IsActive { get; set; }
-        
-        // the plugin can use this interface to log messages
-        // the plugin can rely on this property to be set
-        // after the plugin has been initialised
-        ILogger Logger { get; }
-
-        // the main method of the plugin 
-        // will be used by the host of the plugin to perform 
-        // operations via the plugin
-        bool Invoke(DictionaryParameters parameters, IInvocationResult jobResult);
+        // N/A
     }
 }

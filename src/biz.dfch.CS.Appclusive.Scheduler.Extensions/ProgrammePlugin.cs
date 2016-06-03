@@ -27,9 +27,10 @@ using System.Diagnostics;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
 {
-    [Export(typeof(ISchedulerPlugin))]
+    [Export(typeof(IAppclusivePlugin))]
     [ExportMetadata("Type", "Programme")]
     [ExportMetadata("Priority", int.MaxValue)]
+    [ExportMetadata("Role", "default")]
     public class ProgrammePlugin : SchedulerPluginBase
     {
         private DictionaryParameters configuration;

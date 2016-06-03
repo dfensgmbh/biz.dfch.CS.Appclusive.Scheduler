@@ -17,35 +17,17 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Public
 {
-    public abstract class SchedulerPluginBase : ISchedulerPlugin
+    public abstract class SchedulerPluginBase : 
+        AppclusivePluginBase
+        , 
+        ISchedulerPlugin
     {
-        public virtual DictionaryParameters Configuration { get; set; }
-
-        public virtual bool IsInitialised { get; private set; }
-
-        public virtual bool Initialise(DictionaryParameters parameters, ILogger logger, bool activate)
-        {
-            Configuration = parameters;
-            Logger = logger;
-                
-            IsInitialised = true;
-            IsActive = activate;
-
-            return IsInitialised;
-        }
-
-        public virtual bool IsActive { get; set; }
-
-        public virtual ILogger Logger { get; private set; }
-
-        public virtual bool Invoke(DictionaryParameters parameters, IInvocationResult jobResult)
-        {
-            return default(bool);
-        }
+        // N/A
     }
 }
