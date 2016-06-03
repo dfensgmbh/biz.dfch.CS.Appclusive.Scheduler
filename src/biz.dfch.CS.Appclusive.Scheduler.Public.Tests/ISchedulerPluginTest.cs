@@ -18,9 +18,9 @@ using System;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using biz.dfch.CS.Appclusive.Scheduler.Core;
 using biz.dfch.CS.Utilities.Testing;
 using System.Collections.Generic;
+using Telerik.JustMock;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Public.Tests
 {
@@ -48,7 +48,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public.Tests
             // Arrange
             var message = "arbitrary-message";
             var sut = new SchedulerPluginImpl();
-            var logger = new Logger();
+            var logger = Mock.Create<ILogger>();
             sut.Initialise(new DictionaryParameters(), logger, true);
 
             // Act
@@ -56,23 +56,6 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public.Tests
 
             // Assert
             // N/A
-        }
-
-        [TestMethod]
-        [ExpectContractFailure]
-        public void LogEmptyThrowsContractException()
-        {
-            // Arrange
-            var message = string.Empty;
-            var sut = new SchedulerPluginImpl();
-            var logger = new Logger();
-            sut.Initialise(new DictionaryParameters(), logger, true);
-
-            // Act
-            sut.Logger.WriteLine(message);
-
-            // Assert
-            Assert.Fail("CodeContracts are not enabled.");
         }
 
         [TestMethod]

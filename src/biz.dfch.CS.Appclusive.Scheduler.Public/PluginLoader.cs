@@ -18,18 +18,21 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
+using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using biz.dfch.CS.Utilities.Logging;
-using biz.dfch.CS.Appclusive.Scheduler.Public;
 
-namespace biz.dfch.CS.Appclusive.Scheduler.Core
+namespace biz.dfch.CS.Appclusive.Scheduler.Public
 {
     public class PluginLoader
     {
-        private readonly PluginLoaderConfiguration configuration;
+        public const string LOAD_ALL_PATTERN = "*";
+
+        private PluginLoaderConfiguration configuration;
 
         public bool IsInitialised { get; private set; }
 
@@ -38,8 +41,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
 
         public PluginLoader()
         {
-            var loader = new PluginLoaderConfigurationFromAppSettingsLoader();
-            configuration = new PluginLoaderConfiguration(loader);
+            // N/A
         }
 
         public PluginLoader(IConfigurationLoader loader)
@@ -47,8 +49,20 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             configuration = new PluginLoaderConfiguration(loader);
         }
 
+        public void Initialise(IConfigurationLoader loader)
+        {
+            Contract.Requires(null != loader);
+
+            configuration = new PluginLoaderConfiguration(loader);
+            
+            Initialise();
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
         public void Initialise()
         {
+            Contract.Assert(null != configuration);
+
             IsInitialised = false;
 
             // An aggregate catalog that combines multiple catalogs
@@ -61,15 +75,34 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             }
             catch (Exception ex)
             {
-                Trace.WriteException(
-                    string.Format("AppSettings.ExtensionsFolder: Loading extensions from '{0}' FAILED.", 
-                        configuration.ExtensionsFolder)
-                    , ex);
+                var message = string.Format("AppSettings.ExtensionsFolder: Loading extensions from '{0}' FAILED.", 
+                        configuration.ExtensionsFolder);
+                Trace.WriteLine(string.Format("{0}@{1}: '{2}'\r\n[{3}]\r\n{4}", 
+                    ex.GetType().Name, ex.Source, message, ex.Message, ex.StackTrace));
             }
             finally
             {
-                // Adds all the parts found in the same assembly as this class
-                catalog.Catalogs.Add(new AssemblyCatalog(typeof(PluginLoader).Assembly));
+                // Adds all the parts found in the assembly that called this class
+                catalog.Catalogs.Add(new AssemblyCatalog(Assembly.GetCallingAssembly()));
+            }
+
+            // Add all other assemblies defined in configuration
+            if(null != configuration.Assemblies)
+            {
+                foreach(var assembly in configuration.Assemblies)
+                {
+                    try
+                    {
+                        catalog.Catalogs.Add(new AssemblyCatalog(assembly));
+                    }
+                    catch(Exception ex)
+                    {
+                        var message = string.Format("Adding assembly '{0}' to catalogue FAILED.",
+                            assembly.FullName);
+                        Trace.WriteLine(string.Format("{0}@{1}: '{2}'\r\n[{3}]\r\n{4}", 
+                            ex.GetType().Name, ex.Source, message, ex.Message, ex.StackTrace));
+                    }
+                }
             }
 
             // Create the CompositionContainer with the parts in the catalog
@@ -79,9 +112,11 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
                 // Fill the imports of this object
                 container.ComposeParts(this);
             }
-            catch (CompositionException compositionException)
+            catch (CompositionException ex)
             {
-                Trace.WriteException("ComposeParts FAILED", compositionException);
+                var message = "ComposeParts FAILED";
+                Trace.WriteLine(string.Format("{0}@{1}: '{2}'\r\n[{3}]\r\n{4}", 
+                    ex.GetType().Name, ex.Source, message, ex.Message, ex.StackTrace));
                 throw;
             }
 
@@ -98,9 +133,9 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             {
                 var isPluginToBeAdded =
                         (
-                            configuration.PluginTypes.Contains("*")
+                            configuration.PluginTypes.Contains(LOAD_ALL_PATTERN)
                             ||
-                            configuration.PluginTypes.Contains(plugin.Metadata.Type.ToLower())
+                            configuration.PluginTypes.Contains(plugin.Metadata.Type, StringComparer.InvariantCultureIgnoreCase)
                         )
                         &&
                         (
@@ -116,6 +151,24 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             }
 
             return plugins;
+        }
+
+        public List<Lazy<IAppclusivePlugin, IAppclusivePluginData>> InitialiseAndLoad(IConfigurationLoader loader)
+        {
+            Contract.Requires(null != loader);
+
+            configuration = new PluginLoaderConfiguration(loader);
+            
+            var result = InitialiseAndLoad();
+            return result;
+        }
+
+        public List<Lazy<IAppclusivePlugin, IAppclusivePluginData>> InitialiseAndLoad()
+        {
+            Initialise();
+
+            var result = Load();
+            return result;
         }
     }
 }

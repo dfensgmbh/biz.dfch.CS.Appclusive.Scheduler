@@ -26,7 +26,7 @@ using biz.dfch.CS.Utilities.Testing;
 using biz.dfch.CS.Appclusive.Scheduler.Public;
 using System.Configuration;
 
-namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
+namespace biz.dfch.CS.Appclusive.Scheduler.Public.Tests
 {
     [TestClass]
     public class PluginLoaderConfigurationTest
@@ -35,7 +35,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
         public void ConstructorWithILoaderSucceeds()
         {
             // Arrange
-            var loader = Mock.Create<PluginLoaderConfigurationFromAppSettingsLoader>();
+            var loader = Mock.Create<IConfigurationLoader>();
             Mock.Arrange(() => loader.Initialise(Arg.IsAny<BaseDto>(), Arg.IsAny<DictionaryParameters>()))
                 .IgnoreInstance()
                 .MustBeCalled();            

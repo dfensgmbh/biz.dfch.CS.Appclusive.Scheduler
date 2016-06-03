@@ -34,7 +34,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             var cfg = configuration as PluginLoaderConfiguration;
 
             // 1. Get folder from where to load extensions
-            var extensionsFolder = ConfigurationManager.AppSettings[AppSettings.Keys.EXTENSIONS_FOLDER];
+            var extensionsFolder = ConfigurationManager.AppSettings[SchedulerAppSettings.Keys.EXTENSIONS_FOLDER];
             if (!Path.IsPathRooted(extensionsFolder))
             {
                 extensionsFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, extensionsFolder);
@@ -44,7 +44,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             cfg.ExtensionsFolder = extensionsFolder;
 
             // 2. Load plugin names to be loaded
-            var pluginTypes = ConfigurationManager.AppSettings[AppSettings.Keys.PLUGIN_TYPES];
+            var pluginTypes = ConfigurationManager.AppSettings[SchedulerAppSettings.Keys.PLUGIN_TYPES];
             Contract.Assert(!string.IsNullOrWhiteSpace(pluginTypes));
 
             var pluginTypesToBeLoaded = pluginTypes
@@ -55,10 +55,10 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
                 .ToList();
             Contract.Assert(0 < pluginTypesToBeLoaded.Count());
             
-            if(pluginTypesToBeLoaded.Contains("*"))
+            if(pluginTypesToBeLoaded.Contains(PluginLoader.LOAD_ALL_PATTERN))
             {
                 pluginTypesToBeLoaded.Clear();
-                pluginTypesToBeLoaded.Add("*");
+                pluginTypesToBeLoaded.Add(PluginLoader.LOAD_ALL_PATTERN);
             }
             cfg.PluginTypes = pluginTypesToBeLoaded;
 

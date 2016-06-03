@@ -14,21 +14,38 @@
  * limitations under the License.
  */
 
+using System.ComponentModel.DataAnnotations;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Reflection;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Public
 {
-    public class AppSettings
+    public class PluginLoaderConfiguration : BaseDto
     {
-        public class Keys
+        [Required]
+        public string ExtensionsFolder { get; set; }
+
+        public List<string> PluginTypes { get; set; }
+
+        public Assembly[] Assemblies { get; set; }
+
+        public PluginLoaderConfiguration()
         {
-            public const string EXTENSIONS_FOLDER = "ExtensionsFolder";
-            public const string PLUGIN_TYPES = "PluginTypes";
+            // N/A
+        }
+
+        public PluginLoaderConfiguration(IConfigurationLoader loader)
+        {
+            Contract.Requires(null != loader);
+
+            loader.Initialise(this, null);
+
+            return;
         }
     }
 }

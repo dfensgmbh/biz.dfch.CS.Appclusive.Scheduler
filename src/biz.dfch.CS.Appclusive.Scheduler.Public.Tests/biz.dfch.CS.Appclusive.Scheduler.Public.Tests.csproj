@@ -135,6 +135,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="Telerik.JustMock">
       <HintPath>../JustMock/Telerik.JustMock.dll</HintPath>
@@ -159,6 +160,8 @@
     <Compile Include="IConfigurationLoaderTest.cs" />
     <Compile Include="ISchedulerPluginTest.cs" />
     <Compile Include="CodeContractTest.cs" />
+    <Compile Include="PluginLoaderConfigurationTest.cs" />
+    <Compile Include="PluginLoaderTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -166,10 +169,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\biz.dfch.CS.Appclusive.Scheduler.Core\biz.dfch.CS.Appclusive.Scheduler.Core.csproj">
-      <Project>{ED3CBDAE-82B0-43EA-BE69-B0CAD148A209}</Project>
-      <Name>biz.dfch.CS.Appclusive.Scheduler.Core</Name>
-    </ProjectReference>
     <ProjectReference Include="..\biz.dfch.CS.Appclusive.Scheduler.Public\biz.dfch.CS.Appclusive.Scheduler.Public.csproj">
       <Project>{f3e50a54-395d-4e02-bde6-edea3c3cf578}</Project>
       <Name>biz.dfch.CS.Appclusive.Scheduler.Public</Name>

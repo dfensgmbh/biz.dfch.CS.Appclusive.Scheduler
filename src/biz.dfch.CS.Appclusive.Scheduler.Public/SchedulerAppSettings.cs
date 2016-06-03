@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-using System.ComponentModel.DataAnnotations;
-using biz.dfch.CS.Appclusive.Scheduler.Public;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
@@ -23,27 +21,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace biz.dfch.CS.Appclusive.Scheduler.Core
+namespace biz.dfch.CS.Appclusive.Scheduler.Public
 {
-    public class PluginLoaderConfiguration : BaseDto
+    public class SchedulerAppSettings
     {
-        [Required]
-        public string ExtensionsFolder { get; set; }
-
-        public List<string> PluginTypes { get; set; }
-
-        public PluginLoaderConfiguration()
+        public class Keys
         {
-            // N/A
-        }
-
-        public PluginLoaderConfiguration(IConfigurationLoader loader)
-        {
-            Contract.Requires(null != loader);
-
-            loader.Initialise(this, null);
-
-            return;
+            public const string EXTENSIONS_FOLDER = "ExtensionsFolder";
+            public const string PLUGIN_TYPES = "PluginTypes";
         }
     }
 }

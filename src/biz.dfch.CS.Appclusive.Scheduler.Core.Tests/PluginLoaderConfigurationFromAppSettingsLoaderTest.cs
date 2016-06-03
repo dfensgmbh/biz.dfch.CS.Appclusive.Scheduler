@@ -40,10 +40,10 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
             var pluginNames = "BBB-FirstListedPlugin,AAA-SecondListedPlugin,CCC-ThirdListedPlugin";
 
             Mock.SetupStatic(typeof(ConfigurationManager));
-            Mock.Arrange(() => ConfigurationManager.AppSettings[AppSettings.Keys.EXTENSIONS_FOLDER])
+            Mock.Arrange(() => ConfigurationManager.AppSettings[SchedulerAppSettings.Keys.EXTENSIONS_FOLDER])
                 .Returns(extensionsFolder)
                 .MustBeCalled();
-            Mock.Arrange(() => ConfigurationManager.AppSettings[AppSettings.Keys.PLUGIN_TYPES])
+            Mock.Arrange(() => ConfigurationManager.AppSettings[SchedulerAppSettings.Keys.PLUGIN_TYPES])
                 .Returns(pluginNames)
                 .MustBeCalled();
 
@@ -57,8 +57,8 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
             sut.Initialise(configuration, null);
 
             // Assert
-            Mock.Assert(() => ConfigurationManager.AppSettings[AppSettings.Keys.EXTENSIONS_FOLDER]);
-            Mock.Assert(() => ConfigurationManager.AppSettings[AppSettings.Keys.PLUGIN_TYPES]);
+            Mock.Assert(() => ConfigurationManager.AppSettings[SchedulerAppSettings.Keys.EXTENSIONS_FOLDER]);
+            Mock.Assert(() => ConfigurationManager.AppSettings[SchedulerAppSettings.Keys.PLUGIN_TYPES]);
             Mock.Assert(() => Directory.Exists(Arg.Is<string>(extensionsFolder)));
 
             Assert.AreEqual(extensionsFolder, configuration.ExtensionsFolder);
@@ -77,10 +77,10 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
             var pluginNames = "BBB-FirstListedPlugin,AAA-SecondListedPlugin,CCC-ThirdListedPlugin";
 
             Mock.SetupStatic(typeof(ConfigurationManager));
-            Mock.Arrange(() => ConfigurationManager.AppSettings[AppSettings.Keys.EXTENSIONS_FOLDER])
+            Mock.Arrange(() => ConfigurationManager.AppSettings[SchedulerAppSettings.Keys.EXTENSIONS_FOLDER])
                 .Returns(extensionsFolder)
                 .MustBeCalled();
-            Mock.Arrange(() => ConfigurationManager.AppSettings[AppSettings.Keys.PLUGIN_TYPES])
+            Mock.Arrange(() => ConfigurationManager.AppSettings[SchedulerAppSettings.Keys.PLUGIN_TYPES])
                 .Returns(pluginNames)
                 .MustBeCalled();
 
@@ -94,8 +94,8 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
             sut.Initialise(configuration, null);
 
             // Assert
-            Mock.Assert(() => ConfigurationManager.AppSettings[AppSettings.Keys.EXTENSIONS_FOLDER]);
-            Mock.Assert(() => ConfigurationManager.AppSettings[AppSettings.Keys.PLUGIN_TYPES]);
+            Mock.Assert(() => ConfigurationManager.AppSettings[SchedulerAppSettings.Keys.EXTENSIONS_FOLDER]);
+            Mock.Assert(() => ConfigurationManager.AppSettings[SchedulerAppSettings.Keys.PLUGIN_TYPES]);
             Mock.Assert(() => Directory.Exists(Arg.IsAny<string>()));
 
             Assert.IsTrue(configuration.ExtensionsFolder.EndsWith(extensionsFolder));
@@ -115,10 +115,10 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
             var pluginNames = "BBB-FirstListedPlugin,AAA-SecondListedPlugin,CCC-ThirdListedPlugin";
 
             Mock.SetupStatic(typeof(ConfigurationManager));
-            Mock.Arrange(() => ConfigurationManager.AppSettings[AppSettings.Keys.EXTENSIONS_FOLDER])
+            Mock.Arrange(() => ConfigurationManager.AppSettings[SchedulerAppSettings.Keys.EXTENSIONS_FOLDER])
                 .Returns(extensionsFolder)
                 .MustBeCalled();
-            Mock.Arrange(() => ConfigurationManager.AppSettings[AppSettings.Keys.PLUGIN_TYPES])
+            Mock.Arrange(() => ConfigurationManager.AppSettings[SchedulerAppSettings.Keys.PLUGIN_TYPES])
                 .Returns(pluginNames)
                 .MustBeCalled();
 
@@ -132,8 +132,8 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
             sut.Initialise(configuration, null);
 
             // Assert
-            Mock.Assert(() => ConfigurationManager.AppSettings[AppSettings.Keys.EXTENSIONS_FOLDER]);
-            Mock.Assert(() => ConfigurationManager.AppSettings[AppSettings.Keys.PLUGIN_TYPES]);
+            Mock.Assert(() => ConfigurationManager.AppSettings[SchedulerAppSettings.Keys.EXTENSIONS_FOLDER]);
+            Mock.Assert(() => ConfigurationManager.AppSettings[SchedulerAppSettings.Keys.PLUGIN_TYPES]);
             Mock.Assert(() => Directory.Exists(Arg.Is<string>(extensionsFolder)));
 
             Assert.AreEqual(extensionsFolder, configuration.ExtensionsFolder);
@@ -153,10 +153,10 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
             var pluginNames = "";
 
             Mock.SetupStatic(typeof(ConfigurationManager));
-            Mock.Arrange(() => ConfigurationManager.AppSettings[AppSettings.Keys.EXTENSIONS_FOLDER])
+            Mock.Arrange(() => ConfigurationManager.AppSettings[SchedulerAppSettings.Keys.EXTENSIONS_FOLDER])
                 .Returns(extensionsFolder)
                 .MustBeCalled();
-            Mock.Arrange(() => ConfigurationManager.AppSettings[AppSettings.Keys.PLUGIN_TYPES])
+            Mock.Arrange(() => ConfigurationManager.AppSettings[SchedulerAppSettings.Keys.PLUGIN_TYPES])
                 .Returns(pluginNames)
                 .MustBeCalled();
 
@@ -170,8 +170,8 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
             sut.Initialise(configuration, null);
 
             // Assert
-            Mock.Assert(() => ConfigurationManager.AppSettings[AppSettings.Keys.EXTENSIONS_FOLDER]);
-            Mock.Assert(() => ConfigurationManager.AppSettings[AppSettings.Keys.PLUGIN_TYPES]);
+            Mock.Assert(() => ConfigurationManager.AppSettings[SchedulerAppSettings.Keys.EXTENSIONS_FOLDER]);
+            Mock.Assert(() => ConfigurationManager.AppSettings[SchedulerAppSettings.Keys.PLUGIN_TYPES]);
             Mock.Assert(() => Directory.Exists(Arg.Is<string>(extensionsFolder)));
 
             Assert.AreEqual(extensionsFolder, configuration.ExtensionsFolder);
@@ -186,10 +186,10 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
             var pluginNames = "plugin,PLUGIN,PlUgIn";
 
             Mock.SetupStatic(typeof(ConfigurationManager));
-            Mock.Arrange(() => ConfigurationManager.AppSettings[AppSettings.Keys.EXTENSIONS_FOLDER])
+            Mock.Arrange(() => ConfigurationManager.AppSettings[SchedulerAppSettings.Keys.EXTENSIONS_FOLDER])
                 .Returns(extensionsFolder)
                 .MustBeCalled();
-            Mock.Arrange(() => ConfigurationManager.AppSettings[AppSettings.Keys.PLUGIN_TYPES])
+            Mock.Arrange(() => ConfigurationManager.AppSettings[SchedulerAppSettings.Keys.PLUGIN_TYPES])
                 .Returns(pluginNames)
                 .MustBeCalled();
 
@@ -203,8 +203,8 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
             sut.Initialise(configuration, null);
 
             // Assert
-            Mock.Assert(() => ConfigurationManager.AppSettings[AppSettings.Keys.EXTENSIONS_FOLDER]);
-            Mock.Assert(() => ConfigurationManager.AppSettings[AppSettings.Keys.PLUGIN_TYPES]);
+            Mock.Assert(() => ConfigurationManager.AppSettings[SchedulerAppSettings.Keys.EXTENSIONS_FOLDER]);
+            Mock.Assert(() => ConfigurationManager.AppSettings[SchedulerAppSettings.Keys.PLUGIN_TYPES]);
             Mock.Assert(() => Directory.Exists(Arg.Is<string>(extensionsFolder)));
 
             Assert.AreEqual(extensionsFolder, configuration.ExtensionsFolder);
@@ -221,10 +221,10 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
             var pluginNames = "*,Plugin1,Plugin2,Plugin3,*";
 
             Mock.SetupStatic(typeof(ConfigurationManager));
-            Mock.Arrange(() => ConfigurationManager.AppSettings[AppSettings.Keys.EXTENSIONS_FOLDER])
+            Mock.Arrange(() => ConfigurationManager.AppSettings[SchedulerAppSettings.Keys.EXTENSIONS_FOLDER])
                 .Returns(extensionsFolder)
                 .MustBeCalled();
-            Mock.Arrange(() => ConfigurationManager.AppSettings[AppSettings.Keys.PLUGIN_TYPES])
+            Mock.Arrange(() => ConfigurationManager.AppSettings[SchedulerAppSettings.Keys.PLUGIN_TYPES])
                 .Returns(pluginNames)
                 .MustBeCalled();
 
@@ -238,8 +238,8 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
             sut.Initialise(configuration, null);
 
             // Assert
-            Mock.Assert(() => ConfigurationManager.AppSettings[AppSettings.Keys.EXTENSIONS_FOLDER]);
-            Mock.Assert(() => ConfigurationManager.AppSettings[AppSettings.Keys.PLUGIN_TYPES]);
+            Mock.Assert(() => ConfigurationManager.AppSettings[SchedulerAppSettings.Keys.EXTENSIONS_FOLDER]);
+            Mock.Assert(() => ConfigurationManager.AppSettings[SchedulerAppSettings.Keys.PLUGIN_TYPES]);
             Mock.Assert(() => Directory.Exists(Arg.Is<string>(extensionsFolder)));
 
             Assert.AreEqual(extensionsFolder, configuration.ExtensionsFolder);

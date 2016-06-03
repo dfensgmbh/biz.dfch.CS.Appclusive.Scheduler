@@ -13,8 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-using biz.dfch.CS.Appclusive.Scheduler.Public;
+using System.ComponentModel.Composition;
 using biz.dfch.CS.Utilities.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -25,17 +24,33 @@ using System.Text;
 using System.Threading.Tasks;
 using Telerik.JustMock;
 
-namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
+namespace biz.dfch.CS.Appclusive.Scheduler.Public.Tests
 {
     [TestClass]
     public class PluginLoaderTest
     {
-        private static PluginLoaderConfigurationFromAppSettingsLoader loader;
+        [Export(typeof(IAppclusivePlugin))]
+        [ExportMetadata("Type", "PluginFromPublicTests")]
+        [ExportMetadata("Priority", int.MinValue)]
+        [ExportMetadata("Role", "default")]
+        public class DefaultPlugin : SchedulerPluginBase
+        {
+            public override bool Invoke(DictionaryParameters parameters, IInvocationResult jobResult)
+            {
+                jobResult.Code = 0;
+                jobResult.Message = "arbitrary-message";
+                jobResult.Description = "arbitrary-description";
+                jobResult.Succeeded = true;
+                return jobResult.Succeeded;
+            }
+        }
+
+        private static IConfigurationLoader loader;
 
         [ClassInitialize]
         public static void ClassInitialize(TestContext testContext)
         {
-            loader = Mock.Create<PluginLoaderConfigurationFromAppSettingsLoader>();
+            loader = Mock.Create<IConfigurationLoader>();
             Mock.Arrange(() => loader.Initialise(Arg.IsAny<BaseDto>(), Arg.IsAny<DictionaryParameters>()))
                 .IgnoreInstance()
                 .MustBeCalled();
@@ -51,7 +66,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
                 .Returns(".");
             Mock.Arrange(() => configuration.PluginTypes)
                 .IgnoreInstance()
-                .Returns(new List<string>() { "*" });
+                .Returns(new List<string>() { PluginLoader.LOAD_ALL_PATTERN });
             
             var sut = new PluginLoader(loader);
 
@@ -80,7 +95,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
         }
         
         [TestMethod]
-        public void LoadSucceedsAndReturnsCoreDefaultPlugin()
+        public void LoadSucceedsAndReturnsPluginFromPublicTestsAssembly()
         {
             // Arrange
             var configuration = Mock.Create<PluginLoaderConfiguration>();
@@ -89,7 +104,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
                 .Returns(".");
             Mock.Arrange(() => configuration.PluginTypes)
                 .IgnoreInstance()
-                .Returns(new List<string>() { "*" });
+                .Returns(new List<string>() { "PluginFromPublicTests" });
             
             var sut = new PluginLoader(loader);
             sut.Initialise();
@@ -103,7 +118,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
             
             Assert.IsNotNull(result);
             Assert.IsTrue(0 < result.Count);
-            Assert.AreEqual("Default", result[0].Metadata.Type);
+            Assert.AreEqual("PluginFromPublicTests", result[0].Metadata.Type);
             Assert.AreEqual(int.MinValue, result[0].Metadata.Priority);
         }
 
@@ -117,7 +132,8 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
                 .Returns(".");
             Mock.Arrange(() => configuration.PluginTypes)
                 .IgnoreInstance()
-                .Returns(new List<string>() { "*" });
+                .Returns(new List<string>() { PluginLoader.LOAD_ALL_PATTERN });
+            var logger = Mock.Create<ILogger>();
             
             var sut = new PluginLoader(loader);
             sut.Initialise();
@@ -128,7 +144,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
             var jobResult = new JobResult();
 
             var plugin = plugins[0].Value;
-            plugin.Initialise(parameters, new Logger(), true);
+            plugin.Initialise(parameters, logger, true);
 
             // Act
             var result = plugin.Invoke(parameters, jobResult);
@@ -159,7 +175,8 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
                 .Returns(".");
             Mock.Arrange(() => configuration.PluginTypes)
                 .IgnoreInstance()
-                .Returns(new List<string>() { "*" });
+                .Returns(new List<string>() { PluginLoader.LOAD_ALL_PATTERN });
+            var logger = Mock.Create<ILogger>();
 
             var parameters = new DictionaryParameters();
             parameters.Add("arbitrary-parameter-name", "arbitrary-parameter-value");
@@ -169,7 +186,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
             var plugins = new InnerClassWithPluginLoader().Load();
             
             var plugin = plugins[0].Value;
-            plugin.Initialise(parameters, new Logger(), true);
+            plugin.Initialise(parameters, logger, true);
 
             // Act
             var result = plugin.Invoke(parameters, jobResult);

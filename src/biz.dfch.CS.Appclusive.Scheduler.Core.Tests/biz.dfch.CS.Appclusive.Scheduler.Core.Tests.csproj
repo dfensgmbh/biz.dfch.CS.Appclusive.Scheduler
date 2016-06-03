@@ -157,8 +157,6 @@
   <ItemGroup>
     <Compile Include="DefaultPluginTest.cs" />
     <Compile Include="PluginLoaderConfigurationFromAppSettingsLoaderTest.cs" />
-    <Compile Include="PluginLoaderConfigurationTest.cs" />
-    <Compile Include="PluginLoaderTest.cs" />
     <Compile Include="ScheduledTaskWorkerConfigurationTest.cs" />
     <Compile Include="ISchedulerPluginTest.cs" />
     <Compile Include="CodeContractTest.cs" />
