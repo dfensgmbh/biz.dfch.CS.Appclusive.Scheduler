@@ -133,7 +133,10 @@
   <ItemGroup>
     <Compile Include="BaseDto.cs" />
     <Compile Include="AppSettings.cs" />
+    <Compile Include="NonSerialisableJobResult.cs" />
+    <Compile Include="InvocationResultBase.cs" />
     <Compile Include="ContractClassForILogger.cs" />
+    <Compile Include="IInvocationResult.cs" />
     <Compile Include="ILogger.cs" />
     <Compile Include="DictionaryParameters.cs" />
     <Compile Include="IConfigurationLoader.cs" />

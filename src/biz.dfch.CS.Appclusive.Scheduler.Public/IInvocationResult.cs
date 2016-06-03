@@ -1,5 +1,5 @@
 ﻿/**
- * Copyright 2015-2016 d-fens GmbH
+ * Copyright 2016 d-fens GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,21 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Web;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Public
 {
-    public class JobResult : InvocationResultBase
+    public interface IInvocationResult
     {
-        public JobResult()
-        {
-            Version = "1";
-        }
+        string Version { get; set; }
+        bool Succeeded { get; set; }
+        int Code { get; set; }
+        string Message { get; set; }
+        string Description { get; set; }
+        IInvocationResult InnerJobResult { get; set; }
+
+        // these methods have the same signature as BaseDto (except for their static members)
+        string SerializeObject();
+        bool IsValid();
+        List<ValidationResult> GetValidationResults();
+        void Validate();
     }
 }

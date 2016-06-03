@@ -1,5 +1,5 @@
 ﻿/**
- * Copyright 2015-2016 d-fens GmbH
+ * Copyright 2016 d-fens GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,30 @@
  * limitations under the License.
  */
 
-
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Web;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Public
 {
-    public class JobResult : InvocationResultBase
+    public abstract class InvocationResultBase : BaseDto, IInvocationResult
     {
-        public JobResult()
-        {
-            Version = "1";
-        }
+        [Required]
+        public virtual string Version { get; set; }
+
+        public virtual bool Succeeded { get; set; }
+
+        public virtual int Code { get; set; }
+
+        [Required]
+        public virtual string Message { get; set; }
+
+        public virtual string Description { get; set; }
+
+        public virtual IInvocationResult InnerJobResult { get; set; }
     }
 }
