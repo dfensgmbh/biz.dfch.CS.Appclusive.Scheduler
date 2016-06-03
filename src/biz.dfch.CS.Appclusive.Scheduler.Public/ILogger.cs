@@ -29,5 +29,21 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public
         void Write(string format, params object[] args);
         
         void WriteLine(string format, params object[] args);
+        
+        void Debug(string format, params object[] args);
+        
+        void Info(string format, params object[] args);
+        
+        void Notice(string format, params object[] args);
+        
+        void Warn(string format, params object[] args);
+        
+        void Error(string format, params object[] args);
+        
+        void Alert(string format, params object[] args);
+        
+        void Critical(string format, params object[] args);
+        
+        void Emergency(string format, params object[] args);
     }
 }

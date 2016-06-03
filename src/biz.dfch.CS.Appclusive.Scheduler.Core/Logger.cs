@@ -37,5 +37,53 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             var message = string.Format(format, args);
             Trace.WriteLine(message);
         }
+
+        public void Debug(string format, params object[] args)
+        {
+            var message = string.Format(format, args);
+            Trace.WriteLine(message);
+        }
+
+        public void Info(string format, params object[] args)
+        {
+            var message = string.Format(format, args);
+            Trace.WriteLine(message);
+        }
+
+        public void Notice(string format, params object[] args)
+        {
+            var message = string.Format(format, args);
+            Trace.WriteLine(message);
+        }
+
+        public void Warn(string format, params object[] args)
+        {
+            var message = string.Format(format, args);
+            Trace.WriteLine(message);
+        }
+
+        public void Error(string format, params object[] args)
+        {
+            var message = string.Format(format, args);
+            Trace.WriteLine(message);
+        }
+
+        public void Alert(string format, params object[] args)
+        {
+            var message = string.Format(format, args);
+            Trace.WriteLine(message);
+        }
+
+        public void Critical(string format, params object[] args)
+        {
+            var message = string.Format(format, args);
+            Trace.WriteLine(message);
+        }
+
+        public void Emergency(string format, params object[] args)
+        {
+            var message = string.Format(format, args);
+            Trace.WriteLine(message);
+        }
     }
 }

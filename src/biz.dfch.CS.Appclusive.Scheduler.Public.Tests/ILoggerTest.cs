@@ -40,6 +40,46 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public.Tests
             {
                 return;
             }
+
+            public void Debug(string format, params object[] args)
+            {
+                return;
+            }
+
+            public void Info(string format, params object[] args)
+            {
+                return;
+            }
+
+            public void Notice(string format, params object[] args)
+            {
+                return;
+            }
+
+            public void Warn(string format, params object[] args)
+            {
+                return;
+            }
+
+            public void Error(string format, params object[] args)
+            {
+                return;
+            }
+
+            public void Alert(string format, params object[] args)
+            {
+                return;
+            }
+
+            public void Critical(string format, params object[] args)
+            {
+                return;
+            }
+
+            public void Emergency(string format, params object[] args)
+            {
+                return;
+            }
         }
 
         class Logger : ILogger
@@ -52,6 +92,46 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public.Tests
             public void WriteLine(string format, params object[] args)
             {
                 new LoggerImpl().WriteLine(format, args);
+            }
+
+            public void Debug(string format, params object[] args)
+            {
+                new LoggerImpl().Debug(format, args);
+            }
+
+            public void Info(string format, params object[] args)
+            {
+                new LoggerImpl().Info(format, args);
+            }
+
+            public void Notice(string format, params object[] args)
+            {
+                new LoggerImpl().Notice(format, args);
+            }
+
+            public void Warn(string format, params object[] args)
+            {
+                new LoggerImpl().Warn(format, args);
+            }
+
+            public void Error(string format, params object[] args)
+            {
+                new LoggerImpl().Error(format, args);
+            }
+
+            public void Alert(string format, params object[] args)
+            {
+                new LoggerImpl().Alert(format, args);
+            }
+
+            public void Critical(string format, params object[] args)
+            {
+                new LoggerImpl().Critical(format, args);
+            }
+
+            public void Emergency(string format, params object[] args)
+            {
+                new LoggerImpl().Emergency(format, args);
             }
         }
 
