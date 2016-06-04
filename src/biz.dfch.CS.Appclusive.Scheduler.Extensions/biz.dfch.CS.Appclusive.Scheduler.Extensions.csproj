@@ -144,6 +144,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PowerShellScriptPlugin.cs" />
+    <Compile Include="PowerShellScriptPluginConfiguration.cs" />
     <Compile Include="ProgrammePluginConfiguration.cs" />
     <Compile Include="ProgrammePluginInvokeParameters.cs" />
     <Compile Include="ProgrammePlugin.cs" />

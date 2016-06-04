@@ -152,6 +152,8 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="PowerShellScriptPluginConfigurationTest.cs" />
+    <Compile Include="PowerShellScriptPluginTest.cs" />
     <Compile Include="ISchedulerPluginTest.cs" />
     <Compile Include="CodeContractTest.cs" />
     <Compile Include="DefaultPluginTest.cs" />
