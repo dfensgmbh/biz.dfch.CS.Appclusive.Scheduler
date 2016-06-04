@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+using biz.dfch.CS.Appclusive.Public;
+using biz.dfch.CS.Appclusive.Public.Configuration;
 using biz.dfch.CS.Appclusive.Scheduler.Public;
 using biz.dfch.CS.Utilities.Logging;
 using System;

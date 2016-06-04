@@ -22,6 +22,8 @@ using System.Text;
 using System.Threading.Tasks;
 using biz.dfch.CS.Appclusive.Scheduler.Public;
 using System.Configuration;
+using biz.dfch.CS.Appclusive.Public.Configuration;
+using biz.dfch.CS.Appclusive.Public;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Core
 {
@@ -29,7 +31,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
     {
         public void Initialise(BaseDto configuration, DictionaryParameters parameters)
         {
-            Contract.Requires(configuration is ScheduledTaskWorkerConfiguration);
+            Contract.Assert(configuration is ScheduledTaskWorkerConfiguration);
             
             parameters = parameters ?? new DictionaryParameters();
 

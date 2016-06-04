@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 
-
+using biz.dfch.CS.Appclusive.Public;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Web;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Public
 {

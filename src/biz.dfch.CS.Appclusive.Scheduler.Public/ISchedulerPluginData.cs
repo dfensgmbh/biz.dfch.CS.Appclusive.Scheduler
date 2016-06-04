@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using biz.dfch.CS.Appclusive.Public.Plugins;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;

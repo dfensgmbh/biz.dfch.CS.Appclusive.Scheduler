@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+using biz.dfch.CS.Appclusive.Public;
 using biz.dfch.CS.Appclusive.Scheduler.Core;
 using biz.dfch.CS.Appclusive.Scheduler.Public;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

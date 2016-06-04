@@ -24,6 +24,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Telerik.JustMock;
 using System.Diagnostics;
+using biz.dfch.CS.Appclusive.Public;
 using biz.dfch.CS.Appclusive.Scheduler.Core;
 using biz.dfch.CS.Utilities.Testing;
 using biz.dfch.CS.Appclusive.Scheduler.Public;

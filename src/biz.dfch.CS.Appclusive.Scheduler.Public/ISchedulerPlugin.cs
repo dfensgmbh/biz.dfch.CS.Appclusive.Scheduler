@@ -20,6 +20,7 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using biz.dfch.CS.Appclusive.Public.Plugins; 
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Public
 {

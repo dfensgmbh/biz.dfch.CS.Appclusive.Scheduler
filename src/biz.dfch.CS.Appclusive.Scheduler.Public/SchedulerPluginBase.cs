@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
@@ -20,11 +21,11 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using biz.dfch.CS.Appclusive.Public.Plugins;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Public
 {
-    public abstract class SchedulerPluginBase : 
-        AppclusivePluginBase
+    public abstract class SchedulerPluginBase : AppclusivePluginBase
         , 
         ISchedulerPlugin
     {

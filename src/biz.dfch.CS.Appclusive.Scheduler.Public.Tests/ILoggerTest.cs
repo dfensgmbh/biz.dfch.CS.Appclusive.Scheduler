@@ -22,6 +22,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Telerik.JustMock;
+using biz.dfch.CS.Appclusive.Public.Logging;
 using biz.dfch.CS.Utilities.Testing;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Public.Tests

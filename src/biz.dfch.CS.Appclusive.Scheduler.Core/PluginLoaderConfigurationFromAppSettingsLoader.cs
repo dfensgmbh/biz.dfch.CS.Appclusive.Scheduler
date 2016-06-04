@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 using System.Configuration;
+using biz.dfch.CS.Appclusive.Public;
 using biz.dfch.CS.Appclusive.Scheduler.Public;
 using System;
 using System.Collections.Generic;
@@ -22,6 +23,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using biz.dfch.CS.Appclusive.Public.Configuration;
+using biz.dfch.CS.Appclusive.Public.Plugins;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Core
 {
@@ -29,7 +32,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
     {
         public void Initialise(BaseDto configuration, DictionaryParameters parameters)
         {
-            Contract.Requires(configuration is PluginLoaderConfiguration);
+            Contract.Assert(configuration is PluginLoaderConfiguration);
 
             var cfg = configuration as PluginLoaderConfiguration;
 

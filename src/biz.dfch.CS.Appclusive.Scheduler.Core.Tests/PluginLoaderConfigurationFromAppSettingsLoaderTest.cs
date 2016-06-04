@@ -25,6 +25,7 @@ using Telerik.JustMock;
 using System.IO;
 using biz.dfch.CS.Utilities.Testing;
 using biz.dfch.CS.Appclusive.Scheduler.Public;
+using biz.dfch.CS.Appclusive.Public.Plugins;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
 {

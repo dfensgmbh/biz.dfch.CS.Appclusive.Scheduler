@@ -18,9 +18,12 @@ using System;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using biz.dfch.CS.Appclusive.Public.Logging;
 using biz.dfch.CS.Utilities.Testing;
 using System.Collections.Generic;
 using Telerik.JustMock;
+using biz.dfch.CS.Appclusive.Public;
+using biz.dfch.CS.Appclusive.Public.Plugins;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Public.Tests
 {
@@ -48,7 +51,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public.Tests
             // Arrange
             var message = "arbitrary-message";
             var sut = new SchedulerPluginImpl();
-            var logger = Mock.Create<ILogger>();
+            var logger = Mock.Create<IAppclusivePluginLogger>();
             sut.Initialise(new DictionaryParameters(), logger, true);
 
             // Act

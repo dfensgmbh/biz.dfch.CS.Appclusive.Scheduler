@@ -24,6 +24,8 @@ using System.Threading.Tasks;
 using biz.dfch.CS.Appclusive.Scheduler.Public;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
+using biz.dfch.CS.Appclusive.Public;
+using biz.dfch.CS.Appclusive.Public.Plugins;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
 {

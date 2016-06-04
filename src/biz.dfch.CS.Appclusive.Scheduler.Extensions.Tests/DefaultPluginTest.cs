@@ -8,6 +8,7 @@ using System.Collections.Specialized;
 using biz.dfch.CS.Appclusive.Scheduler.Public;
 using System.Collections.Generic;
 using biz.dfch.CS.Appclusive.Scheduler.Core;
+using biz.dfch.CS.Appclusive.Public;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
 {

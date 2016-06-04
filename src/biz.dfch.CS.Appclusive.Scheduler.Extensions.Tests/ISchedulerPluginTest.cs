@@ -22,6 +22,7 @@ using biz.dfch.CS.Appclusive.Scheduler.Core;
 using biz.dfch.CS.Utilities.Testing;
 using System.Collections.Generic;
 using biz.dfch.CS.Appclusive.Scheduler.Public;
+using biz.dfch.CS.Appclusive.Public;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
 {
