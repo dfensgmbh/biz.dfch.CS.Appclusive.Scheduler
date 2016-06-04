@@ -32,7 +32,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public
 
         public List<string> PluginTypes { get; set; }
 
-        public Assembly[] Assemblies { get; set; }
+        public List<Assembly> Assemblies { get; set; }
 
         public PluginLoaderConfiguration()
         {
@@ -44,6 +44,15 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public
             Contract.Requires(null != loader);
 
             loader.Initialise(this, null);
+
+            return;
+        }
+
+        public PluginLoaderConfiguration(Action<BaseDto> loader)
+        {
+            Contract.Requires(null != loader);
+
+            loader(this);
 
             return;
         }

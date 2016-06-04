@@ -23,6 +23,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Telerik.JustMock;
+using System.Reflection;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Public.Tests
 {
@@ -77,6 +78,30 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public.Tests
             Mock.Assert(loader);
             Mock.Assert(configuration);
             
+            Assert.IsTrue(sut.IsInitialised);
+        }
+        
+        [TestMethod]
+        public void InitialiseExplicitConfigurationSucceedsAndSetIsInitialisedToTrue()
+        {
+            // Arrange
+            Action<BaseDto> loader = 
+                delegate(BaseDto configuration) 
+                {
+                    Contract.Requires(configuration is PluginLoaderConfiguration);
+
+                    var cfg = configuration as PluginLoaderConfiguration;
+                    cfg.ExtensionsFolder = ".";
+                    cfg.PluginTypes = new List<string>() { PluginLoader.LOAD_ALL_PATTERN };
+                    cfg.Assemblies = new List<Assembly>() { this.GetType().Assembly };
+                };
+
+            var sut = new PluginLoader();
+
+            // Act
+            sut.Initialise(loader);
+
+            // Assert
             Assert.IsTrue(sut.IsInitialised);
         }
         
@@ -194,6 +219,143 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public.Tests
             // Assert
             Assert.IsTrue(result);
             Assert.IsTrue(jobResult.Succeeded);
+        }
+
+        [TestMethod]
+        [ExpectContractFailure]
+        public void InitialiseAndLoadWithNullLoaderThrowsContractException()
+        {
+            // Arrange
+            var sut = new PluginLoader();
+
+            // Act
+            sut.InitialiseAndLoad(default(IConfigurationLoader));
+
+            // Assert
+            // N/A
+        }
+
+        [TestMethod]
+        [ExpectContractFailure]
+        public void InitialiseAndLoadWithoutConfigurationThrowsContractException()
+        {
+            // Arrange
+            var sut = new PluginLoader();
+
+            // Act
+            sut.InitialiseAndLoad(default(IConfigurationLoader));
+
+            // Assert
+            // N/A
+        }
+
+        [TestMethod]
+        [ExpectContractFailure]
+        public void InitialiseWithNullLoaderWithoutConfigurationThrowsContractException()
+        {
+            // Arrange
+            var sut = new PluginLoader();
+
+            // Act
+            sut.Initialise(default(IConfigurationLoader));
+
+            // Assert
+            // N/A
+        }
+
+        [TestMethod]
+        [ExpectContractFailure]
+        public void InitialiseWithNullActionWithoutConfigurationThrowsContractException()
+        {
+            // Arrange
+            var sut = new PluginLoader();
+
+            // Act
+            sut.Initialise(default(Action<BaseDto>));
+
+            // Assert
+            // N/A
+        }
+
+        [TestMethod]
+        public void InitialiseAndLoadSucceedsAndReturnsPluginFromPublicTestsAssembly()
+        {
+            // Arrange
+            var pluginName = "PluginFromPublicTests";
+            var configuration = Mock.Create<PluginLoaderConfiguration>();
+            Mock.Arrange(() => configuration.ExtensionsFolder)
+                .IgnoreInstance()
+                .Returns(".");
+            Mock.Arrange(() => configuration.PluginTypes)
+                .IgnoreInstance()
+                .Returns(new List<string>() { pluginName });
+            
+            var sut = new PluginLoader(loader);
+
+            // Act
+            var result = sut.InitialiseAndLoad();
+
+            // Assert
+            Mock.Assert(loader);
+            Mock.Assert(configuration);
+            
+            Assert.IsNotNull(result);
+            Assert.AreEqual(1, result.Count);
+            Assert.AreEqual(pluginName, result[0].Metadata.Type);
+            Assert.AreEqual(int.MinValue, result[0].Metadata.Priority);
+        }
+
+        [TestMethod]
+        public void InitialiseAndLoadWithLoaderSucceedsAndReturnsPluginFromPublicTestsAssembly()
+        {
+            // Arrange
+            var pluginName = "PluginFromPublicTests";
+            var configuration = Mock.Create<PluginLoaderConfiguration>();
+            Mock.Arrange(() => configuration.ExtensionsFolder)
+                .IgnoreInstance()
+                .Returns(".");
+            Mock.Arrange(() => configuration.PluginTypes)
+                .IgnoreInstance()
+                .Returns(new List<string>() { pluginName });
+            
+            var sut = new PluginLoader();
+
+            // Act
+            var result = sut.InitialiseAndLoad(loader);
+
+            // Assert
+            Mock.Assert(loader);
+            Mock.Assert(configuration);
+            
+            Assert.IsNotNull(result);
+            Assert.AreEqual(1, result.Count);
+            Assert.AreEqual(pluginName, result[0].Metadata.Type);
+            Assert.AreEqual(int.MinValue, result[0].Metadata.Priority);
+        }
+
+        [TestMethod]
+        public void InitialiseAndLoadWithActionSucceedsAndReturnsPluginFromPublicTestsAssembly()
+        {
+            // Arrange
+            var pluginName = "PluginFromPublicTests";
+            var sut = new PluginLoader();
+
+            // Act
+            var result = sut.InitialiseAndLoad(configuration => 
+            {
+                    Contract.Requires(configuration is PluginLoaderConfiguration);
+
+                    var cfg = configuration as PluginLoaderConfiguration;
+                    cfg.ExtensionsFolder = ".";
+                    cfg.PluginTypes = new List<string>() { pluginName };
+                    cfg.Assemblies = new List<Assembly>() { this.GetType().Assembly };
+            });
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(1, result.Count);
+            Assert.AreEqual(pluginName, result[0].Metadata.Type);
+            Assert.AreEqual(int.MinValue, result[0].Metadata.Priority);
         }
     }
 }

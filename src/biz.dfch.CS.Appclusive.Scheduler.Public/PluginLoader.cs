@@ -58,10 +58,20 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public
             Initialise();
         }
 
+        public void Initialise(Action<BaseDto> loader)
+        {
+            Contract.Requires(null != loader);
+
+            configuration = new PluginLoaderConfiguration(loader);
+            
+            Initialise();
+        }
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         public void Initialise()
         {
             Contract.Assert(null != configuration);
+            Contract.Assert(configuration.IsValid());
 
             IsInitialised = false;
 
@@ -129,7 +139,9 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public
             Contract.Ensures(0 < Contract.Result<List<Lazy<IAppclusivePlugin, IAppclusivePluginData>>>().Count);
 
             var plugins = new List<Lazy<IAppclusivePlugin, IAppclusivePluginData>>();
-            foreach(var plugin in pluginsAvailable.OrderByDescending(p => p.Metadata.Priority))
+            foreach(var plugin in pluginsAvailable
+                .Distinct()
+                .OrderByDescending(p => p.Metadata.Priority))
             {
                 var isPluginToBeAdded =
                         (
@@ -139,7 +151,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public
                         )
                         &&
                         (
-                            !plugins.Contains(plugin)
+                            !plugins.Exists(m => m.Metadata.Type.Equals(plugin.Metadata.Type, StringComparison.InvariantCultureIgnoreCase))
                         );
 
                 if(!isPluginToBeAdded)
@@ -154,6 +166,16 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public
         }
 
         public List<Lazy<IAppclusivePlugin, IAppclusivePluginData>> InitialiseAndLoad(IConfigurationLoader loader)
+        {
+            Contract.Requires(null != loader);
+
+            configuration = new PluginLoaderConfiguration(loader);
+            
+            var result = InitialiseAndLoad();
+            return result;
+        }
+
+        public List<Lazy<IAppclusivePlugin, IAppclusivePluginData>> InitialiseAndLoad(Action<BaseDto> loader)
         {
             Contract.Requires(null != loader);
 
