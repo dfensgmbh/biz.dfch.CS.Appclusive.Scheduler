@@ -45,8 +45,8 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
         //private readonly string managementUri = Environment.MachineName;
         //private Uri uri;
         
-        bool isInitialised = false;
-        DateTimeOffset lastInitialisedDate;
+        private bool isInitialised = false;
+        private DateTimeOffset lastInitialisedDate;
         private DateTimeOffset lastUpdated = DateTimeOffset.Now;
         
         private Timer stateTimer = null;
@@ -86,8 +86,8 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
                 mgmtUri = svcCore.ManagementUris
                     .Where
                     (
-                        e => e.Name.Equals(configuration.ManagementUriName, StringComparison.OrdinalIgnoreCase) &&
-                        e.Type.Equals("biz.dfch.CS.Appclusive.Scheduler", StringComparison.OrdinalIgnoreCase)
+                        e => e.Name.Equals(configuration.ManagementUriName, StringComparison.InvariantCultureIgnoreCase) &&
+                        e.Type.Equals("biz.dfch.CS.Appclusive.Scheduler", StringComparison.InvariantCultureIgnoreCase)
                     )
                     .SingleOrDefault();
 
@@ -154,7 +154,7 @@ Success :
             var mgmtCredential = svcCore.ManagementCredentials
                 .Where
                 (
-                    e => e.Name.Equals(task.Parameters.ManagementCredential, StringComparison.OrdinalIgnoreCase)
+                    e => e.Name.Equals(task.Parameters.ManagementCredential, StringComparison.InvariantCultureIgnoreCase)
                 )
                 .Single();
 
@@ -171,7 +171,7 @@ Success :
 
             Trace.WriteLine(Method.fn());
 
-            var fReturn = false;
+            var result = false;
             if (isInitialised)
             {
                 return;
@@ -189,20 +189,19 @@ Success :
                 svcCore.Credentials = System.Net.CredentialCache.DefaultNetworkCredentials;
                 svcCore.Format.UseJson();
 
-                UpdateScheduledTasks();
+                result = UpdateScheduledTasks();
 
                 timerCallback = new TimerCallback(this.RunTasks);
                 stateTimer = new Timer(timerCallback, null, 1000, (1000 * 60) - 20);
-                
-                fReturn = true;
             }
             catch (Exception ex)
             {
                 Trace.WriteException(ex.Message, ex);
+                throw;
             }
 
-            this.isInitialised = fReturn;
-            this.IsActive = fReturn;
+            this.isInitialised = result;
+            this.IsActive = result;
             return;
         }
 
@@ -221,10 +220,12 @@ Success :
         // The state object is necessary for a TimerCallback.
         protected void RunTasks(object stateObject)
         {
+            Contract.Assert(isInitialised);
+
             var fReturn = false;
             var now = DateTimeOffset.Now;
 
-            if (!IsActive || !isInitialised)
+            if (!IsActive)
             {
                 return;
             }
@@ -240,7 +241,8 @@ Success :
                         {
                             Debug.WriteLine(string.Format("Invoking '{0}' as '{1}' [{2}] ...", task.Parameters.CommandLine, task.Username, task.NextOccurrence.ToString()));
 
-                            biz.dfch.CS.Utilities.Process.StartProcess(task.Parameters.CommandLine, task.Parameters.WorkingDirectory, task.Credential);
+                            var result = biz.dfch.CS.Utilities.Process.StartProcess(task.Parameters.CommandLine, task.Parameters.WorkingDirectory, task.Credential);
+                            // DFTODO - we could potentionally log the result of StartProcess to a log file
                         }
                     }
                 }
@@ -248,9 +250,10 @@ Success :
                 if (configuration.UpdateIntervalInMinutes <= (now - lastInitialisedDate).TotalMinutes)
                 {
                     fReturn = UpdateScheduledTasks();
+                    Contract.Assert(fReturn);
                 }
             }
-            // why do we handle a timeout exception here ?!
+            // DFTODO - why do we handle a timeout exception here ?!
             catch (TimeoutException ex)
             {
                 Trace.WriteException(ex.Message, ex);
@@ -262,8 +265,11 @@ Success :
             catch (Exception ex)
             {
                 Trace.WriteException(ex.Message, ex);
+                // DFTODO - should we really throw - this would bring down the whole service
                 throw;
             }
+
+            return;
         }
     }
 }
