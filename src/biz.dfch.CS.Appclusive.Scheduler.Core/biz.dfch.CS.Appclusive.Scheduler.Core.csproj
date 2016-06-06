@@ -197,6 +197,8 @@
     <Compile Include="DefaultPlugin.cs" />
     <Compile Include="PluginLoaderConfigurationFromAppSettingsLoader.cs" />
     <Compile Include="Logger.cs" />
+    <Compile Include="ScheduledJobsManager.cs" />
+    <Compile Include="ScheduledJobsManagerImpl.cs" />
     <Compile Include="ScheduledTaskWorkerConfigurationLoader.cs" />
     <Compile Include="ScheduledTaskWorkerConfiguration.cs" />
     <Compile Include="ProjectInstaller.cs">
