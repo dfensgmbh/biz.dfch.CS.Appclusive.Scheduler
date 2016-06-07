@@ -38,7 +38,9 @@
             // 
             // serviceInstaller1
             // 
-            this.serviceInstaller1.ServiceName = "CumulusScheduler";
+            this.serviceInstaller1.Description = "Scheduler for the Appclusive Application and Middleware Framework";
+            this.serviceInstaller1.DisplayName = "AppclusiveScheduler";
+            this.serviceInstaller1.ServiceName = "AppclusiveScheduler";
             this.serviceInstaller1.StartType = System.ServiceProcess.ServiceStartMode.Automatic;
             this.serviceInstaller1.AfterInstall += new System.Configuration.Install.InstallEventHandler(this.serviceInstaller1_AfterInstall);
             // 
