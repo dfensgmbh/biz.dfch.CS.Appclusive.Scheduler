@@ -85,7 +85,10 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             var fn = Method.fn();
             Trace.WriteLine("{0}.{1}", this.GetType().FullName, fn);
 
-            scheduledTaskWorker.IsActive = false;
+            if(null != scheduledTaskWorker)
+            {
+                scheduledTaskWorker.IsActive = false;
+            }
 
             base.OnStop();
         }
@@ -95,7 +98,10 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             var fn = Method.fn();
             Trace.WriteLine("{0}.{1}", this.GetType().FullName, fn);
 
-            scheduledTaskWorker.IsActive = false;
+            if(null != scheduledTaskWorker)
+            {
+                scheduledTaskWorker.IsActive = false;
+            }
 
             base.OnPause();
         }
@@ -105,8 +111,11 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             var fn = Method.fn();
             Trace.WriteLine("{0}.{1}", this.GetType().FullName, fn);
 
-            scheduledTaskWorker.IsActive = true;
-            scheduledTaskWorker.UpdateScheduledTasks();
+            if(null != scheduledTaskWorker)
+            {
+                scheduledTaskWorker.IsActive = true;
+                scheduledTaskWorker.UpdateScheduledTasks();
+            }
 
             base.OnContinue();
         }
@@ -132,7 +141,10 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             var fn = Method.fn();
             Trace.WriteLine("{0}.{1}", this.GetType().FullName, fn);
 
-            scheduledTaskWorker.IsActive = false;
+            if(null != scheduledTaskWorker)
+            {
+                scheduledTaskWorker.IsActive = false;
+            }
 
             base.OnShutdown();
         }
