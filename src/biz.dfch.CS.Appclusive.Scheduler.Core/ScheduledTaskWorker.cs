@@ -67,16 +67,36 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             this.Ctor(configuration);
         }
 
+        public bool InitialUpdateScheduledTasks()
+        {
+            Trace.WriteLine(Method.fn());
+
+            var result = false;
+
+            result = InternalUpdateScheduledTask();
+            return result;
+        }
+
         public bool UpdateScheduledTasks()
         {
             Trace.WriteLine(Method.fn());
 
-            var fReturn = false;
+            var result = false;
 
             if (!IsActive)
             {
-                return fReturn;
+                return result;
             }
+
+            result = InternalUpdateScheduledTask();
+            return result;
+        }
+
+        public bool InternalUpdateScheduledTask()
+        {
+            Trace.WriteLine(Method.fn());
+
+            var result = false;
 
             ManagementUri mgmtUri = null;
             try
@@ -141,8 +161,8 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             }
 Success :
             lastInitialisedDate = DateTimeOffset.Now;
-            fReturn = true;
-            return fReturn;
+            result = true;
+            return result;
         }
 
         private ScheduledTask ExtractTask(JToken taskParameters)
@@ -167,6 +187,7 @@ Success :
         protected void Ctor(ScheduledTaskWorkerConfiguration configuration)
         {
             Contract.Requires(configuration.IsValid());
+            this.configuration = configuration;
 
             Trace.WriteLine(Method.fn());
 
@@ -183,7 +204,7 @@ Success :
                 var baseUri = new Uri(string.Format("{0}api", configuration.Uri.AbsoluteUri));
                 endpoints = new AppclusiveEndpoints(baseUri, null);
 
-                result = UpdateScheduledTasks();
+                result = InitialUpdateScheduledTasks();
 
                 timerCallback = new TimerCallback(this.RunTasks);
                 stateTimer = new Timer(timerCallback, null, 1000, (1000 * 60) - 20);
@@ -216,7 +237,7 @@ Success :
         {
             Contract.Assert(isInitialised);
 
-            var fReturn = false;
+            var result = false;
             var now = DateTimeOffset.Now;
 
             if (!IsActive)
@@ -235,7 +256,7 @@ Success :
                         {
                             Debug.WriteLine(string.Format("Invoking '{0}' as '{1}' [{2}] ...", task.Parameters.CommandLine, task.Username, task.NextOccurrence.ToString()));
 
-                            var result = biz.dfch.CS.Utilities.Process.StartProcess(task.Parameters.CommandLine, task.Parameters.WorkingDirectory, task.Credential);
+                            var resultFromStartProcess = biz.dfch.CS.Utilities.Process.StartProcess(task.Parameters.CommandLine, task.Parameters.WorkingDirectory, task.Credential);
                             // DFTODO - we could potentionally log the result of StartProcess to a log file
                         }
                     }
@@ -243,8 +264,8 @@ Success :
 
                 if (configuration.UpdateIntervalInMinutes <= (now - lastInitialisedDate).TotalMinutes)
                 {
-                    fReturn = UpdateScheduledTasks();
-                    Contract.Assert(fReturn);
+                    result = UpdateScheduledTasks();
+                    Contract.Assert(result);
                 }
             }
             // DFTODO - why do we handle a timeout exception here ?!
