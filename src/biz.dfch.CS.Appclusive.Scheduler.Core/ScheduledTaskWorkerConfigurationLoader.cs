@@ -48,7 +48,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
                 ScheduledTaskWorkerConfiguration.SERVER_NOT_REACHABLE_RETRIES_DEFAULT);
 
             var uri = ConfigurationManager.AppSettings["Uri"];
-            if(parameters.ContainsKey("args1"))
+            if(parameters.ContainsKey("args0"))
             {
                 uri = parameters["args0"] as string;
             }
@@ -56,7 +56,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             cfg.Uri = new Uri(uri);
 
             cfg.ManagementUriName = ConfigurationManager.AppSettings["ManagementUri"];
-            if(parameters.ContainsKey("args0"))
+            if(parameters.ContainsKey("args1"))
             {
                 cfg.ManagementUriName = parameters["args1"] as string;
             }
