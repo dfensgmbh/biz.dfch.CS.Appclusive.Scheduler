@@ -26,6 +26,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public
 {
     public class AppclusiveCredentialSection : ConfigurationSection
     {
+        public const string SECTION_NAME = "AppclusiveCredential";
 
         //<configuration>
 

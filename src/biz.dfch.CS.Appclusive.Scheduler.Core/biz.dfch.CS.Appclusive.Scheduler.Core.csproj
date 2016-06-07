@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{ED3CBDAE-82B0-43EA-BE69-B0CAD148A209}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>biz.dfch.CS.Appclusive.Scheduler.Core</RootNamespace>
     <AssemblyName>biz.dfch.CS.Appclusive.Scheduler.Core</AssemblyName>
@@ -120,6 +120,9 @@
     <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
     <CodeContractsReferenceAssembly>Build</CodeContractsReferenceAssembly>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="biz.dfch.CS.Appclusive.Api, Version=2.8.0.24089, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\biz.dfch.CS.Appclusive.Api.2.8.0\lib\biz.dfch.CS.Appclusive.Api.dll</HintPath>
@@ -188,6 +191,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppclusiveCredentialSectionManager.cs" />
     <Compile Include="AppclusiveEndpoints.cs" />
     <Compile Include="AppclusiveSchedulerService.cs">
       <SubType>Component</SubType>

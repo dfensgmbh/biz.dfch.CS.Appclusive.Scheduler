@@ -68,16 +68,16 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
 
             cfg.ServerNotReachableRetries = Convert.ToInt32(ConfigurationManager.AppSettings["ServerNotReachableRetries"]);
 
-            var credentialSection = ConfigurationManager.GetSection("AppclusiveCredential") as AppclusiveCredentialSection;
+            var credentialSection = ConfigurationManager.GetSection(AppclusiveCredentialSection.SECTION_NAME) as AppclusiveCredentialSection;
             if(null == credentialSection)
             {
-                Trace.WriteLine("No credential in app.config section 'AppclusiveCredential' defined. Using 'DefaultNetworkCredentials'.");
+                Trace.WriteLine("No credential in app.config section '{0}' defined. Using 'DefaultNetworkCredentials'.", AppclusiveCredentialSection.SECTION_NAME, "");
                 
                 cfg.Credential = CredentialCache.DefaultNetworkCredentials;
             }
             else
             {
-                Trace.WriteLine("Credential in app.config section 'AppclusiveCredential' found. Using '{0}\\{1}.'", credentialSection.Domain, credentialSection.Username);
+                Trace.WriteLine("Credential in app.config section '{0}' found. Using '{1}\\{2}.'", AppclusiveCredentialSection.SECTION_NAME, credentialSection.Domain, credentialSection.Username);
 
                 var networkCredential = new NetworkCredential(credentialSection.Username, credentialSection.Password, credentialSection.Domain);
                 Contract.Assert(null != networkCredential);

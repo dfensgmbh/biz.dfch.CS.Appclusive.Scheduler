@@ -148,6 +148,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppclusiveCredentialSection.cs" />
+    <Compile Include="ConfigSectionManager.cs" />
     <Compile Include="SchedulerAppSettings.cs" />
     <Compile Include="ISchedulerPlugin.cs" />
     <Compile Include="ISchedulerPluginData.cs" />
