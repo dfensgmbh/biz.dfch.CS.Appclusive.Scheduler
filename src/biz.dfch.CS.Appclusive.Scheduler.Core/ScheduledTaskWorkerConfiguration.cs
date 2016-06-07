@@ -65,7 +65,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
                 for(var c = 0; c < args.Count(); c++)
                 {
                     var arg = args[c];
-                    parameters.Add(string.Format("arg{0}", c), arg);
+                    parameters.Add(string.Format("args{0}", c), arg);
                 }
             }
 
