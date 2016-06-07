@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.ServiceProcess;
 using System.Text;
@@ -35,9 +36,78 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
         {
             var fn = Method.fn();
             Debug.WriteLine("{0}: Environment.UserInteractive '{1}'", fn, Environment.UserInteractive);
-            
+
             if (Environment.UserInteractive)
             {
+                var isInteractiveStartup = true;
+                if(null != args && 1 <= args.Length)
+                {
+                    var arg0 = args[0].ToUpper();
+                    Contract.Assert(!string.IsNullOrWhiteSpace(arg0));
+                    if (arg0.Equals("ENCRYPT"))
+                    {
+                        var message = @"d-fens AppclusiveScheduler
+Copyright (C) d-fens GmbH. Source code licensed under Apache 2.0 license.
+
+Encrypting app.config credential section...";
+
+                        Console.WriteLine(message);
+                        new AppclusiveCredentialSectionManager().Encrypt();
+                        isInteractiveStartup = false;
+                    }
+                    else if (arg0.Equals("DECRYPT"))
+                    {
+                        var message = @"d-fens AppclusiveScheduler
+Copyright (C) d-fens GmbH. Source code licensed under Apache 2.0 license.
+
+Decrypting app.config credential section...";
+                        
+                        Console.WriteLine(message);
+                        new AppclusiveCredentialSectionManager().Decrypt();
+                        isInteractiveStartup = false;
+                    }
+                    else if (arg0.Equals("HELP") || arg0.Equals("--HELP") || arg0.Equals("-HELP") || arg0.Equals("/HELP") 
+                        || arg0.Equals("h") || arg0.Equals("/h") || arg0.Equals("-h") 
+                        || arg0.Equals("?") || arg0.Equals("-?") || arg0.Equals("/?"))
+                    {
+                        var message = @"d-fens AppclusiveScheduler
+Copyright (C) d-fens GmbH. Source code licensed under Apache 2.0 license.
+
+The AppclusiveScheduler is a Windows service application that executes 
+ScheduledJob instances defined in the Appclusive inventory.
+
+To install the service use the 'InstallUtil' from the Microsoft .NET Framework. 
+Please make sure to use the version that corresponds with the version this 
+executable was built with.
+
+Usage: AppclusiveScheduler [ENCRYPT | DECRYPT | HELP | URI | MGMTURINAME]
+
+ENCRYPT:
+Encrypt the AppclusiveCredential configuration section
+
+DECRYPT: 
+Decrypt the AppclusiveCredential configuration section
+
+URI:
+Specify the Appclusive base uri (and override its app.config setting)
+
+MGMTURI:
+Specify the Appclusive ManagementUri (and override its app.config setting)
+
+HELP:
+Show this helpd screen
+
+When started interactively, you can press Ctrl-C at any time to shutdown.
+";
+                        Console.WriteLine(message);
+                        isInteractiveStartup = false;
+                    }
+                }
+                if(!isInteractiveStartup)
+                {
+                    return;
+                }
+
                 var service = new AppclusiveSchedulerService();
 
                 Console.CancelKeyPress += delegate(object sender, ConsoleCancelEventArgs e)

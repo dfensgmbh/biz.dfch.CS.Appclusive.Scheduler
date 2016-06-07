@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-
+using biz.dfch.CS.Appclusive.Scheduler.Public;
 using biz.dfch.CS.Utilities.General;
 using biz.dfch.CS.Utilities.Logging;
 using System;
@@ -55,13 +55,20 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
 
             try
             {
+                var message = @"d-fens AppclusiveScheduler
+Copyright (C) d-fens GmbH. Source code licensed under Apache 2.0 license.
+
+Starting service interactively. Press Ctrl-C to abort ...";
+                Console.WriteLine(message);
+
                 OnStart(args);
                 serviceAbortSignal.WaitOne();
-                Trace.WriteLine(string.Format("CancelKeyPress detected. Stopping interactive mode."));
+                Console.WriteLine(string.Format("CancelKeyPress detected. Stopping interactive mode."));
             }
             catch (Exception ex)
             {
-                Trace.WriteException("Stopping interactive mode.", ex);
+                var message = string.Format("{0}@{1}: '{2}'\r\n[{3}]\r\n{4}", ex.GetType().Name, ex.Source, "Stopping interactive mode.", ex.Message, ex.StackTrace);
+                Console.WriteLine(message);
             }
             finally
             {
