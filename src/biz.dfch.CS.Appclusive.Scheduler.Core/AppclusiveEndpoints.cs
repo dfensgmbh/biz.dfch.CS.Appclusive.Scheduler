@@ -43,27 +43,27 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
 
             Uri uri;
             
-            uri = new Uri(string.Format("{0}Diagnostics", baseUri.AbsoluteUri));
+            uri = new Uri(string.Format("{0}/Diagnostics", baseUri.AbsoluteUri.TrimEnd('/')));
             Diagnostics = new biz.dfch.CS.Appclusive.Api.Diagnostics.Diagnostics(uri);
             Diagnostics.Credentials = credential;
             Diagnostics.Format.UseJson();
 
-            uri = new Uri(string.Format("{0}Core", baseUri.AbsoluteUri));
+            uri = new Uri(string.Format("{0}/Core", baseUri.AbsoluteUri.TrimEnd('/')));
             Core = new biz.dfch.CS.Appclusive.Api.Core.Core(uri);
             Core.Credentials = credential;
             Core.Format.UseJson();
 
-            uri = new Uri(string.Format("{0}Infrastructure", baseUri.AbsoluteUri));
+            uri = new Uri(string.Format("{0}/Infrastructure", baseUri.AbsoluteUri.TrimEnd('/')));
             Infrastructure = new biz.dfch.CS.Appclusive.Api.Infrastructure.Infrastructure(uri);
             Infrastructure.Credentials = credential;
             Infrastructure.Format.UseJson();
 
-            uri = new Uri(string.Format("{0}Csm", baseUri.AbsoluteUri));
+            uri = new Uri(string.Format("{0}/Csm", baseUri.AbsoluteUri.TrimEnd('/')));
             Csm = new biz.dfch.CS.Appclusive.Api.Csm.Csm(uri);
             Csm.Credentials = credential;
             Csm.Format.UseJson();
 
-            uri = new Uri(string.Format("{0}Cmp", baseUri.AbsoluteUri));
+            uri = new Uri(string.Format("{0}/Cmp", baseUri.AbsoluteUri.TrimEnd('/')));
             Cmp = new biz.dfch.CS.Appclusive.Api.Cmp.Cmp(uri);
             Cmp.Credentials = credential;
             Cmp.Format.UseJson();
