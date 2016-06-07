@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+using System.Net;
 using biz.dfch.CS.Appclusive.Public;
 using biz.dfch.CS.Appclusive.Public.Configuration;
 using biz.dfch.CS.Appclusive.Scheduler.Public;
@@ -42,6 +42,8 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
         public int UpdateIntervalInMinutes { get; set; }
         [Range(0, int.MaxValue)]
         public int ServerNotReachableRetries { get; set; }
+
+        public NetworkCredential Credential { get; set; }
 
         [ContractInvariantMethod]
         private void ContractInvariantMethod()

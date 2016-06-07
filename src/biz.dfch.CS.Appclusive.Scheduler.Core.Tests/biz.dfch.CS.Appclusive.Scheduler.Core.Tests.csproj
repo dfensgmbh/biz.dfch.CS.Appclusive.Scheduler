@@ -193,6 +193,7 @@
     <Compile Include="DefaultPluginTest.cs" />
     <Compile Include="PluginLoaderConfigurationFromAppSettingsLoaderTest.cs" />
     <Compile Include="ScheduledJobsManagerTest.cs" />
+    <Compile Include="ScheduledTaskWorkerConfigurationLoaderTest.cs" />
     <Compile Include="ScheduledTaskWorkerConfigurationTest.cs" />
     <Compile Include="ISchedulerPluginTest.cs" />
     <Compile Include="CodeContractTest.cs" />

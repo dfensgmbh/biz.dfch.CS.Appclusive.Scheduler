@@ -202,7 +202,7 @@ Success :
                 Debug.WriteLine(string.Format("Uri: '{0}'", configuration.Uri.AbsoluteUri));
 
                 var baseUri = new Uri(string.Format("{0}api", configuration.Uri.AbsoluteUri));
-                endpoints = new AppclusiveEndpoints(baseUri, null);
+                endpoints = new AppclusiveEndpoints(baseUri, configuration.Credential);
 
                 result = InitialUpdateScheduledTasks();
 

@@ -24,6 +24,8 @@ using biz.dfch.CS.Appclusive.Scheduler.Public;
 using System.Configuration;
 using biz.dfch.CS.Appclusive.Public.Configuration;
 using biz.dfch.CS.Appclusive.Public;
+using System.Net;
+using biz.dfch.CS.Utilities.Logging;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Core
 {
@@ -65,6 +67,22 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             cfg.UpdateIntervalInMinutes = Convert.ToInt32(ConfigurationManager.AppSettings["UpdateIntervalMinutes"]);
 
             cfg.ServerNotReachableRetries = Convert.ToInt32(ConfigurationManager.AppSettings["ServerNotReachableRetries"]);
+
+            var credentialSection = ConfigurationManager.GetSection("AppclusiveCredential") as AppclusiveCredentialSection;
+            if(null == credentialSection)
+            {
+                Trace.WriteLine("No credential in app.config section 'AppclusiveCredential' defined. Using 'DefaultNetworkCredentials'.");
+                
+                cfg.Credential = CredentialCache.DefaultNetworkCredentials;
+            }
+            else
+            {
+                Trace.WriteLine("Credential in app.config section 'AppclusiveCredential' found. Using '{0}\\{1}.'", credentialSection.Domain, credentialSection.Username);
+
+                var networkCredential = new NetworkCredential(credentialSection.Username, credentialSection.Password, credentialSection.Domain);
+                Contract.Assert(null != networkCredential);
+                cfg.Credential = networkCredential;
+            }
         }
     }
 
