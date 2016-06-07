@@ -188,6 +188,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppclusiveEndpoints.cs" />
     <Compile Include="AppclusiveSchedulerService.cs">
       <SubType>Component</SubType>
     </Compile>

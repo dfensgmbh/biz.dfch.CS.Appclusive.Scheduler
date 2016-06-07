@@ -54,8 +54,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
 
         private readonly List<ScheduledTask> scheduledTasks = new List<ScheduledTask>();
 
-        private biz.dfch.CS.Appclusive.Api.Diagnostics.Diagnostics svcDiagnostics;
-        private biz.dfch.CS.Appclusive.Api.Core.Core svcCore;
+        private AppclusiveEndpoints endpoints;
 
         private ScheduledTaskWorkerConfiguration configuration;
 
@@ -83,7 +82,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             try
             {
                 var now = DateTimeOffset.Now;
-                mgmtUri = svcCore.ManagementUris
+                mgmtUri = endpoints.Core.ManagementUris
                     .Where
                     (
                         e => e.Name.Equals(configuration.ManagementUriName, StringComparison.InvariantCultureIgnoreCase) &&
@@ -93,7 +92,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
 
                 if(null == mgmtUri)
                 {
-                    Trace.WriteLine("{0}: ManagementUri not found at '{1}'. Will retry later.", configuration.ManagementUriName, svcDiagnostics.BaseUri);
+                    Trace.WriteLine("{0}: ManagementUri not found at '{1}'. Will retry later.", configuration.ManagementUriName, endpoints.Diagnostics.BaseUri);
                     if (configuration.ServerNotReachableRetries <= (now - lastUpdated).TotalMinutes)
                     {
                         throw new TimeoutException();
@@ -124,20 +123,20 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             catch(InvalidOperationException ex)
             {
                 Trace.WriteException(ex.Message, ex);
-                Debug.WriteLine("{0}: ManagementUri not found at '{1}'. Aborting ...", configuration.ManagementUriName, svcDiagnostics.BaseUri.AbsoluteUri);
+                Debug.WriteLine("{0}: ManagementUri not found at '{1}'. Aborting ...", configuration.ManagementUriName, endpoints.Diagnostics.BaseUri.AbsoluteUri);
                 throw;
             }
             catch (TimeoutException ex)
             {
                 Trace.WriteException(ex.Message, ex);
-                Debug.WriteLine(string.Format("{0}: Timeout retrieving ManagementUri at '{1}'. Aborting ...", configuration.ManagementUriName, svcDiagnostics.BaseUri.AbsoluteUri));
+                Debug.WriteLine(string.Format("{0}: Timeout retrieving ManagementUri at '{1}'. Aborting ...", configuration.ManagementUriName, endpoints.Diagnostics.BaseUri.AbsoluteUri));
                 throw;
             }
             finally
             {
                 if(null != mgmtUri)
                 {
-                    svcDiagnostics.Detach(mgmtUri);
+                    endpoints.Diagnostics.Detach(mgmtUri);
                 }
             }
 Success :
@@ -151,7 +150,7 @@ Success :
             Contract.Requires(null != taskParameters);
 
             var task = new ScheduledTask(taskParameters.ToString());
-            var mgmtCredential = svcCore.ManagementCredentials
+            var mgmtCredential = endpoints.Core.ManagementCredentials
                 .Where
                 (
                     e => e.Name.Equals(task.Parameters.ManagementCredential, StringComparison.InvariantCultureIgnoreCase)
@@ -161,7 +160,7 @@ Success :
             task.Username = mgmtCredential.Username;
             task.Password = mgmtCredential.Password;
 
-            svcCore.Detach(mgmtCredential);
+            endpoints.Core.Detach(mgmtCredential);
             return task;
         }
 
@@ -181,13 +180,8 @@ Success :
             {
                 Debug.WriteLine(string.Format("Uri: '{0}'", configuration.Uri.AbsoluteUri));
 
-                svcDiagnostics = new Diagnostics(new Uri(string.Format("{0}api/Diagnostics", configuration.Uri.AbsoluteUri)));
-                svcDiagnostics.Credentials = System.Net.CredentialCache.DefaultNetworkCredentials;
-                svcDiagnostics.Format.UseJson();
-
-                svcCore = new biz.dfch.CS.Appclusive.Api.Core.Core(new Uri(string.Format("{0}api/Core", configuration.Uri.AbsoluteUri)));
-                svcCore.Credentials = System.Net.CredentialCache.DefaultNetworkCredentials;
-                svcCore.Format.UseJson();
+                var baseUri = new Uri(string.Format("{0}api", configuration.Uri.AbsoluteUri));
+                endpoints = new AppclusiveEndpoints(baseUri, null);
 
                 result = UpdateScheduledTasks();
 
@@ -257,7 +251,7 @@ Success :
             catch (TimeoutException ex)
             {
                 Trace.WriteException(ex.Message, ex);
-                var msg = string.Format("{0}: Timeout retrieving ManagementUri at '{1}'. Aborting ...", configuration.ManagementUriName, svcDiagnostics.BaseUri.AbsoluteUri);
+                var msg = string.Format("{0}: Timeout retrieving ManagementUri at '{1}'. Aborting ...", configuration.ManagementUriName, endpoints.Diagnostics.BaseUri.AbsoluteUri);
                 Trace.WriteLine(msg);
                 Environment.FailFast(msg);
                 throw;
