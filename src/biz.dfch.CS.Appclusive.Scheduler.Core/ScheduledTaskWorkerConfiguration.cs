@@ -32,7 +32,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
     public class ScheduledTaskWorkerConfiguration : BaseDto
     {
         public const int UPDATE_INTERVAL_IN_MINUTES_DEFAULT = 5;
-        public const int SERVER_NOT_REACHABLE_RETRIES_DEFAULT = 3;
+        public const int SERVER_NOT_REACHABLE_RETRIES_DEFAULT = 60;
 
         [Required]
         public Uri Uri { get; set; }
