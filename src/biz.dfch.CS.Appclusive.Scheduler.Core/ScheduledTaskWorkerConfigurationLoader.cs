@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using biz.dfch.CS.Appclusive.Scheduler.Public;
-using System.Configuration;
-using biz.dfch.CS.Appclusive.Public.Configuration;
 using biz.dfch.CS.Appclusive.Public;
-using System.Net;
+using biz.dfch.CS.Appclusive.Public.Configuration;
+using biz.dfch.CS.Appclusive.Scheduler.Public;
 using biz.dfch.CS.Utilities.Logging;
+using System;
+using System.Configuration;
+using System.Diagnostics.Contracts;
+using System.Net;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Core
 {
