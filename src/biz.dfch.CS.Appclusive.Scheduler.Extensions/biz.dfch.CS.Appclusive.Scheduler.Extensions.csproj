@@ -119,6 +119,10 @@
     <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="biz.dfch.CS.Activiti.Client, Version=1.1.1.22802, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\biz.dfch.CS.Activiti.Client.1.1.1\lib\biz.dfch.CS.Activiti.Client.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="biz.dfch.CS.Appclusive.Public, Version=2.8.3.28870, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\biz.dfch.CS.Appclusive.Public.2.8.3\lib\biz.dfch.CS.Appclusive.Public.dll</HintPath>
       <Private>True</Private>
