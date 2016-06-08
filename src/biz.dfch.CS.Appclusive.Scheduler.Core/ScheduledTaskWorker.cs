@@ -129,14 +129,28 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
                         var ja = JArray.Parse(mgmtUri.Value);
                         foreach (var j in ja)
                         {
-                            Debug.WriteLine(string.Format("{0}: Adding '{1}' ...", configuration.ManagementUriName, mgmtUri.Value));
-                            scheduledTasks.Add(ExtractTask(j));
+                            try
+                            {
+                                Debug.WriteLine(string.Format("{0}: Adding '{1}' ...", configuration.ManagementUriName, mgmtUri.Value));
+                                scheduledTasks.Add(ExtractTask(j));
+                            }
+                            catch (Exception ex)
+                            {
+                                Trace.WriteException(string.Format("{0}: Adding '{1}' FAILED. Skipping.", configuration.ManagementUriName, mgmtUri.Value), ex);
+                            }
                         }
                     }
                     else if (jtoken is JObject)
                     {
-                        Debug.WriteLine(string.Format("{0}: Adding '{1}' ...", configuration.ManagementUriName, mgmtUri.Value));
-                        scheduledTasks.Add(ExtractTask(jtoken));
+                        try
+                        {
+                            Debug.WriteLine(string.Format("{0}: Adding '{1}' ...", configuration.ManagementUriName, mgmtUri.Value));
+                            scheduledTasks.Add(ExtractTask(jtoken));
+                        }
+                        catch(Exception ex)
+                        {
+                            Trace.WriteException(string.Format("{0}: Adding '{1}' FAILED. Skipping.", configuration.ManagementUriName, mgmtUri.Value), ex);
+                        }
                     }
                 }
             }
@@ -170,6 +184,9 @@ Success :
             Contract.Requires(null != taskParameters);
 
             var task = new ScheduledTask(taskParameters.ToString());
+            Contract.Assert(null != task);
+            Contract.Assert(!string.IsNullOrWhiteSpace(task.Parameters.ManagementCredential));
+
             var mgmtCredential = endpoints.Core.ManagementCredentials
                 .Where
                 (

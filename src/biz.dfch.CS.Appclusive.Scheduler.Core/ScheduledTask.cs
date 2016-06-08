@@ -93,12 +93,14 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
 
         public ScheduledTask(string parameters)
         {
-            this.Initialise(parameters, VERSION_DEFAULT, true);
+            var isValidParameter = this.Initialise(parameters, VERSION_DEFAULT, true);
+            Contract.Assert(isValidParameter);
         }
 
         public ScheduledTask(string parameters, int version)
         {
-            this.Initialise(parameters, version, true);
+            var isValidParameter = this.Initialise(parameters, version, true);
+            Contract.Assert(isValidParameter);
         }
 
         public bool Initialise(string parameters, bool fThrowException = false)
