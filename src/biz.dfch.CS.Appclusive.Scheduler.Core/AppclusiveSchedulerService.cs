@@ -40,14 +40,14 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             serviceAbortSignal.Set();
         }
 
-        internal void OnStartInteractive(string[] args)
+        public void OnStartInteractive(string[] args)
         {
             var fn = Method.fn();
             Trace.WriteLine("{0}.{1}", this.GetType().FullName, fn);
 
             try
             {
-                Console.WriteLine(ProgramHelp.INTERACTIVE_MESSAGE);
+                Console.WriteLine(new ProgramHelp().GetInteractiveMessage());
 
                 OnStart(args);
                 serviceAbortSignal.WaitOne();

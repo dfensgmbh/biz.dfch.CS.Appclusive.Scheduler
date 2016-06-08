@@ -30,25 +30,25 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
         [TestMethod]
         public void ProgramHelpEncryptMessage()
         {
-            Assert.IsFalse(string.IsNullOrWhiteSpace(ProgramHelp.ENCRYPT_MESSAGE));
+            Assert.IsFalse(string.IsNullOrWhiteSpace(new ProgramHelp().GetEncryptMessage()));
         }
 
         [TestMethod]
         public void ProgramHelpDecryptMessage()
         {
-            Assert.IsFalse(string.IsNullOrWhiteSpace(ProgramHelp.DECRYPT_MESSAGE));
+            Assert.IsFalse(string.IsNullOrWhiteSpace(new ProgramHelp().GetDecryptMessage()));
         }
 
         [TestMethod]
         public void ProgramHelpHelpMessage()
         {
-            Assert.IsFalse(string.IsNullOrWhiteSpace(ProgramHelp.HELP_MESSAGE));
+            Assert.IsFalse(string.IsNullOrWhiteSpace(new ProgramHelp().GetHelpMessage()));
         }
 
         [TestMethod]
         public void ProgramHelpInteractiveMessage()
         {
-            Assert.IsFalse(string.IsNullOrWhiteSpace(ProgramHelp.INTERACTIVE_MESSAGE));
+            Assert.IsFalse(string.IsNullOrWhiteSpace(new ProgramHelp().GetInteractiveMessage()));
         }
     }
 }

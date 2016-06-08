@@ -19,17 +19,27 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
 {
     public class ProgramHelp
     {
-        public const string ENCRYPT_MESSAGE = @"d-fens AppclusiveScheduler
+        const string ENCRYPT_MESSAGE = @"d-fens AppclusiveScheduler
 Copyright (C) d-fens GmbH. Source code licensed under Apache 2.0 license.
 
 Encrypting app.config credential section...";
 
-        public const string DECRYPT_MESSAGE = @"d-fens AppclusiveScheduler
+        public string GetEncryptMessage()
+        {
+            return ENCRYPT_MESSAGE;
+        }
+
+        const string DECRYPT_MESSAGE = @"d-fens AppclusiveScheduler
 Copyright (C) d-fens GmbH. Source code licensed under Apache 2.0 license.
 
 Decrypting app.config credential section...";
 
-        public const string HELP_MESSAGE = @"d-fens AppclusiveScheduler
+        public string GetDecryptMessage()
+        {
+            return ENCRYPT_MESSAGE;
+        }
+
+        const string HELP_MESSAGE = @"d-fens AppclusiveScheduler
 Copyright (C) d-fens GmbH. Source code licensed under Apache 2.0 license.
 
 The AppclusiveScheduler is a Windows service application that executes 
@@ -59,9 +69,20 @@ Show this helpd screen
 When started interactively, you can press Ctrl-C at any time to shutdown.
 ";
 
-        public const string INTERACTIVE_MESSAGE = @"d-fens AppclusiveScheduler
+        public string GetHelpMessage()
+        {
+            return ENCRYPT_MESSAGE;
+        }
+
+        const string INTERACTIVE_MESSAGE = @"d-fens AppclusiveScheduler
 Copyright (C) d-fens GmbH. Source code licensed under Apache 2.0 license.
 
 Starting service interactively. Press Ctrl-C to abort ...";
+
+        public string GetInteractiveMessage()
+        {
+            return ENCRYPT_MESSAGE;
+        }
+
     }
 }
