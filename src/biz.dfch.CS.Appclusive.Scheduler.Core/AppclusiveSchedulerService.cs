@@ -55,11 +55,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
 
             try
             {
-                var message = @"d-fens AppclusiveScheduler
-Copyright (C) d-fens GmbH. Source code licensed under Apache 2.0 license.
-
-Starting service interactively. Press Ctrl-C to abort ...";
-                Console.WriteLine(message);
+                Console.WriteLine(ProgramHelp.INTERACTIVE_MESSAGE);
 
                 OnStart(args);
                 serviceAbortSignal.WaitOne();

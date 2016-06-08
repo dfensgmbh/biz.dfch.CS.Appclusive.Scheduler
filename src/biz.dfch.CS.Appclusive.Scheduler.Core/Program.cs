@@ -46,23 +46,13 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
                     Contract.Assert(!string.IsNullOrWhiteSpace(arg0));
                     if (arg0.Equals("ENCRYPT"))
                     {
-                        var message = @"d-fens AppclusiveScheduler
-Copyright (C) d-fens GmbH. Source code licensed under Apache 2.0 license.
-
-Encrypting app.config credential section...";
-
-                        Console.WriteLine(message);
+                        Console.WriteLine(ProgramHelp.ENCRYPT_MESSAGE);
                         new AppclusiveCredentialSectionManager().Encrypt();
                         isInteractiveStartup = false;
                     }
                     else if (arg0.Equals("DECRYPT"))
                     {
-                        var message = @"d-fens AppclusiveScheduler
-Copyright (C) d-fens GmbH. Source code licensed under Apache 2.0 license.
-
-Decrypting app.config credential section...";
-                        
-                        Console.WriteLine(message);
+                        Console.WriteLine(ProgramHelp.DECRYPT_MESSAGE);
                         new AppclusiveCredentialSectionManager().Decrypt();
                         isInteractiveStartup = false;
                     }
@@ -70,36 +60,7 @@ Decrypting app.config credential section...";
                         || arg0.Equals("h") || arg0.Equals("/h") || arg0.Equals("-h") 
                         || arg0.Equals("?") || arg0.Equals("-?") || arg0.Equals("/?"))
                     {
-                        var message = @"d-fens AppclusiveScheduler
-Copyright (C) d-fens GmbH. Source code licensed under Apache 2.0 license.
-
-The AppclusiveScheduler is a Windows service application that executes 
-ScheduledJob instances defined in the Appclusive inventory.
-
-To install the service use the 'InstallUtil' from the Microsoft .NET Framework. 
-Please make sure to use the version that corresponds with the version this 
-executable was built with.
-
-Usage: AppclusiveScheduler [ENCRYPT | DECRYPT | HELP | URI | MGMTURINAME]
-
-ENCRYPT:
-Encrypt the AppclusiveCredential configuration section
-
-DECRYPT: 
-Decrypt the AppclusiveCredential configuration section
-
-URI:
-Specify the Appclusive base uri (and override its app.config setting)
-
-MGMTURI:
-Specify the Appclusive ManagementUri (and override its app.config setting)
-
-HELP:
-Show this helpd screen
-
-When started interactively, you can press Ctrl-C at any time to shutdown.
-";
-                        Console.WriteLine(message);
+                        Console.WriteLine(ProgramHelp.HELP_MESSAGE);
                         isInteractiveStartup = false;
                     }
                 }
