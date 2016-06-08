@@ -40,7 +40,6 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
         public bool ConvertActionToEnum(string action, ref int value)
         {
             Contract.Requires(null != action);
-            Contract.Requires(null != value);
 
             JobActionEnum jobActionEnum = default(JobActionEnum);
             var result = Enum.TryParse<JobActionEnum>(action, out jobActionEnum);
