@@ -73,7 +73,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             }
             else
             {
-                Trace.WriteLine("Credential in app.config section '{0}' found. Using '{1}\\{2}.'", AppclusiveCredentialSection.SECTION_NAME, credentialSection.Domain, credentialSection.Username);
+                Trace.WriteLine("Credential in app.config section '{0}' found. Using '{1}\\{2}'.", AppclusiveCredentialSection.SECTION_NAME, credentialSection.Domain, credentialSection.Username);
 
                 var networkCredential = new NetworkCredential(credentialSection.Username, credentialSection.Password, credentialSection.Domain);
                 Contract.Assert(null != networkCredential);

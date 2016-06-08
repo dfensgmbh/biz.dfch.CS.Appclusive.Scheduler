@@ -112,7 +112,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
 
                 if(null == mgmtUri)
                 {
-                    Trace.WriteLine("{0}: ManagementUri not found at '{1}'. Will retry later.", configuration.ManagementUriName, endpoints.Diagnostics.BaseUri);
+                    Trace.WriteLine("{0}: ManagementUri not found at '{1}'. Will retry later.", configuration.ManagementUriName, endpoints.Core.BaseUri);
                     if (configuration.ServerNotReachableRetries <= (now - lastUpdated).TotalMinutes)
                     {
                         throw new TimeoutException();
@@ -143,13 +143,13 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             catch(InvalidOperationException ex)
             {
                 Trace.WriteException(ex.Message, ex);
-                Debug.WriteLine("{0}: ManagementUri not found at '{1}'. Aborting ...", configuration.ManagementUriName, endpoints.Diagnostics.BaseUri.AbsoluteUri);
+                Debug.WriteLine("{0}: ManagementUri not found at '{1}'. Aborting ...", configuration.ManagementUriName, endpoints.Core.BaseUri.AbsoluteUri);
                 throw;
             }
             catch (TimeoutException ex)
             {
                 Trace.WriteException(ex.Message, ex);
-                Debug.WriteLine(string.Format("{0}: Timeout retrieving ManagementUri at '{1}'. Aborting ...", configuration.ManagementUriName, endpoints.Diagnostics.BaseUri.AbsoluteUri));
+                Debug.WriteLine(string.Format("{0}: Timeout retrieving ManagementUri at '{1}'. Aborting ...", configuration.ManagementUriName, endpoints.Core.BaseUri.AbsoluteUri));
                 throw;
             }
             finally
@@ -237,11 +237,14 @@ Success :
         {
             Contract.Assert(isInitialised);
 
+            var fn = Method.fn();
+
             var result = false;
             var now = DateTimeOffset.Now;
 
             if (!IsActive)
             {
+                Debug.WriteLine("{0}: IsActive: {1}. Nothing to do.", fn, IsActive);
                 return;
             }
 
@@ -250,6 +253,11 @@ Success :
             {
                 lock (scheduledTasks)
                 {
+                    if (0 >= scheduledTasks.Count)
+                    {
+                        Debug.WriteLine("{0}: No scheduled tasks found. Nothing to do.", fn, "");
+                    }
+
                     foreach (var task in scheduledTasks)
                     {
                         if (task.IsScheduledToRun(now))
