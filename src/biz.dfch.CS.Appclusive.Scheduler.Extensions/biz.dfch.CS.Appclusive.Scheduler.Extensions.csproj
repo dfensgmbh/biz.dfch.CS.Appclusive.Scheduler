@@ -158,6 +158,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActivitiPlugin.cs" />
+    <Compile Include="ActivitiPluginConfiguration.cs" />
+    <Compile Include="ActivitiPluginInvokeParameters.cs" />
     <Compile Include="PowerShellScriptPlugin.cs" />
     <Compile Include="PowerShellScriptPluginConfiguration.cs" />
     <Compile Include="ProgrammePluginConfiguration.cs" />
