@@ -47,6 +47,12 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
                 .Returns(appclusiveCredentialSection)
                 .MustBeCalled();
 
+            Mock.Arrange(() => ConfigurationManager.AppSettings["ExtensionsFolder"])
+                .IgnoreInstance()
+                .Returns("..\\..\\..\\biz.dfch.CS.Appclusive.Scheduler.Extensions\\bin\\Debug");
+            Mock.Arrange(() => ConfigurationManager.AppSettings["PluginTypes"])
+                .IgnoreInstance()
+                .Returns("*");
             Mock.Arrange(() => ConfigurationManager.AppSettings["UpdateIntervalMinutes"])
                 .IgnoreInstance()
                 .Returns("0");
@@ -82,6 +88,12 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
                 .Returns(default(object))
                 .MustBeCalled();
 
+            Mock.Arrange(() => ConfigurationManager.AppSettings["ExtensionsFolder"])
+                .IgnoreInstance()
+                .Returns("..\\..\\..\\biz.dfch.CS.Appclusive.Scheduler.Extensions\\bin\\Debug");
+            Mock.Arrange(() => ConfigurationManager.AppSettings["PluginTypes"])
+                .IgnoreInstance()
+                .Returns("*");
             Mock.Arrange(() => ConfigurationManager.AppSettings["UpdateIntervalMinutes"])
                 .IgnoreInstance()
                 .Returns("0");

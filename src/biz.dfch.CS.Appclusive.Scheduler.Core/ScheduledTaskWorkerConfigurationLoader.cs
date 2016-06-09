@@ -16,6 +16,7 @@
 
 using biz.dfch.CS.Appclusive.Public;
 using biz.dfch.CS.Appclusive.Public.Configuration;
+using biz.dfch.CS.Appclusive.Public.Plugins;
 using biz.dfch.CS.Appclusive.Scheduler.Public;
 using biz.dfch.CS.Utilities.Logging;
 using System;
@@ -45,6 +46,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
                 cfg.ServerNotReachableRetries : 
                 ScheduledTaskWorkerConfiguration.SERVER_NOT_REACHABLE_RETRIES_DEFAULT);
 
+            // apply parameters if overridden on command line
             var uri = ConfigurationManager.AppSettings["Uri"];
             if(parameters.ContainsKey("args0"))
             {
@@ -60,10 +62,17 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             }
             Contract.Assert(!string.IsNullOrWhiteSpace(cfg.ManagementUriName));
 
+            // load plugins
+            var configurationLoader = new PluginLoaderConfigurationFromAppSettingsLoader();
+            var pluginLoader = new PluginLoader(configurationLoader, cfg.Logger);
+            cfg.Plugins = pluginLoader.InitialiseAndLoad();
+
+            // get communication update and retry variables
             cfg.UpdateIntervalInMinutes = Convert.ToInt32(ConfigurationManager.AppSettings["UpdateIntervalMinutes"]);
 
             cfg.ServerNotReachableRetries = Convert.ToInt32(ConfigurationManager.AppSettings["ServerNotReachableRetries"]);
 
+            // get credentials to connect to Appclusive HOST server
             var credentialSection = ConfigurationManager.GetSection(AppclusiveCredentialSection.SECTION_NAME) as AppclusiveCredentialSection;
             if(null == credentialSection)
             {

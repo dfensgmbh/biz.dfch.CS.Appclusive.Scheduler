@@ -26,6 +26,7 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using biz.dfch.CS.Appclusive.Public.Plugins;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Core
 {
@@ -39,6 +40,31 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
 
         [Required]
         public string ManagementUriName { get; set; }
+
+        private IAppclusivePluginLogger logger = new Logger();
+        public IAppclusivePluginLogger Logger
+        {
+            get
+            {
+                return logger;
+            }
+            set
+            {
+                logger = value;
+            }
+        }
+        private List<Lazy<IAppclusivePlugin, IAppclusivePluginData>> plugins = new List<Lazy<IAppclusivePlugin, IAppclusivePluginData>>();
+        public List<Lazy<IAppclusivePlugin, IAppclusivePluginData>> Plugins
+        {
+            get
+            {
+                return plugins;
+            }
+            set
+            {
+                plugins = value;
+            }
+        }
 
         private string managementUriType = "biz.dfch.CS.Appclusive.Scheduler";
         public string ManagementUriType 
@@ -65,6 +91,8 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
         private void ContractInvariantMethod()
         {
             Contract.Invariant(null != Uri);
+            Contract.Invariant(null != Logger);
+            Contract.Invariant(null != Plugins);
             Contract.Invariant(!string.IsNullOrWhiteSpace(ManagementUriName));
             Contract.Invariant(0 <= UpdateIntervalInMinutes);
             Contract.Invariant(0 <= ServerNotReachableRetries);
