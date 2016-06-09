@@ -13,23 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+using biz.dfch.CS.Appclusive.Public;
+using biz.dfch.CS.Utilities.Logging;
+using NCrontab;
+using System;
 // Install-Package ncrontab 
 // https://www.nuget.org/packages/ncrontab/
 using System.Diagnostics.Contracts;
-using NCrontab;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web;
-using biz.dfch.CS.Utilities.Logging;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Core
 {
-    class ScheduledTask
+    public class ScheduledTask : BaseDto
     {
         private bool isInitialised = false;
         private const int VERSION_DEFAULT = 0;
@@ -116,12 +113,14 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
 
             try
             {
-                this.Parameters = JsonConvert.DeserializeObject<ScheduledTaskParameters>(parameters);
+                this.Parameters = BaseDto.DeserializeObject<ScheduledTaskParameters>(parameters);
+                Contract.Assert(this.IsValid());
+
                 fReturn = true;
             }
             catch(Exception ex)
             {
-                Debug.WriteLine(string.Format("{0}@{1}: {2}\r\n{3}", ex.GetType().Name, ex.Source, ex.Message, ex.StackTrace));
+                Trace.WriteException(ex.Message, ex);
                 if(fThrowException)
                 {
                     throw;

@@ -19,13 +19,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using biz.dfch.CS.Appclusive.Public;
+using System.ComponentModel.DataAnnotations;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Core
 {
-    class ScheduledTaskParameters
+    public class ScheduledTaskParameters : BaseDto
     {
         public bool IsActive { get; set; }
 
+        [Required]
         public string CrontabExpression { get; set; }
 
         public string CommandLine { get; set; }
