@@ -86,11 +86,6 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             set { credential = value; }
         }
 
-        public ScheduledTask()
-        {
-            return;
-        }
-
         public ScheduledTask(string parameters)
         {
             var isValidParameter = this.Initialise(parameters, VERSION_DEFAULT, true);

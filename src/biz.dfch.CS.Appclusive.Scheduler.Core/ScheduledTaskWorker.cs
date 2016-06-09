@@ -24,7 +24,6 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Management;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using biz.dfch.CS.Utilities.General;
@@ -36,15 +35,6 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
 {
     class ScheduledTaskWorker
     {
-        //private const int UPDATE_INTERVAL_IN_MINUTES_DEFAULT = 5;
-        //private int updateIntervalInMinutes;
-
-        //private const int SERVER_NOT_REACHABLE_RETRIES_DEFAULT = 3;
-        //private int serverNotReachableRetriesInMinutes;
-        
-        //private readonly string managementUri = Environment.MachineName;
-        //private Uri uri;
-        
         private bool isInitialised = false;
         private DateTimeOffset lastInitialisedDate;
         private DateTimeOffset lastUpdated = DateTimeOffset.Now;
@@ -106,7 +96,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
                     .Where
                     (
                         e => e.Name.Equals(configuration.ManagementUriName, StringComparison.InvariantCultureIgnoreCase) &&
-                        e.Type.Equals("biz.dfch.CS.Appclusive.Scheduler", StringComparison.InvariantCultureIgnoreCase)
+                        e.Type.Equals(configuration.ManagementUriType, StringComparison.InvariantCultureIgnoreCase)
                     )
                     .SingleOrDefault();
 

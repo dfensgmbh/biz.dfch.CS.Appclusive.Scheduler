@@ -31,7 +31,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
 {
     [Export(typeof(IAppclusivePlugin))]
     [ExportMetadata("Type", "Programme")]
-    [ExportMetadata("Priority", int.MaxValue)]
+    [ExportMetadata("Priority", int.MinValue)]
     [ExportMetadata("Role", "default")]
     public class ProgrammePlugin : SchedulerPluginBase
     {

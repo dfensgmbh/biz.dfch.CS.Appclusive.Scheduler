@@ -21,6 +21,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
     [TestClass]
     public class AppclusiveCredentialSectionManagerTest
     {
+        [Ignore]
         [TestCategory("SkipOnTeamCity")]
         [TestMethod]
         public void GettingConfigSectionSucceeds()

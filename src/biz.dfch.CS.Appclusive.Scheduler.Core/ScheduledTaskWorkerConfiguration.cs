@@ -36,10 +36,26 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
 
         [Required]
         public Uri Uri { get; set; }
+
         [Required]
         public string ManagementUriName { get; set; }
+
+        private string managementUriType = "biz.dfch.CS.Appclusive.Scheduler";
+        public string ManagementUriType 
+        { 
+            get
+            {
+                return managementUriType;
+            }
+            private set
+            {
+                managementUriType = value;
+            }
+        }
+        
         [Range(0, int.MaxValue)]
         public int UpdateIntervalInMinutes { get; set; }
+        
         [Range(0, int.MaxValue)]
         public int ServerNotReachableRetries { get; set; }
 
