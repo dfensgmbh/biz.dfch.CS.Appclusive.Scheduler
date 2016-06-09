@@ -36,11 +36,14 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
 
             var cfg = configuration as ScheduledTaskWorkerConfiguration;
 
+            // get communication update and retry variables
+            cfg.UpdateIntervalInMinutes = Convert.ToInt32(ConfigurationManager.AppSettings["UpdateIntervalMinutes"]);
             cfg.UpdateIntervalInMinutes = 
                 (0 != cfg.UpdateIntervalInMinutes) ? 
                 cfg.UpdateIntervalInMinutes : 
                 ScheduledTaskWorkerConfiguration.UPDATE_INTERVAL_IN_MINUTES_DEFAULT;
 
+            cfg.ServerNotReachableRetries = Convert.ToInt32(ConfigurationManager.AppSettings["ServerNotReachableRetries"]);
             cfg.ServerNotReachableRetries = 
                 cfg.UpdateIntervalInMinutes * (0 != cfg.ServerNotReachableRetries ?
                 cfg.ServerNotReachableRetries : 
@@ -66,11 +69,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             var configurationLoader = new PluginLoaderConfigurationFromAppSettingsLoader();
             var pluginLoader = new PluginLoader(configurationLoader, cfg.Logger);
             cfg.Plugins = pluginLoader.InitialiseAndLoad();
-
-            // get communication update and retry variables
-            cfg.UpdateIntervalInMinutes = Convert.ToInt32(ConfigurationManager.AppSettings["UpdateIntervalMinutes"]);
-
-            cfg.ServerNotReachableRetries = Convert.ToInt32(ConfigurationManager.AppSettings["ServerNotReachableRetries"]);
+            Contract.Assert(0 < cfg.Plugins.Count, "No plugins loaded. Cannot continue.");
 
             // get credentials to connect to Appclusive HOST server
             var credentialSection = ConfigurationManager.GetSection(AppclusiveCredentialSection.SECTION_NAME) as AppclusiveCredentialSection;
