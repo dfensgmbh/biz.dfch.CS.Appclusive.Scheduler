@@ -36,7 +36,7 @@ Decrypting app.config credential section...";
 
         public string GetDecryptMessage()
         {
-            return ENCRYPT_MESSAGE;
+            return DECRYPT_MESSAGE;
         }
 
         const string HELP_MESSAGE = @"d-fens AppclusiveScheduler
@@ -71,7 +71,7 @@ When started interactively, you can press Ctrl-C at any time to shutdown.
 
         public string GetHelpMessage()
         {
-            return ENCRYPT_MESSAGE;
+            return HELP_MESSAGE;
         }
 
         const string INTERACTIVE_MESSAGE = @"d-fens AppclusiveScheduler
@@ -81,7 +81,7 @@ Starting service interactively. Press Ctrl-C to abort ...";
 
         public string GetInteractiveMessage()
         {
-            return ENCRYPT_MESSAGE;
+            return INTERACTIVE_MESSAGE;
         }
 
     }

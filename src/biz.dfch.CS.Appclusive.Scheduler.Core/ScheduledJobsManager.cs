@@ -64,7 +64,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
                 var result = ConvertActionToEnum(job.Action, ref action);
                 if(!result)
                 {
-                    Trace.WriteLine("Parsing scheduled job '{0}' [{1}}] FAILED. Invalid action '{2}'.", job.Id, job.Name, job.Action);
+                    Trace.WriteLine("Parsing scheduled job '{0}' [{1}] FAILED. Invalid action '{2}'.", job.Id.ToString(), job.Name, job.Action);
                     continue;
                 }
 
@@ -98,7 +98,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
 
                 if(!isValidAction)
                 {
-                    Trace.WriteLine("Parsing scheduled job '{0}' [{1}}] FAILED. Invalid ScheduledJobParameters.", job.Id, job.Name);
+                    Trace.WriteLine("Parsing scheduled job '{0}' [{1}] FAILED. Invalid ScheduledJobParameters.", job.Id.ToString(), job.Name);
                     continue;
                 }
 

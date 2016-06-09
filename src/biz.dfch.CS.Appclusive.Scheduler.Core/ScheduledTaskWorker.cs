@@ -44,17 +44,44 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
 
         private readonly List<ScheduledTask> scheduledTasks = new List<ScheduledTask>();
 
-        private AppclusiveEndpoints endpoints;
+        private readonly AppclusiveEndpoints endpoints;
 
-        private ScheduledTaskWorkerConfiguration configuration;
+        private readonly ScheduledTaskWorkerConfiguration configuration;
 
         public bool IsActive { get; set; }
 
         public ScheduledTaskWorker(ScheduledTaskWorkerConfiguration configuration)
         {
+            Contract.Requires(configuration.IsValid());
+
+            this.configuration = configuration;
+
             Trace.WriteLine(Method.fn());
 
-            this.Ctor(configuration);
+            var result = false;
+
+            try
+            {
+                Debug.WriteLine(string.Format("Uri: '{0}'", configuration.Uri.AbsoluteUri));
+
+                var baseUri = new Uri(string.Format("{0}api", configuration.Uri.AbsoluteUri));
+                endpoints = new AppclusiveEndpoints(baseUri, configuration.Credential);
+
+                result = InitialUpdateScheduledTasks();
+
+                timerCallback = new TimerCallback(this.RunTasks);
+                stateTimer = new Timer(timerCallback, null, 1000, (1000 * 60) - 20);
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteException(ex.Message, ex);
+                throw;
+            }
+
+            this.isInitialised = result;
+            this.IsActive = result;
+        
+            return;
         }
 
         public bool InitialUpdateScheduledTasks()
@@ -189,42 +216,6 @@ Success :
 
             endpoints.Core.Detach(mgmtCredential);
             return task;
-        }
-
-        protected void Ctor(ScheduledTaskWorkerConfiguration configuration)
-        {
-            Contract.Requires(configuration.IsValid());
-            this.configuration = configuration;
-
-            Trace.WriteLine(Method.fn());
-
-            var result = false;
-            if (isInitialised)
-            {
-                return;
-            }
-
-            try
-            {
-                Debug.WriteLine(string.Format("Uri: '{0}'", configuration.Uri.AbsoluteUri));
-
-                var baseUri = new Uri(string.Format("{0}api", configuration.Uri.AbsoluteUri));
-                endpoints = new AppclusiveEndpoints(baseUri, configuration.Credential);
-
-                result = InitialUpdateScheduledTasks();
-
-                timerCallback = new TimerCallback(this.RunTasks);
-                stateTimer = new Timer(timerCallback, null, 1000, (1000 * 60) - 20);
-            }
-            catch (Exception ex)
-            {
-                Trace.WriteException(ex.Message, ex);
-                throw;
-            }
-
-            this.isInitialised = result;
-            this.IsActive = result;
-            return;
         }
 
         ~ScheduledTaskWorker()
