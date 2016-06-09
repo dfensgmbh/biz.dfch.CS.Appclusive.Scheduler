@@ -64,7 +64,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
             var config = new ScheduledTaskWorkerConfiguration(sut, args);
 
             // Assert
-            Mock.Arrange(() => ConfigurationManager.GetSection(Arg.Is<string>(AppclusiveCredentialSection.SECTION_NAME)));
+            Mock.Assert(() => ConfigurationManager.GetSection(Arg.Is<string>(AppclusiveCredentialSection.SECTION_NAME)));
             
             Assert.AreEqual(uri, config.Uri.AbsoluteUri);
             Assert.AreEqual(mgmtUriName, config.ManagementUriName);
@@ -99,7 +99,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
             var config = new ScheduledTaskWorkerConfiguration(sut, args);
 
             // Assert
-            Mock.Arrange(() => ConfigurationManager.GetSection(Arg.Is<string>(AppclusiveCredentialSection.SECTION_NAME)));
+            Mock.Assert(() => ConfigurationManager.GetSection(Arg.Is<string>(AppclusiveCredentialSection.SECTION_NAME)));
 
             Assert.AreEqual(uri, config.Uri.AbsoluteUri);
             Assert.AreEqual(mgmtUriName, config.ManagementUriName);
