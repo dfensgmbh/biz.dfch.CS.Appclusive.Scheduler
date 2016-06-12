@@ -29,11 +29,26 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
 {
     public class ScheduledJobsManager
     {
-        public List<ScheduledJob> LoadJobs()
+        private static readonly ScheduledJobsManagerImpl scheduledJobsManagerImpl;
+        private readonly AppclusiveEndpoints appclusiveEndpoints;
+        
+        static ScheduledJobsManager()
+        {
+            scheduledJobsManagerImpl = new ScheduledJobsManagerImpl();
+        }
+
+        public ScheduledJobsManager(AppclusiveEndpoints endpoints)
+        {
+            Contract.Requires(null != endpoints);
+            Contract.Requires(null != endpoints.Core);
+            appclusiveEndpoints = endpoints;
+        }
+
+        public List<ScheduledJob> GetJobs()
         {
             Contract.Ensures(null != Contract.Result<List<ScheduledJob>>());
 
-            var result = new ScheduledJobsManagerImpl().Load();
+            var result = scheduledJobsManagerImpl.GetJobs(appclusiveEndpoints);
             return result;
         }
 

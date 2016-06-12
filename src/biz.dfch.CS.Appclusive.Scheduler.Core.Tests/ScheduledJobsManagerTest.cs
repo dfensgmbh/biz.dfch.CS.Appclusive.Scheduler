@@ -21,6 +21,7 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Telerik.JustMock;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
 {
@@ -28,14 +29,14 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
     public class ScheduledJobsManagerTest
     {
         [TestMethod]
-        public void LoadingScheduledJobsSucceeds()
+        public void GetScheduledJobsSucceeds()
         {
             // Arrange
-
-            var sut = new ScheduledJobsManager();
+            var endpoints = Mock.Create<AppclusiveEndpoints>();
+            var sut = new ScheduledJobsManager(endpoints);
 
             // Act
-            var result = sut.LoadJobs();
+            var result = sut.GetJobs();
             
             // Assert
             Assert.IsTrue(0 <= result.Count);

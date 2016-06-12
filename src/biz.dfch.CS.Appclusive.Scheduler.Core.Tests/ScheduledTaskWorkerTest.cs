@@ -122,10 +122,17 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
                 .Returns(true)
                 .MustBeCalled();
 
+            var scheduledJobsManagerImpl = Mock.Create<ScheduledJobsManagerImpl>();
+            Mock.Arrange(() => scheduledJobsManagerImpl.GetJobs(Arg.IsAny<AppclusiveEndpoints>()))
+                .IgnoreInstance()
+                .Returns(new ScheduledJobsMockData().GetJobs())
+                .MustBeCalled();
+
             // Act
             sut.RunTasks(stateObject);
 
             // Assert
+            Mock.Assert(scheduledJobsManagerImpl);
             Mock.Assert(task);
             Mock.Assert(defaultPlugin);
         }

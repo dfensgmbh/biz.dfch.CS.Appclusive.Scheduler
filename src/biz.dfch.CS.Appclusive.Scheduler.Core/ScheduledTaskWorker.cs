@@ -95,9 +95,9 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             // load ScheduledJob entities
             try
             {
-                var scheduledJobsManager = new ScheduledJobsManager();
+                var scheduledJobsManager = new ScheduledJobsManager(endpoints);
 
-                var scheduledJobs = scheduledJobsManager.LoadJobs();
+                var scheduledJobs = scheduledJobsManager.GetJobs();
                 var validJobs = scheduledJobsManager.GetValidJobs(scheduledJobs);
                 this.scheduledJobs = validJobs;
                 Contract.Assert(SCHEDULED_TASK_WORKER_JOBS_PER_INSTANCE_MAX >= validJobs.Count);
