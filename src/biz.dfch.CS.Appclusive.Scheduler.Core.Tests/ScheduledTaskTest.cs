@@ -22,6 +22,7 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using biz.dfch.CS.Appclusive.Api.Core;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
 {
@@ -32,14 +33,13 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
         public void CreatingScheduledTaskSucceeds()
         {
             // Arrange
-            var scheduledTaskParameters = new ScheduledTaskParameters()
+            var job = new ScheduledJob()
             {
-                CrontabExpression = "* * * * *"
+                Crontab = "* * * * *"
             };
-            var parameters = JsonConvert.SerializeObject(scheduledTaskParameters);
-            
+
             // Act
-            var sut = new ScheduledTask(parameters);
+            var sut = new ScheduledTask(job);
 
             // Assert
             Assert.IsTrue(sut.IsValid());

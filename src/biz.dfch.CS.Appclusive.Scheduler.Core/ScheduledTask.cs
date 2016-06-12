@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
+using biz.dfch.CS.Appclusive.Api.Core;
 using biz.dfch.CS.Appclusive.Public;
 using biz.dfch.CS.Utilities.Logging;
 using NCrontab;
 using System;
+using System.ComponentModel.DataAnnotations;
 // Install-Package ncrontab 
 // https://www.nuget.org/packages/ncrontab/
 using System.Diagnostics.Contracts;
@@ -28,112 +30,21 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
 {
     public class ScheduledTask : BaseDto
     {
-        private bool isInitialised = false;
-        private const int VERSION_DEFAULT = 0;
+        [Required]
+        private readonly ScheduledJob job;
 
-        public ScheduledTaskParameters Parameters { get; set; }
+        public bool IsActive { get; set; }
         
-        private DateTime nextOccurrence = DateTime.MinValue;
-        public DateTime NextOccurrence
+        [Required]
+        public DateTime NextOccurrence { get; set; }
+
+        public ScheduledTask(ScheduledJob scheduledJob)
         {
-            get { return nextOccurrence; }
-            set { nextOccurrence = value; }
-        }
+            Contract.Requires(null != scheduledJob);
 
-        public string Username
-        {
-            get 
-            { 
-                return credential.UserName; 
-            }
-            set 
-            {
-                if (value.Contains("\\"))
-                {
-                    var domainUsername = value.Split('\\');
-                    Contract.Assert(null != domainUsername);
-                    Contract.Assert(2 == domainUsername.Count());
-
-                    credential.Domain = domainUsername.First();
-                    credential.UserName = domainUsername.Last();
-                }
-                else
-                {
-                    credential.UserName = value;
-                }
-            }
-        }
-
-        public string Password
-        {
-            get { return credential.Password; }
-            set { credential.Password = value; }
-        }
-
-        public string Domain
-        {
-            get { return credential.Domain; }
-            set { credential.Domain = value; }
-        }
-
-        private NetworkCredential credential = new NetworkCredential();
-        public NetworkCredential Credential
-        {
-            get { return credential; }
-            set { credential = value; }
-        }
-
-        public ScheduledTask(string parameters)
-        {
-            var isValidParameter = this.Initialise(parameters, VERSION_DEFAULT, true);
-            Contract.Assert(isValidParameter);
-        }
-
-        public ScheduledTask(string parameters, int version)
-        {
-            var isValidParameter = this.Initialise(parameters, version, true);
-            Contract.Assert(isValidParameter);
-        }
-
-        public bool Initialise(string parameters, bool fThrowException = false)
-        {
-            return this.Initialise(parameters, VERSION_DEFAULT, fThrowException);
-        }
-
-        public bool Initialise(string parameters, int version, bool fThrowException = false)
-        {
-            Contract.Requires(!string.IsNullOrWhiteSpace(parameters));
-            Contract.Requires(VERSION_DEFAULT <= version);
-
-            var fReturn = false;
-            if (isInitialised)
-            {
-                return fReturn;
-            }
-
-            try
-            {
-                this.Parameters = BaseDto.DeserializeObject<ScheduledTaskParameters>(parameters);
-                Contract.Assert(this.IsValid());
-
-                fReturn = true;
-            }
-            catch(Exception ex)
-            {
-                Trace.WriteException(ex.Message, ex);
-                if(fThrowException)
-                {
-                    throw;
-                } 
-                else
-                {
-                    this.Parameters = null;
-                    fReturn = false;
-                }
-            }
-
-            this.isInitialised = fReturn;
-            return fReturn;
+            IsActive = true;
+            NextOccurrence = DateTime.MinValue;
+            job = scheduledJob;
         }
 
         public DateTimeOffset GetNextSchedule()
@@ -149,24 +60,17 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             var nextOccurrence = DateTime.MinValue;
             try
             {
-                if (!this.Parameters.IsActive)
+                if (!this.IsActive)
                 {
                     return DateTimeOffset.MinValue;
                 }
 
-                var schedule = CrontabSchedule.Parse(this.Parameters.CrontabExpression);
+                var schedule = CrontabSchedule.Parse(job.Crontab);
                 
                 var startMinute = new DateTime(withinThisMinute.Year, 1, 1, 0, 0, 0);
                 nextOccurrence = schedule.GetNextOccurrences(startMinute, withinThisMinute.DateTime).LastOrDefault();
                 if (null == nextOccurrence)
                 {
-                    Debug.WriteLine(string.Format(
-                        "{0}: Getting next occurrence for time range '{1}-{2}' [{3}] FAILED. Check CrontabExpression or time range.", 
-                        this.Parameters.CommandLine, 
-                        startMinute.ToString("yyyy-MM-dd HH:mm:ss.fffzzz"), 
-                        withinThisMinute.ToString("yyyy-MM-dd HH:mm:ss.fffzzz"), 
-                        this.Parameters.CrontabExpression
-                        ));
                     return DateTimeOffset.MinValue;
                 }
                 
@@ -175,17 +79,19 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
                     return DateTimeOffset.MinValue;
                 }
 
-                this.nextOccurrence = nextOccurrence;
-                return this.nextOccurrence;
+                NextOccurrence = nextOccurrence;
+                return NextOccurrence;
             }
             catch (CrontabException ex)
             {
-                Debug.WriteLine(string.Format("{0}@{1}: {2}\r\n{3}", ex.GetType().Name, ex.Source, ex.Message, ex.StackTrace));
+                Trace.WriteLine(ex.Message, ex);
+
                 return DateTimeOffset.MinValue;
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(string.Format("{0}@{1}: {2}\r\n{3}", ex.GetType().Name, ex.Source, ex.Message, ex.StackTrace));
+                Trace.WriteLine(ex.Message, ex);
+
                 throw;
             }
         }

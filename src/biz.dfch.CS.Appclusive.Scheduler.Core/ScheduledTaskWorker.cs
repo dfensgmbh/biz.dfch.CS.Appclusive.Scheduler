@@ -26,27 +26,27 @@ using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using biz.dfch.CS.Appclusive.Scheduler.Public;
 using biz.dfch.CS.Utilities.General;
 using biz.dfch.CS.Utilities.Logging;
 using biz.dfch.CS.Appclusive.Api.Core;
 using biz.dfch.CS.Appclusive.Api.Diagnostics;
+using biz.dfch.CS.Appclusive.Public;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Core
 {
-    class ScheduledTaskWorker
+    public class ScheduledTaskWorker
     {
-        private bool isInitialised = false;
-        private DateTimeOffset lastInitialisedDate;
+        public const long SCHEDULED_TASK_WORKER_JOBS_PER_INSTANCE_MAX = 10000;
+
+        private readonly bool isInitialised = false;
         private DateTimeOffset lastUpdated = DateTimeOffset.Now;
-        
-        private Timer stateTimer = null;
-        private TimerCallback timerCallback;
-
-        private readonly List<ScheduledTask> scheduledTasks = new List<ScheduledTask>();
-
-        private readonly AppclusiveEndpoints endpoints;
+        private readonly Timer stateTimer = null;
 
         private readonly ScheduledTaskWorkerConfiguration configuration;
+        private readonly AppclusiveEndpoints endpoints;
+
+        private List<ScheduledJob> scheduledJobs = new List<ScheduledJob>();
 
         public bool IsActive { get; set; }
 
@@ -62,15 +62,14 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
 
             try
             {
-                Debug.WriteLine(string.Format("Uri: '{0}'", configuration.Uri.AbsoluteUri));
+                Trace.WriteLine("Uri: '{0}'", configuration.Uri.AbsoluteUri, "");
 
                 var baseUri = new Uri(string.Format("{0}api", configuration.Uri.AbsoluteUri));
                 endpoints = new AppclusiveEndpoints(baseUri, configuration.Credential);
 
-                result = InitialUpdateScheduledTasks();
+                result = GetScheduledJobs();
 
-                timerCallback = new TimerCallback(this.RunTasks);
-                stateTimer = new Timer(timerCallback, null, 1000, (1000 * 60) - 20);
+                stateTimer = new ScheduledTaskWorkerTimerFactory().CreateTimer(new TimerCallback(this.RunTasks), null, 1000, (1000 * 60) - 20);
             }
             catch (Exception ex)
             {
@@ -84,213 +83,139 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             return;
         }
 
-        public bool InitialUpdateScheduledTasks()
+        public bool GetScheduledJobs()
         {
-            Trace.WriteLine(Method.fn());
-
             var result = false;
 
-            result = InternalUpdateScheduledTask();
-            return result;
-        }
-
-        public bool UpdateScheduledTasks()
-        {
-            Trace.WriteLine(Method.fn());
-
-            var result = false;
-
-            if (!IsActive)
+            if (isInitialised && !IsActive)
             {
                 return result;
             }
-
-            result = InternalUpdateScheduledTask();
-            return result;
-        }
-
-        public bool InternalUpdateScheduledTask()
-        {
-            Trace.WriteLine(Method.fn());
-
-            var result = false;
-
-            ManagementUri mgmtUri = null;
+            
+            // load ScheduledJob entities
             try
             {
-                var now = DateTimeOffset.Now;
-                mgmtUri = endpoints.Core.ManagementUris
-                    .Where
-                    (
-                        e => e.Name.Equals(configuration.ManagementUriName, StringComparison.InvariantCultureIgnoreCase) &&
-                        e.Type.Equals(configuration.ManagementUriType, StringComparison.InvariantCultureIgnoreCase)
-                    )
-                    .SingleOrDefault();
+                var scheduledJobsManager = new ScheduledJobsManager();
 
-                if(null == mgmtUri)
-                {
-                    Trace.WriteLine("{0}: ManagementUri not found at '{1}'. Will retry later.", configuration.ManagementUriName, endpoints.Core.BaseUri);
-                    if (configuration.ServerNotReachableRetries <= (now - lastUpdated).TotalMinutes)
-                    {
-                        throw new TimeoutException();
-                    }
-                    goto Success;
-                }
-
-                var jtoken = JToken.Parse(mgmtUri.Value);
-                lock (scheduledTasks)
-                {
-                    scheduledTasks.Clear();
-                    if (jtoken is JArray)
-                    {
-                        var ja = JArray.Parse(mgmtUri.Value);
-                        foreach (var j in ja)
-                        {
-                            try
-                            {
-                                Debug.WriteLine(string.Format("{0}: Adding '{1}' ...", configuration.ManagementUriName, mgmtUri.Value));
-                                scheduledTasks.Add(ExtractTask(j));
-                            }
-                            catch (Exception ex)
-                            {
-                                Trace.WriteException(string.Format("{0}: Adding '{1}' FAILED. Skipping.", configuration.ManagementUriName, mgmtUri.Value), ex);
-                            }
-                        }
-                    }
-                    else if (jtoken is JObject)
-                    {
-                        try
-                        {
-                            Debug.WriteLine(string.Format("{0}: Adding '{1}' ...", configuration.ManagementUriName, mgmtUri.Value));
-                            scheduledTasks.Add(ExtractTask(jtoken));
-                        }
-                        catch(Exception ex)
-                        {
-                            Trace.WriteException(string.Format("{0}: Adding '{1}' FAILED. Skipping.", configuration.ManagementUriName, mgmtUri.Value), ex);
-                        }
-                    }
-                }
+                var scheduledJobs = scheduledJobsManager.LoadJobs();
+                var validJobs = scheduledJobsManager.GetValidJobs(scheduledJobs);
+                this.scheduledJobs = validJobs;
+                Contract.Assert(SCHEDULED_TASK_WORKER_JOBS_PER_INSTANCE_MAX >= validJobs.Count);
             }
             catch(InvalidOperationException ex)
             {
-                Trace.WriteException(ex.Message, ex);
-                Debug.WriteLine("{0}: ManagementUri not found at '{1}'. Aborting ...", configuration.ManagementUriName, endpoints.Core.BaseUri.AbsoluteUri);
-                throw;
+                var message = string.Format("Loading ScheduledJobs from '{0}' FAILED with InvalidOperationException. Check the specified credentials.", endpoints.Core.BaseUri.AbsoluteUri);
+                Trace.WriteException(message, ex);
             }
-            catch (TimeoutException ex)
+            catch (Exception ex)
             {
                 Trace.WriteException(ex.Message, ex);
-                Debug.WriteLine(string.Format("{0}: Timeout retrieving ManagementUri at '{1}'. Aborting ...", configuration.ManagementUriName, endpoints.Core.BaseUri.AbsoluteUri));
+                
                 throw;
             }
-            finally
-            {
-                if(null != mgmtUri)
-                {
-                    endpoints.Diagnostics.Detach(mgmtUri);
-                }
-            }
-Success :
-            lastInitialisedDate = DateTimeOffset.Now;
+
+            lastUpdated = DateTimeOffset.Now;
             result = true;
             return result;
         }
 
-        private ScheduledTask ExtractTask(JToken taskParameters)
-        {
-            Contract.Requires(null != taskParameters);
+        //private ScheduledTask ExtractTask(JToken taskParameters)
+        //{
+        //    Contract.Requires(null != taskParameters);
 
-            var task = new ScheduledTask(taskParameters.ToString());
-            Contract.Assert(null != task);
-            Contract.Assert(!string.IsNullOrWhiteSpace(task.Parameters.ManagementCredential));
+        //    var task = new ScheduledTask(taskParameters.ToString());
+        //    Contract.Assert(null != task);
+        //    Contract.Assert(!string.IsNullOrWhiteSpace(task.Parameters.ManagementCredential));
 
-            var mgmtCredential = endpoints.Core.ManagementCredentials
-                .Where
-                (
-                    e => e.Name.Equals(task.Parameters.ManagementCredential, StringComparison.InvariantCultureIgnoreCase)
-                )
-                .Single();
+        //    var mgmtCredential = endpoints.Core.ManagementCredentials
+        //        .Where
+        //        (
+        //            e => e.Name.Equals(task.Parameters.ManagementCredential, StringComparison.InvariantCultureIgnoreCase)
+        //        )
+        //        .Single();
 
-            task.Username = mgmtCredential.Username;
-            task.Password = mgmtCredential.Password;
+        //    task.Username = mgmtCredential.Username;
+        //    task.Password = mgmtCredential.Password;
 
-            endpoints.Core.Detach(mgmtCredential);
-            return task;
-        }
-
-        ~ScheduledTaskWorker()
-        {
-            Trace.WriteLine(Method.fn());
-
-            if (null == this.stateTimer)
-            {
-                return;
-            }
-            
-            stateTimer.Dispose();
-        }
+        //    endpoints.Core.Detach(mgmtCredential);
+        //    return task;
+        //}
 
         // The state object is necessary for a TimerCallback.
-        protected void RunTasks(object stateObject)
+        public void RunTasks(object stateObject)
         {
             Contract.Assert(isInitialised);
 
             var fn = Method.fn();
+            Trace.WriteLine(Method.fn());
 
             var result = false;
             var now = DateTimeOffset.Now;
 
             if (!IsActive)
             {
-                Debug.WriteLine("{0}: IsActive: {1}. Nothing to do.", fn, IsActive);
+                Trace.WriteLine("{0}: IsActive: {1}. Nothing to do.", fn, IsActive);
                 return;
             }
 
-            Trace.WriteLine(Method.fn());
-            try
+            lock(scheduledJobs)
             {
-                lock (scheduledTasks)
+                if (0 >= scheduledJobs.Count)
                 {
-                    if (0 >= scheduledTasks.Count)
-                    {
-                        Debug.WriteLine("{0}: No scheduled tasks found. Nothing to do.", fn, "");
-                    }
+                    Trace.WriteLine("{0}: No scheduled jobs found. Nothing to do.", fn, "");
+                }
 
-                    foreach (var task in scheduledTasks)
+                var defaultPlugin = configuration.Plugins.FirstOrDefault(p => p.Metadata.Type.Equals("Default"));
+                
+                foreach (var job in scheduledJobs)
+                {
+                    try
                     {
-                        if (task.IsScheduledToRun(now))
+                        var task = new ScheduledTask(job);
+                        if (!task.IsScheduledToRun(now))
                         {
-                            Debug.WriteLine(string.Format("Invoking '{0}' as '{1}' [{2}] ...", task.Parameters.CommandLine, task.Username, task.NextOccurrence.ToString()));
-
-                            var resultFromStartProcess = biz.dfch.CS.Utilities.Process.StartProcess(task.Parameters.CommandLine, task.Parameters.WorkingDirectory, task.Credential);
-                            // DFTODO - we could potentionally log the result of StartProcess to a log file
+                            continue;
                         }
+
+                        var plugin = configuration.Plugins.FirstOrDefault(p => p.Metadata.Type.Equals(job.Action));
+                        if(null == plugin)
+                        {
+                            Trace.WriteLine("No plugin for Job.Id '{0}' with Job.Action '{1}' found. Using 'Default' plugin ...", job.Id, job.Action);
+                            plugin = defaultPlugin;
+                        }
+                        if(null == plugin)
+                        {
+                            Trace.WriteLine("No plugin for Job.Id '{0}' with Job.Action '{1}' found and no 'Default' plugin found either. Skipping.", job.Id, job.Action);
+                        }
+                        Contract.Assert(null != plugin, "No plugin found to execute scheduled job");
+
+                        var învocationResult = new NonSerialisableJobResult();
+                        plugin.Value.Invoke(default(DictionaryParameters), învocationResult);
+                    }
+                    catch (Exception ex)
+                    {
+                        Trace.WriteException(ex.Message, ex);
+
+                        throw;
                     }
                 }
+            }
 
-                if (configuration.UpdateIntervalInMinutes <= (now - lastInitialisedDate).TotalMinutes)
-                {
-                    result = UpdateScheduledTasks();
-                    Contract.Assert(result);
-                }
-            }
-            // DFTODO - why do we handle a timeout exception here ?!
-            catch (TimeoutException ex)
+            if (configuration.UpdateIntervalInMinutes <= (now - lastUpdated).TotalMinutes)
             {
-                Trace.WriteException(ex.Message, ex);
-                var msg = string.Format("{0}: Timeout retrieving ManagementUri at '{1}'. Aborting ...", configuration.ManagementUriName, endpoints.Diagnostics.BaseUri.AbsoluteUri);
-                Trace.WriteLine(msg);
-                Environment.FailFast(msg);
-                throw;
-            }
-            catch (Exception ex)
-            {
-                Trace.WriteException(ex.Message, ex);
-                // DFTODO - should we really throw - this would bring down the whole service
-                throw;
+                result = GetScheduledJobs();
+                Contract.Assert(result);
             }
 
             return;
+        }
+
+        ~ScheduledTaskWorker()
+        {
+            if(null != stateTimer)
+            {
+                stateTimer.Dispose();
+            }
         }
     }
 }

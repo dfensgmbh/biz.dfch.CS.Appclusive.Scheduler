@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-
+using System.Diagnostics.Contracts;
 using biz.dfch.CS.Utilities.General;
 using biz.dfch.CS.Utilities.Logging;
 using System;
@@ -109,7 +109,8 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             if(null != scheduledTaskWorker)
             {
                 scheduledTaskWorker.IsActive = true;
-                scheduledTaskWorker.UpdateScheduledTasks();
+                var isUpdateScheduledTaskSucceeded = scheduledTaskWorker.GetScheduledJobs();
+                Contract.Assert(isUpdateScheduledTaskSucceeded);
             }
 
             base.OnContinue();
