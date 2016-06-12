@@ -124,8 +124,8 @@
     <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="biz.dfch.CS.Appclusive.Public, Version=2.8.3.28870, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\biz.dfch.CS.Appclusive.Public.2.8.3\lib\biz.dfch.CS.Appclusive.Public.dll</HintPath>
+    <Reference Include="biz.dfch.CS.Appclusive.Public, Version=2.9.0.17153, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\biz.dfch.CS.Appclusive.Public.2.9.0\lib\biz.dfch.CS.Appclusive.Public.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="biz.dfch.CS.System.Utilities, Version=2.0.0.26140, Culture=neutral, processorArchitecture=MSIL">
@@ -133,7 +133,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\biz.dfch.CS.Appclusive.Public.2.8.3\lib\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\biz.dfch.CS.Appclusive.Public.2.9.0\lib\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -141,11 +141,11 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\biz.dfch.CS.Appclusive.Public.2.8.3\lib\System.Net.Http.Formatting.dll</HintPath>
+      <HintPath>..\packages\biz.dfch.CS.Appclusive.Public.2.9.0\lib\System.Net.Http.Formatting.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Web.Http, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\biz.dfch.CS.Appclusive.Public.2.8.3\lib\System.Web.Http.dll</HintPath>
+      <HintPath>..\packages\biz.dfch.CS.Appclusive.Public.2.9.0\lib\System.Web.Http.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Telerik.JustMock">
