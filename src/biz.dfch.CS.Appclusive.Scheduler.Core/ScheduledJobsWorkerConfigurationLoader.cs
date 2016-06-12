@@ -26,28 +26,28 @@ using System.Net;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Core
 {
-    public class ScheduledTaskWorkerConfigurationLoader : IConfigurationLoader
+    public class ScheduledJobsWorkerConfigurationLoader : IConfigurationLoader
     {
         public void Initialise(BaseDto configuration, DictionaryParameters parameters)
         {
-            Contract.Assert(configuration is ScheduledTaskWorkerConfiguration);
+            Contract.Assert(configuration is ScheduledJobsWorkerConfiguration);
             
             parameters = parameters ?? new DictionaryParameters();
 
-            var cfg = configuration as ScheduledTaskWorkerConfiguration;
+            var cfg = configuration as ScheduledJobsWorkerConfiguration;
 
             // get communication update and retry variables
             cfg.UpdateIntervalInMinutes = Convert.ToInt32(ConfigurationManager.AppSettings["UpdateIntervalMinutes"]);
             cfg.UpdateIntervalInMinutes = 
                 (0 != cfg.UpdateIntervalInMinutes) ? 
                 cfg.UpdateIntervalInMinutes : 
-                ScheduledTaskWorkerConfiguration.UPDATE_INTERVAL_IN_MINUTES_DEFAULT;
+                ScheduledJobsWorkerConfiguration.UPDATE_INTERVAL_IN_MINUTES_DEFAULT;
 
             cfg.ServerNotReachableRetries = Convert.ToInt32(ConfigurationManager.AppSettings["ServerNotReachableRetries"]);
             cfg.ServerNotReachableRetries = 
                 cfg.UpdateIntervalInMinutes * (0 != cfg.ServerNotReachableRetries ?
                 cfg.ServerNotReachableRetries : 
-                ScheduledTaskWorkerConfiguration.SERVER_NOT_REACHABLE_RETRIES_DEFAULT);
+                ScheduledJobsWorkerConfiguration.SERVER_NOT_REACHABLE_RETRIES_DEFAULT);
 
             // apply parameters if overridden on command line
             var uri = ConfigurationManager.AppSettings["Uri"];

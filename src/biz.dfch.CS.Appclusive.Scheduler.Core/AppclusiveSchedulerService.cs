@@ -27,7 +27,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
     {
         private ManualResetEvent serviceAbortSignal = new ManualResetEvent(false);
 
-        ScheduledTaskWorker scheduledTaskWorker;
+        ScheduledJobsWorker scheduledJobsWorker;
 
         public AppclusiveSchedulerService()
         {
@@ -69,8 +69,8 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             var fn = Method.fn();
             Trace.WriteLine("{0}.{1}", this.GetType().FullName, fn);
 
-            var configuration = new ScheduledTaskWorkerConfiguration(new ScheduledTaskWorkerConfigurationLoader(), args);
-            scheduledTaskWorker = new ScheduledTaskWorker(configuration);
+            var configuration = new ScheduledJobsWorkerConfiguration(new ScheduledJobsWorkerConfigurationLoader(), args);
+            scheduledJobsWorker = new ScheduledJobsWorker(configuration);
 
             base.OnStart(args);
         }
@@ -80,9 +80,9 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             var fn = Method.fn();
             Trace.WriteLine("{0}.{1}", this.GetType().FullName, fn);
 
-            if(null != scheduledTaskWorker)
+            if(null != scheduledJobsWorker)
             {
-                scheduledTaskWorker.IsActive = false;
+                scheduledJobsWorker.IsActive = false;
             }
 
             base.OnStop();
@@ -93,9 +93,9 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             var fn = Method.fn();
             Trace.WriteLine("{0}.{1}", this.GetType().FullName, fn);
 
-            if(null != scheduledTaskWorker)
+            if(null != scheduledJobsWorker)
             {
-                scheduledTaskWorker.IsActive = false;
+                scheduledJobsWorker.IsActive = false;
             }
 
             base.OnPause();
@@ -106,11 +106,11 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             var fn = Method.fn();
             Trace.WriteLine("{0}.{1}", this.GetType().FullName, fn);
 
-            if(null != scheduledTaskWorker)
+            if(null != scheduledJobsWorker)
             {
-                scheduledTaskWorker.IsActive = true;
-                var isUpdateScheduledTaskSucceeded = scheduledTaskWorker.GetScheduledJobs();
-                Contract.Assert(isUpdateScheduledTaskSucceeded);
+                scheduledJobsWorker.IsActive = true;
+                var isUpdateScheduledJobsSucceeded = scheduledJobsWorker.GetScheduledJobs();
+                Contract.Assert(isUpdateScheduledJobsSucceeded);
             }
 
             base.OnContinue();
@@ -137,9 +137,9 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             var fn = Method.fn();
             Trace.WriteLine("{0}.{1}", this.GetType().FullName, fn);
 
-            if(null != scheduledTaskWorker)
+            if(null != scheduledJobsWorker)
             {
-                scheduledTaskWorker.IsActive = false;
+                scheduledJobsWorker.IsActive = false;
             }
 
             base.OnShutdown();

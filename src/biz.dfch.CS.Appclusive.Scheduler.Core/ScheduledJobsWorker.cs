@@ -35,22 +35,24 @@ using biz.dfch.CS.Appclusive.Public;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Core
 {
-    public class ScheduledTaskWorker
+    public class ScheduledJobsWorker
     {
         public const long SCHEDULED_TASK_WORKER_JOBS_PER_INSTANCE_MAX = 10000;
+
+        private const string DEFAULT_PLUGIN_TYPE = "Default";
 
         private readonly bool isInitialised = false;
         private DateTimeOffset lastUpdated = DateTimeOffset.Now;
         private readonly Timer stateTimer = null;
 
-        private readonly ScheduledTaskWorkerConfiguration configuration;
+        private readonly ScheduledJobsWorkerConfiguration configuration;
         private readonly AppclusiveEndpoints endpoints;
 
         private List<ScheduledJob> scheduledJobs = new List<ScheduledJob>();
 
         public bool IsActive { get; set; }
 
-        public ScheduledTaskWorker(ScheduledTaskWorkerConfiguration configuration)
+        public ScheduledJobsWorker(ScheduledJobsWorkerConfiguration configuration)
         {
             Contract.Requires(configuration.IsValid());
 
@@ -89,7 +91,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
 
             if (isInitialised && !IsActive)
             {
-                return result;
+                goto Success;
             }
             
             // load ScheduledJob entities
@@ -101,11 +103,15 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
                 var validJobs = scheduledJobsManager.GetValidJobs(scheduledJobs);
                 this.scheduledJobs = validJobs;
                 Contract.Assert(SCHEDULED_TASK_WORKER_JOBS_PER_INSTANCE_MAX >= validJobs.Count);
+            
+                result = true;
             }
             catch(InvalidOperationException ex)
             {
                 var message = string.Format("Loading ScheduledJobs from '{0}' FAILED with InvalidOperationException. Check the specified credentials.", endpoints.Core.BaseUri.AbsoluteUri);
                 Trace.WriteException(message, ex);
+
+                result = false;
             }
             catch (Exception ex)
             {
@@ -114,8 +120,8 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
                 throw;
             }
 
+Success:
             lastUpdated = DateTimeOffset.Now;
-            result = true;
             return result;
         }
 
@@ -133,7 +139,8 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             if (!IsActive)
             {
                 Trace.WriteLine("{0}: IsActive: {1}. Nothing to do.", fn, IsActive);
-                return;
+                
+                goto Success;
             }
 
             lock(scheduledJobs)
@@ -141,20 +148,23 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
                 if (0 >= scheduledJobs.Count)
                 {
                     Trace.WriteLine("{0}: No scheduled jobs found. Nothing to do.", fn, "");
+                    
+                    goto Success;
                 }
 
-                var defaultPlugin = configuration.Plugins.FirstOrDefault(p => p.Metadata.Type.Equals("Default"));
+                var defaultPlugin = configuration.Plugins.FirstOrDefault(p => p.Metadata.Type.Equals(DEFAULT_PLUGIN_TYPE));
                 
                 foreach (var job in scheduledJobs)
                 {
                     try
                     {
-                        var task = new ScheduledTask(job);
+                        var task = new ScheduledJobScheduler(job);
                         if (!task.IsScheduledToRun(now))
                         {
                             continue;
                         }
 
+                        // get plugin for ScheduledJob
                         var plugin = configuration.Plugins.FirstOrDefault(p => p.Metadata.Type.Equals(job.Action));
                         if(null == plugin)
                         {
@@ -164,21 +174,36 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
                         if(null == plugin)
                         {
                             Trace.WriteLine("No plugin for Job.Id '{0}' with Job.Action '{1}' found and no 'Default' plugin found either. Skipping.", job.Id, job.Action);
-                        }
-                        Contract.Assert(null != plugin, "No plugin found to execute scheduled job");
 
-                        var învocationResult = new NonSerialisableJobResult();
-                        plugin.Value.Invoke(default(DictionaryParameters), învocationResult);
+                            continue;
+                        }
+
+                        // invoke plugin
+                        var invocationResult = new NonSerialisableJobResult();
+                        
+                        var scheduledJobsManager = new ScheduledJobsManager(endpoints);
+                        var parameters = scheduledJobsManager.ConvertJobParameters(job.Action, job.ScheduledJobParameters);
+                        
+                        Trace.WriteLine("Invoking {0} with plugin '{1}' ...", job.Id, job.Action);
+                        plugin.Value.Invoke(parameters, invocationResult);
+
+                        if(invocationResult.Succeeded)
+                        {
+                            Trace.WriteLine("Invoking {0} with plugin '{1}' SUCCEEDED.", job.Id, job.Action);
+                        }
+                        else
+                        {
+                            Trace.WriteLine("Invoking {0} with plugin '{1}' FAILED.", job.Id, job.Action);
+                        }
                     }
                     catch (Exception ex)
                     {
-                        Trace.WriteException(ex.Message, ex);
-
-                        throw;
+                        var message = string.Format("Invoking {0} with plugin '{1}' FAILED. {2}", job.Id, job.Action, ex.Message);
+                        Trace.WriteException(message, ex);
                     }
                 }
             }
-
+Success:
             if (configuration.UpdateIntervalInMinutes <= (now - lastUpdated).TotalMinutes)
             {
                 result = GetScheduledJobs();
@@ -188,7 +213,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             return;
         }
 
-        ~ScheduledTaskWorker()
+        ~ScheduledJobsWorker()
         {
             if(null != stateTimer)
             {

@@ -30,7 +30,7 @@ using biz.dfch.CS.Appclusive.Public.Plugins;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Core
 {
-    public class ScheduledTaskWorkerConfiguration : BaseDto
+    public class ScheduledJobsWorkerConfiguration : BaseDto
     {
         public const int UPDATE_INTERVAL_IN_MINUTES_DEFAULT = 5;
         public const int SERVER_NOT_REACHABLE_RETRIES_DEFAULT = 60;
@@ -98,12 +98,12 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             Contract.Invariant(0 <= ServerNotReachableRetries);
         }
 
-        public ScheduledTaskWorkerConfiguration()
+        public ScheduledJobsWorkerConfiguration()
         {
             // N/A
         }
 
-        public ScheduledTaskWorkerConfiguration(IConfigurationLoader loader, string[] args)
+        public ScheduledJobsWorkerConfiguration(IConfigurationLoader loader, string[] args)
         {
             var parameters = new DictionaryParameters();
             if(null != args)

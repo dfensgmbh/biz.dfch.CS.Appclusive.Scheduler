@@ -39,7 +39,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
             };
 
             // Act
-            var sut = new ScheduledTask(job);
+            var sut = new ScheduledJobScheduler(job);
 
             // Assert
             Assert.IsTrue(sut.IsValid());

@@ -28,7 +28,7 @@ using System.Net;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Core
 {
-    public class ScheduledTask : BaseDto
+    public class ScheduledJobScheduler : BaseDto
     {
         [Required]
         private readonly ScheduledJob job;
@@ -38,7 +38,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
         [Required]
         public DateTime NextOccurrence { get; set; }
 
-        public ScheduledTask(ScheduledJob scheduledJob)
+        public ScheduledJobScheduler(ScheduledJob scheduledJob)
         {
             Contract.Requires(null != scheduledJob);
 

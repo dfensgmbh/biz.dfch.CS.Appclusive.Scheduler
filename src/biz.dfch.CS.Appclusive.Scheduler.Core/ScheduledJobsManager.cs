@@ -66,6 +66,64 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             return result;
         }
 
+        // DFTODO - change T : BaseDto to T : ScheduledJobBase 
+        // as soon as we update biz.dfch.CS.Appclusive.Public
+        public T ConvertJobParameters<T>(string parameters)
+            where T : BaseDto
+        {
+            Contract.Requires(!string.IsNullOrWhiteSpace(parameters));
+            Contract.Ensures(null != Contract.Result<T>());
+
+            var result = BaseDto.DeserializeObject<T>(parameters);
+            return result;
+        }
+
+        public DictionaryParameters ConvertJobParameters(string action, string parameters)
+        {
+            Contract.Requires(!string.IsNullOrWhiteSpace(action));
+            Contract.Requires(!string.IsNullOrWhiteSpace(parameters));
+            Contract.Ensures(null != Contract.Result<DictionaryParameters>());
+
+            var result = default(DictionaryParameters);
+
+            int actionInt = default(int);
+            var isValidAction = ConvertActionToEnum(action, ref actionInt);
+            Contract.Assert(isValidAction);
+
+            switch (actionInt)
+            {
+                default:
+                    break;
+                case (int) JobActionEnum.Programme:
+                    var jobActionProgramme = BaseDto.DeserializeObject<JobActionProgramme>(parameters);
+                    Contract.Assert(jobActionProgramme.IsValid());
+                    result = new DictionaryParameters(jobActionProgramme.SerializeObject());
+                    break;
+                case (int) JobActionEnum.Mail:
+                    var jobActionMail = BaseDto.DeserializeObject<JobActionMail>(parameters);
+                    Contract.Assert(jobActionMail.IsValid());
+                    result = new DictionaryParameters(jobActionMail.SerializeObject());
+                    break;
+                case (int) JobActionEnum.InternalWorkflow:
+                    var jobActionInternalWorkflow = BaseDto.DeserializeObject<JobActionInternalWorkflow>(parameters);
+                    Contract.Assert(jobActionInternalWorkflow.IsValid());
+                    result = new DictionaryParameters(jobActionInternalWorkflow.SerializeObject());
+                    break;
+                case (int) JobActionEnum.ExternalWorkflow:
+                    var jobActionExternalWorkflow = BaseDto.DeserializeObject<JobActionExternalWorkflow>(parameters);
+                    Contract.Assert(jobActionExternalWorkflow.IsValid());
+                    result = new DictionaryParameters(jobActionExternalWorkflow.SerializeObject());
+                    break;
+                case (int) JobActionEnum.PowerShellScript:
+                    var jobActionPowerShellScript = BaseDto.DeserializeObject<JobActionPowerShellScript>(parameters);
+                    Contract.Assert(jobActionPowerShellScript.IsValid());
+                    result = new DictionaryParameters(jobActionPowerShellScript.SerializeObject());
+                    break;
+            }
+
+            return result;
+        }
+
         public List<ScheduledJob> GetValidJobs(List<ScheduledJob> jobs)
         {
             Contract.Requires(null != jobs);
@@ -75,49 +133,17 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
 
             foreach(var job in jobs)
             {
-                int action = default(int);
-                var result = ConvertActionToEnum(job.Action, ref action);
-                if(!result)
+                try
                 {
-                    Trace.WriteLine("Parsing scheduled job '{0}' [{1}] FAILED. Invalid action '{2}'.", job.Id.ToString(), job.Name, job.Action);
+                    var parameters = ConvertJobParameters(job.Action, job.ScheduledJobParameters);
+                    validJobs.Add(job);
+                }
+                catch(Exception ex)
+                {
+                    Trace.WriteLine("Parsing scheduled job '{0}' [{1}] FAILED. Invalid Action or ScheduledJobParameters.", job.Id.ToString(), job.Name);
+
                     continue;
                 }
-
-                var isValidAction = true;
-                switch(action)
-                {
-                    default:
-                        isValidAction = false;
-                        break;
-                    case (int) JobActionEnum.Programme:
-                        var actionProgramme = BaseDto.DeserializeObject<JobActionProgramme>(job.ScheduledJobParameters);
-                        isValidAction = actionProgramme.IsValid();
-                        break;
-                    case (int) JobActionEnum.Mail:
-                        var actionMail = BaseDto.DeserializeObject<JobActionMail>(job.ScheduledJobParameters);
-                        isValidAction = actionMail.IsValid();
-                        break;
-                    case (int) JobActionEnum.InternalWorkflow:
-                        var actionInternalWorkflow = BaseDto.DeserializeObject<JobActionInternalWorkflow>(job.ScheduledJobParameters);
-                        isValidAction = actionInternalWorkflow.IsValid();
-                        break;
-                    case (int) JobActionEnum.ExternalWorkflow:
-                        var actionExternalWorkflow = BaseDto.DeserializeObject<JobActionExternalWorkflow>(job.ScheduledJobParameters);
-                        isValidAction = actionExternalWorkflow.IsValid();
-                        break;
-                    case (int) JobActionEnum.PowerShellScript:
-                        var actionPowerShellScript = BaseDto.DeserializeObject<JobActionPowerShellScript>(job.ScheduledJobParameters);
-                        isValidAction = actionPowerShellScript.IsValid();
-                        break;
-                }
-
-                if(!isValidAction)
-                {
-                    Trace.WriteLine("Parsing scheduled job '{0}' [{1}] FAILED. Invalid ScheduledJobParameters.", job.Id.ToString(), job.Name);
-                    continue;
-                }
-
-                validJobs.Add(job);
             }
 
             return validJobs;

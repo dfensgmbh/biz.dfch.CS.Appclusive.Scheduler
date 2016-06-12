@@ -29,9 +29,9 @@ using Telerik.JustMock;
 namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
 {
     [TestClass]
-    public class ScheduledTaskWorkerTest
+    public class ScheduledJobsWorkerTest
     {
-        public ScheduledTaskWorkerConfiguration configuration;
+        public ScheduledJobsWorkerConfiguration configuration;
         public Timer timer;
         
         class DefaultPluginData : IAppclusivePluginData
@@ -46,9 +46,9 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
         [TestInitialize]
         public void TestInitialize()
         {
-            var loader = new ScheduledTaskWorkerConfigurationLoader();
+            var loader = new ScheduledJobsWorkerConfigurationLoader();
 
-            configuration = Mock.Create<ScheduledTaskWorkerConfiguration>(Constructor.Mocked);
+            configuration = Mock.Create<ScheduledJobsWorkerConfiguration>(Constructor.Mocked);
             Mock.Arrange(() => configuration.Logger).IgnoreInstance().Returns(new Logger());
             Mock.Arrange(() => configuration.Uri).IgnoreInstance().Returns(new Uri("http://www.example.com/arbitrary-folder"));
             Mock.Arrange(() => configuration.ManagementUriName).IgnoreInstance().Returns("ManagementUriName");
@@ -67,6 +67,18 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
         public void RunTaskSucceeds()
         {
             // Arrange
+            var task = Mock.Create<ScheduledJobScheduler>();
+            Mock.Arrange(() => task.IsScheduledToRun(Arg.IsAny<DateTimeOffset>()))
+                .IgnoreInstance()
+                .Returns(true)
+                .MustBeCalled();
+
+            var scheduledJobsManagerImpl = Mock.Create<ScheduledJobsManagerImpl>();
+            Mock.Arrange(() => scheduledJobsManagerImpl.GetJobs(Arg.IsAny<AppclusiveEndpoints>()))
+                .IgnoreInstance()
+                .Returns(new ScheduledJobsMockData().GetJobs())
+                .MustBeCalled();
+
             var defaultPlugin = Mock.Create<DefaultPlugin>();
             Mock.Arrange(() => defaultPlugin.Invoke(Arg.IsAny<DictionaryParameters>(), Arg.IsAny<NonSerialisableJobResult>()))
                 .IgnoreInstance()
@@ -109,24 +121,12 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
                     }
                 )
             };
-            var sut = new ScheduledTaskWorker(configuration);
+            var sut = new ScheduledJobsWorker(configuration);
             var isUpdateScheduledTaskSucceeded = sut.GetScheduledJobs();
             Contract.Assert(isUpdateScheduledTaskSucceeded);
             sut.IsActive = isUpdateScheduledTaskSucceeded;
             
             var stateObject = default(object);
-
-            var task = Mock.Create<ScheduledTask>();
-            Mock.Arrange(() => task.IsScheduledToRun(Arg.IsAny<DateTimeOffset>()))
-                .IgnoreInstance()
-                .Returns(true)
-                .MustBeCalled();
-
-            var scheduledJobsManagerImpl = Mock.Create<ScheduledJobsManagerImpl>();
-            Mock.Arrange(() => scheduledJobsManagerImpl.GetJobs(Arg.IsAny<AppclusiveEndpoints>()))
-                .IgnoreInstance()
-                .Returns(new ScheduledJobsMockData().GetJobs())
-                .MustBeCalled();
 
             // Act
             sut.RunTasks(stateObject);

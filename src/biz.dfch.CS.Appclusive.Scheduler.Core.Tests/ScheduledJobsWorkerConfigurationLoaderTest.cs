@@ -28,7 +28,7 @@ using Telerik.JustMock;
 namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
 {
     [TestClass]
-    public class ScheduledTaskWorkerConfigurationLoaderTest
+    public class ScheduledJobsWorkerConfigurationLoaderTest
     {
         [TestMethod]
         public void ScheduledTaskWorkerConfigurationLoaderInitialiseWithConfigSectionSucceeds()
@@ -63,11 +63,11 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
             var uri = "http://www.example.com/arbitrary-path/";
             var mgmtUriName = "arbitrary-management-uri-name";
             string[] args = { uri, mgmtUriName };
-            var sut = new ScheduledTaskWorkerConfigurationLoader();
+            var sut = new ScheduledJobsWorkerConfigurationLoader();
             
             // Act
-            // sut.Initialise() is implicitly called by ScheduledTaskWorkerConfiguration
-            var config = new ScheduledTaskWorkerConfiguration(sut, args);
+            // sut.Initialise() is implicitly called by ScheduledJobsWorkerConfiguration
+            var config = new ScheduledJobsWorkerConfiguration(sut, args);
 
             // Assert
             Mock.Assert(() => ConfigurationManager.GetSection(Arg.Is<string>(AppclusiveCredentialSection.SECTION_NAME)));
@@ -104,11 +104,11 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
             var uri = "http://www.example.com/arbitrary-path/";
             var mgmtUriName = "arbitrary-management-uri-name";
             string[] args = { uri, mgmtUriName };
-            var sut = new ScheduledTaskWorkerConfigurationLoader();
+            var sut = new ScheduledJobsWorkerConfigurationLoader();
             
             // Act
-            // sut.Initialise() is implicitly called by ScheduledTaskWorkerConfiguration
-            var config = new ScheduledTaskWorkerConfiguration(sut, args);
+            // sut.Initialise() is implicitly called by ScheduledJobsWorkerConfiguration
+            var config = new ScheduledJobsWorkerConfiguration(sut, args);
 
             // Assert
             Mock.Assert(() => ConfigurationManager.GetSection(Arg.Is<string>(AppclusiveCredentialSection.SECTION_NAME)));

@@ -26,7 +26,7 @@ using biz.dfch.CS.Utilities.Testing;
 namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
 {
     [TestClass]
-    public class ScheduledTaskWorkerConfigurationTest
+    public class ScheduledJobsWorkerConfigurationTest
     {
         [TestMethod]
         [ExpectContractFailure]
@@ -35,7 +35,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
             // Arrange
 
             // Act
-            var sut = new ScheduledTaskWorkerConfiguration();
+            var sut = new ScheduledJobsWorkerConfiguration();
             sut.ServerNotReachableRetries = 0;
 
             // Assert
@@ -49,7 +49,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
             // Arrange
 
             // Act
-            var sut = new ScheduledTaskWorkerConfiguration();
+            var sut = new ScheduledJobsWorkerConfiguration();
             var result = sut.ServerNotReachableRetries;
 
             // Assert
