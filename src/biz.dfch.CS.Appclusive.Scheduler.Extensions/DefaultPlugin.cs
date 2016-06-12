@@ -27,7 +27,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
 {
     [Export(typeof(IAppclusivePlugin))]
     [ExportMetadata("Type", "Default")]
-    [ExportMetadata("Priority", int.MinValue)]
+    [ExportMetadata("Priority", int.MinValue +1)]
     [ExportMetadata("Role", "default")]
     public class DefaultPlugin : SchedulerPluginBase
     {
