@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using biz.dfch.CS.Appclusive.Scheduler.Public;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;

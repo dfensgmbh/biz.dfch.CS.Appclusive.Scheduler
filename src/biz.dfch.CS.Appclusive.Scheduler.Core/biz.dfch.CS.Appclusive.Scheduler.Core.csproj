@@ -188,7 +188,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppclusiveCredentialSectionManager.cs" />
-    <Compile Include="AppclusiveEndpoints.cs" />
     <Compile Include="AppclusiveSchedulerService.cs">
       <SubType>Component</SubType>
     </Compile>

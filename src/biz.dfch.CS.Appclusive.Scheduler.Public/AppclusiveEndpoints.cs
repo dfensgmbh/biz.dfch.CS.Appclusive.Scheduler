@@ -23,7 +23,7 @@ using System.Text;
 using System.Threading.Tasks;
 using biz.dfch.CS.Utilities.Logging;
 
-namespace biz.dfch.CS.Appclusive.Scheduler.Core
+namespace biz.dfch.CS.Appclusive.Scheduler.Public
 {
     public class AppclusiveEndpoints
     {

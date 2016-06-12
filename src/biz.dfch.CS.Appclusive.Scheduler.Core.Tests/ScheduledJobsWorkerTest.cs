@@ -25,6 +25,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using biz.dfch.CS.Appclusive.Public;
 using biz.dfch.CS.Appclusive.Public.Plugins;
 using Telerik.JustMock;
+using biz.dfch.CS.Appclusive.Scheduler.Public;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
 {

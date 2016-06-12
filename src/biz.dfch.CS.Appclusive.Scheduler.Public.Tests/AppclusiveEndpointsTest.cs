@@ -24,7 +24,7 @@ using System.Text;
 using System.Threading.Tasks;
 using biz.dfch.CS.Utilities.Testing;
 
-namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
+namespace biz.dfch.CS.Appclusive.Scheduler.Public.Tests
 {
     [TestClass]
     public class AppclusiveEndpointsTest

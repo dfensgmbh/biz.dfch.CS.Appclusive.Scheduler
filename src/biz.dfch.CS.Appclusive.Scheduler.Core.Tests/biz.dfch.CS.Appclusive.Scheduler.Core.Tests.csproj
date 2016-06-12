@@ -191,7 +191,6 @@
   </Choose>
   <ItemGroup>
     <Compile Include="AppclusiveCredentialSectionManagerTest.cs" />
-    <Compile Include="AppclusiveEndpointsTest.cs" />
     <Compile Include="DefaultPluginTest.cs" />
     <Compile Include="PluginLoaderConfigurationFromAppSettingsLoaderTest.cs" />
     <Compile Include="ProgramHelpTest.cs" />
