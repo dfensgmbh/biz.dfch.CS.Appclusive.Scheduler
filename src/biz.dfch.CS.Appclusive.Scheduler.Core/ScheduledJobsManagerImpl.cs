@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data.Services.Client;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
@@ -34,10 +35,26 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
 
             var scheduledJobs = new List<ScheduledJob>();
 
-            var result = endpoints.Core.ScheduledJobs;
-            Contract.Assert(null != result);
-            scheduledJobs = result.ToList();
+            var entities = endpoints.Core.ScheduledJobs.Execute() as QueryOperationResponse<ScheduledJob>;
+            while(null != entities)
+            {
+                foreach (var entity in entities)
+                {
+                    scheduledJobs.Add(entity);
+                    Contract.Assert(ScheduledJobsWorker.SCHEDULED_TASK_WORKER_JOBS_PER_INSTANCE_MAX >= scheduledJobs.Count);
+                }
 
+                var dataServiceQueryContinuation = entities.GetContinuation();
+                if (null != dataServiceQueryContinuation)
+                {
+                    entities = endpoints.Core.Execute(dataServiceQueryContinuation);
+                }
+                else
+                {
+                    entities = null;
+                }
+            }
+                
             return scheduledJobs;
         }
     }
