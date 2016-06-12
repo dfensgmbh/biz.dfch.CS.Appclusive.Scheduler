@@ -119,28 +119,6 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             return result;
         }
 
-        //private ScheduledTask ExtractTask(JToken taskParameters)
-        //{
-        //    Contract.Requires(null != taskParameters);
-
-        //    var task = new ScheduledTask(taskParameters.ToString());
-        //    Contract.Assert(null != task);
-        //    Contract.Assert(!string.IsNullOrWhiteSpace(task.Parameters.ManagementCredential));
-
-        //    var mgmtCredential = endpoints.Core.ManagementCredentials
-        //        .Where
-        //        (
-        //            e => e.Name.Equals(task.Parameters.ManagementCredential, StringComparison.InvariantCultureIgnoreCase)
-        //        )
-        //        .Single();
-
-        //    task.Username = mgmtCredential.Username;
-        //    task.Password = mgmtCredential.Password;
-
-        //    endpoints.Core.Detach(mgmtCredential);
-        //    return task;
-        //}
-
         // The state object is necessary for a TimerCallback.
         public void RunTasks(object stateObject)
         {
