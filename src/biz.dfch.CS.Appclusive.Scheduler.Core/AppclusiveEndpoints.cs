@@ -71,6 +71,16 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             Trace.WriteLine(string.Format("Initialising Appclusive endpoints from '{0}' COMPLETED.", baseUri.AbsoluteUri));
         }
 
+        [ContractInvariantMethod]
+        private void ContractInvariant()
+        {
+            Contract.Invariant(null != Diagnostics);
+            Contract.Invariant(null != Core);
+            Contract.Invariant(null != Infrastructure);
+            Contract.Invariant(null != Csm);
+            Contract.Invariant(null != Cmp);
+        }
+
         public biz.dfch.CS.Appclusive.Api.Diagnostics.Diagnostics Diagnostics { get; set; }
         public biz.dfch.CS.Appclusive.Api.Core.Core Core { get; set; }
         public biz.dfch.CS.Appclusive.Api.Infrastructure.Infrastructure Infrastructure { get; set; }
