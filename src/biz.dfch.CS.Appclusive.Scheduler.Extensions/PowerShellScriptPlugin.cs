@@ -19,9 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.ComponentModel.Composition;
-using System.Diagnostics;
 using biz.dfch.CS.Appclusive.Public;
 using biz.dfch.CS.Appclusive.Scheduler.Public;
 using biz.dfch.CS.Appclusive.Public.Plugins;
@@ -63,7 +61,10 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
             message.AppendLine();
             message.AppendLine("DefaultPlugin.UpdatingConfiguration COMPLETED.");
             
-            Trace.WriteLine(message.ToString());
+            if (null != Logger)
+            { 
+                Logger.WriteLine(message.ToString());
+            }
 
             this.configuration = configuration.Convert<PowerShellScriptPluginConfiguration>();
 
@@ -97,7 +98,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
             message.AppendLine("DefaultPlugin.Invoke() COMPLETED.");
             message.AppendLine();
             
-            Trace.WriteLine(message.ToString());
+            Logger.WriteLine(message.ToString());
 
             fReturn = true;
             
