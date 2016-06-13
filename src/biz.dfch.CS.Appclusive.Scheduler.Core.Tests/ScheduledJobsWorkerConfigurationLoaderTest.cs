@@ -30,6 +30,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
     [TestClass]
     public class ScheduledJobsWorkerConfigurationLoaderTest
     {
+        [TestCategory("SkipOnTeamCity")]
         [TestMethod]
         public void ScheduledTaskWorkerConfigurationLoaderInitialiseWithConfigSectionSucceeds()
         {
@@ -79,6 +80,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
             Assert.AreEqual(domain, config.Credential.Domain);
         }
         
+        [TestCategory("SkipOnTeamCity")]
         [TestMethod]
         public void ScheduledTaskWorkerConfigurationLoaderWithoutConfigSectionInitialiseSucceeds()
         {
