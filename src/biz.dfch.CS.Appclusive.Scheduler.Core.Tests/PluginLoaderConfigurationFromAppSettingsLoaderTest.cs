@@ -177,7 +177,8 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
             Assert.AreEqual(extensionsFolder, configuration.ExtensionsFolder);
 
             Assert.AreEqual(1, configuration.PluginTypes.Count);
-            Assert.IsTrue(configuration.PluginTypes.Contains(biz.dfch.CS.Appclusive.Scheduler.Public.Constants.PLUGIN_TYPE_DEFAULT));
+            Assert.IsTrue(configuration.PluginTypes
+                .Contains(biz.dfch.CS.Appclusive.Scheduler.Public.Constants.PLUGIN_TYPE_DEFAULT.ToLower()));
         }
 
         [TestMethod]
