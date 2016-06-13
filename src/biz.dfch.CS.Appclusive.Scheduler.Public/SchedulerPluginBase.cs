@@ -21,6 +21,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using biz.dfch.CS.Appclusive.Public;
 using biz.dfch.CS.Appclusive.Public.Plugins;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Public
@@ -29,6 +30,13 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public
         , 
         ISchedulerPlugin
     {
-        // N/A
+        public override bool Invoke(DictionaryParameters parameters, IInvocationResult jobResult)
+        {
+            var result = base.Invoke(parameters, jobResult);
+            
+            Contract.Assert(parameters.ContainsKey("JobId"));
+
+            return result;
+        }
     }
 }
