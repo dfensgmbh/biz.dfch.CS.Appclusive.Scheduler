@@ -29,7 +29,7 @@ using biz.dfch.CS.Appclusive.Public.Plugins;
 namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
 {
     [Export(typeof(IAppclusivePlugin))]
-    [ExportMetadata("Type", "Default")]
+    [ExportMetadata("Type", "PowerShellScript")]
     [ExportMetadata("Priority", int.MinValue + 1)]
     [ExportMetadata("Role", "default")]
     public class PowerShellScriptPlugin : SchedulerPluginBase

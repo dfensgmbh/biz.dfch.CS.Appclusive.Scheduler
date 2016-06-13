@@ -148,7 +148,6 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
             {
                 Logger.Debug("ExternalWorkflow: ActivityId '{0}'. Invoke ...", Trace.CorrelationManager.ActivityId.ToString(), "");
 
-                var result = invocationParameters.JobId;
                 fReturn = true;
 
                 var message = string.Format("JobId: '{0}'", invocationParameters.JobId);
