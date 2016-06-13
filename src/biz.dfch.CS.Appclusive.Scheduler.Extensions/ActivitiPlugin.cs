@@ -70,7 +70,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
 
             // ManagementUri
             //Type                   : json
-            //Value                  : {"ServerUri":"http://172.19.115.38:9080/activiti-rest/service/"}
+            //Value                  : {"ServerUri":"http://www.example.com:9080/activiti-rest/service/"}
             //ManagementCredentialId : 6
             //Id                     : 9
             //Tid                    : ad8f50df-2a5d-4ea5-9fcc-05882f16a9fe
@@ -116,13 +116,12 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
             // get name of ManagementUri
             managementUriName = new ActivitiPluginConfigurationManager().GetManagementUriName();
                 
-            Configuration = parameters;
-            if(configuration.IsValid())
+            result = base.Initialise(parameters, logger, activate);
+            if(!configuration.IsValid())
             {
                 return result;
             }
 
-            result = base.Initialise(parameters, logger, activate);
             return result;
         }
 

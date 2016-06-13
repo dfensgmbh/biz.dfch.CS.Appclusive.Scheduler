@@ -28,6 +28,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Telerik.JustMock;
 using System.Net;
+using System.Configuration;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
 {
@@ -55,14 +56,74 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
         public void InitialiseSucceeds()
         {
             // Arrange
+            var serverBaseUri = new Uri("http://www.example.com:9080/activiti-rest/service/");
+            var managementCredentialId = 5;
+            var managementUriName = SchedulerAppSettings.Keys.EXTERNAL_WORKFLOW_MANAGEMENT_URI_NAME;
+            var managementUri = new ManagementUri()
+            {
+                Id = 42
+                ,
+                Name = managementUriName
+                ,
+                ManagementCredentialId = managementCredentialId
+                ,
+                Value = string.Format("{{\"ServerUri\":\"{0}\"}}", serverBaseUri)
+            };
+            var managementUris = new List<ManagementUri>()
+            {
+                managementUri
+            };
+
+            var dataServiceQueryManagementUris = Mock.Create<DataServiceQuery<ManagementUri>>();
+            Mock.Arrange(() => dataServiceQueryManagementUris.Where(e => e.Name == managementUriName))
+                .IgnoreInstance()
+                .Returns(managementUris.AsQueryable())
+                .MustBeCalled();
+
+            var encryptedPassword = "encrypted-arbitrary-password";
+            var managementCredential = new ManagementCredential()
+            {
+                Id = managementCredentialId
+                ,
+                Name = managementUriName
+                ,
+                Username = Username
+                ,
+                Password = Password
+                ,
+                EncryptedPassword = encryptedPassword
+            };
+            var managementCredentials = new List<ManagementCredential>()
+            {
+                managementCredential
+            };
+
+            var dataServiceQueryManagementCredentials = Mock.Create<DataServiceQuery<ManagementCredential>>();
+            Mock.Arrange(() => dataServiceQueryManagementCredentials.Where(e => e.Id == managementCredentialId))
+                .IgnoreInstance()
+                .Returns(managementCredentials.AsQueryable())
+                .MustBeCalled();
+
+            var endpoints = Mock.Create<AppclusiveEndpoints>(Constructor.Mocked);
+            var apiCore = Mock.Create<Api.Core.Core>(Constructor.Mocked);
+            endpoints.Core = apiCore;
+            var parameters = new DictionaryParameters();
+            parameters.Add(typeof(AppclusiveEndpoints).ToString(), endpoints);
+            
+            Mock.SetupStatic(typeof(ConfigurationManager));
+            Mock.Arrange(() => ConfigurationManager.AppSettings[Arg.IsAny<string>()])
+                .Returns(managementUriName)
+                .MustBeCalled();
+
             var logger = new Logger();
-            var parameters = new DictionaryParameters().Convert(ValidActivitiPluginConfiguration);
+
             var sut = new ActivitiPlugin();
 
             // Act
             var result = sut.Initialise(parameters, logger, true);
 
             // Assert
+            Mock.Assert(() => ConfigurationManager.AppSettings[Arg.IsAny<string>()]);
             Assert.IsTrue(result);
             Assert.IsTrue(sut.IsInitialised);
             Assert.IsTrue(sut.IsActive);
@@ -116,13 +177,6 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
         }
 
         [TestMethod]
-        [ExpectContractFailure]
-        public void InvokeWithInvalidParametersThrowsContractException()
-        {
-
-        }
-
-        [TestMethod]
         public void UpdateConfigurationSucceeds()
         {
             // Arrange
@@ -150,8 +204,6 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
                 .Returns(managementUris.AsQueryable())
                 .MustBeCalled();
 
-            var username = "arbitrary-user";
-            var password = "arbitrary-password";
             var encryptedPassword = "encrypted-arbitrary-password";
             var managementCredential = new ManagementCredential()
             {
@@ -159,9 +211,9 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
                 ,
                 Name = managementUriName
                 ,
-                Username = username
+                Username = Username
                 ,
-                Password = password
+                Password = Password
                 ,
                 EncryptedPassword = encryptedPassword
             };
@@ -203,8 +255,8 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
             Assert.IsTrue(sut.Configuration.ContainsKey("Credential"));
             var actualCredential = sut.Configuration["Credential"] as NetworkCredential;
             Assert.IsNotNull(actualCredential);
-            Assert.AreEqual(username, actualCredential.UserName);
-            Assert.AreEqual(password, actualCredential.Password);
+            Assert.AreEqual(Username, actualCredential.UserName);
+            Assert.AreEqual(Password, actualCredential.Password);
         }
     }
 }
