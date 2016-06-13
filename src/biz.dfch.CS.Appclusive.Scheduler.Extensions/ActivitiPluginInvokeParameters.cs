@@ -32,5 +32,12 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
         [Required]
         [Range(1, long.MaxValue)]
         public long JobId { get; set; }
+
+        [Required]
+        public string Id { get; set; }
+
+        [Required]
+        public string Parameters { get; set; }
+
     }
 }
