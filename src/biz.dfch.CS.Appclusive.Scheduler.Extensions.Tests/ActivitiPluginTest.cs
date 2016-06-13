@@ -163,17 +163,65 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
         public void LogSucceeds()
         {
             // Arrange
+            var managementUriName = SchedulerAppSettings.Keys.EXTERNAL_WORKFLOW_MANAGEMENT_URI_NAME;
+            var serverBaseUri = new Uri("http://www.example.com:9080/activiti-rest/service/");
+            var managementCredentialId = 5;
+            var managementUri = new ManagementUri()
+            {
+                Id = 42
+                ,
+                Name = managementUriName
+                ,
+                ManagementCredentialId = managementCredentialId
+                ,
+                Value = string.Format("{{\"ServerUri\":\"{0}\"}}", serverBaseUri)
+            };
+
+            var encryptedPassword = "encrypted-arbitrary-password";
+            var managementCredential = new ManagementCredential()
+            {
+                Id = managementCredentialId
+                ,
+                Name = managementUriName
+                ,
+                Username = Username
+                ,
+                Password = Password
+                ,
+                EncryptedPassword = encryptedPassword
+            };
+
+            var activitiPluginConfigurationManager = Mock.Create<ActivitiPluginConfigurationManager>();
+            Mock.Arrange(() => activitiPluginConfigurationManager.GetManagementUriName())
+                .IgnoreInstance()
+                .Returns(managementUriName)
+                .MustBeCalled();
+            Mock.Arrange(() => activitiPluginConfigurationManager.GetManagementUri(Arg.IsAny<DataServiceQuery<ManagementUri>>(), Arg.IsAny<string>()))
+                .IgnoreInstance()
+                .Returns(managementUri)
+                .MustBeCalled();
+            Mock.Arrange(() => activitiPluginConfigurationManager.GetManagementCredential(Arg.IsAny<DataServiceQuery<ManagementCredential>>(), Arg.IsAny<long>()))
+                .IgnoreInstance()
+                .Returns(managementCredential)
+                .MustBeCalled();
+            
+            var endpoints = Mock.Create<AppclusiveEndpoints>(Constructor.Mocked);
+            var apiCore = Mock.Create<Api.Core.Core>(Constructor.Mocked);
+            endpoints.Core = apiCore;
+            var parameters = new DictionaryParameters();
+            parameters.Add(typeof(AppclusiveEndpoints).ToString(), endpoints);
+
             var message = "arbitrary-message";
             var logger = new Logger();
             var sut = new ActivitiPlugin();
-            var parameters = new DictionaryParameters().Convert(ValidActivitiPluginConfiguration);
+
             sut.Initialise(parameters, logger, true);
 
             // Act
             sut.Logger.WriteLine(message);
 
             // Assert
-            // N/A
+            Mock.Assert(activitiPluginConfigurationManager);
         }
 
         [TestMethod]
