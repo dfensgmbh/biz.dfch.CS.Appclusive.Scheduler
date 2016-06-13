@@ -58,11 +58,40 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             {
                 Trace.WriteLine("Uri: '{0}'", configuration.Uri.AbsoluteUri, "");
 
+                // connect to Appclusive server
                 var baseUri = new Uri(string.Format("{0}api", configuration.Uri.AbsoluteUri));
                 endpoints = new AppclusiveEndpoints(baseUri, configuration.Credential);
 
+                // initialise each plugin
+                foreach (var plugin in configuration.Plugins)
+                {
+                    try
+                    {
+                        Trace.WriteLine("Initialising plugin '{0}' [{1}, {2}] ...", plugin.Metadata.Type, plugin.Metadata.Role, plugin.Metadata.Priority);
+
+                        var pluginParameters = new DictionaryParameters();
+                        pluginParameters.Add(typeof(AppclusiveEndpoints).ToString(), endpoints);
+                        plugin.Value.Initialise(pluginParameters, configuration.Logger, true);
+
+                        Trace.WriteLine(
+                            "Initialising plugin '{0}' [{1}, {2}] COMPLETED. IsInitialised {3}. IsActive {4}."
+                            , 
+                            plugin.Metadata.Type, plugin.Metadata.Role, plugin.Metadata.Priority
+                            ,
+                            plugin.Value.IsInitialised, plugin.Value.IsActive
+                            );
+                    }
+                    catch (Exception ex)
+                    {
+                        var message = string.Format("Initialising plugin '{0}' [{1}, {2}] FAILED.", plugin.Metadata.Type, plugin.Metadata.Role, plugin.Metadata.Priority);
+                        Trace.WriteException(message, ex);
+                    }
+                }
+
+                // get all defined scheduled jobs for all tenants (based on credentials)
                 result = GetScheduledJobs();
 
+                // create the timer to process all scheduled jobs periodically
                 stateTimer = new ScheduledTaskWorkerTimerFactory().CreateTimer(new TimerCallback(this.RunTasks), null, 1000, (1000 * 60) - 20);
             }
             catch (Exception ex)
