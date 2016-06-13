@@ -13,16 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-using System.Diagnostics;
-using biz.dfch.CS.Appclusive.Scheduler.Public;
+
 using System;
-using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using biz.dfch.CS.Appclusive.Public.Logging;
 using biz.dfch.CS.Appclusive.Public.Plugins;
+using biz.dfch.CS.Utilities.Logging;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Core
 {
