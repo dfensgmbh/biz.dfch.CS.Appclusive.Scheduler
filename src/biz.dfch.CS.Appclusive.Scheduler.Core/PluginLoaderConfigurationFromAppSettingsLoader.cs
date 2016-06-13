@@ -48,7 +48,11 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
 
             // 2. Load plugin names to be loaded
             var pluginTypes = ConfigurationManager.AppSettings[SchedulerAppSettings.Keys.PLUGIN_TYPES];
-            Contract.Assert(!string.IsNullOrWhiteSpace(pluginTypes));
+            
+            if(string.IsNullOrWhiteSpace(pluginTypes))
+            {
+                pluginTypes = biz.dfch.CS.Appclusive.Scheduler.Public.Constants.PLUGIN_TYPE_DEFAULT;
+            }
 
             var pluginTypesToBeLoaded = pluginTypes
                 .ToLower()

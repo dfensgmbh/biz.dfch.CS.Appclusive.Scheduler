@@ -39,8 +39,6 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
     {
         public const long SCHEDULED_TASK_WORKER_JOBS_PER_INSTANCE_MAX = 10000;
 
-        private const string DEFAULT_PLUGIN_TYPE = "Default";
-
         private readonly bool isInitialised = false;
         private DateTimeOffset lastUpdated = DateTimeOffset.Now;
         private readonly Timer stateTimer = null;
@@ -152,7 +150,10 @@ Success:
                     goto Success;
                 }
 
-                var defaultPlugin = configuration.Plugins.FirstOrDefault(p => p.Metadata.Type.Equals(DEFAULT_PLUGIN_TYPE));
+                var defaultPlugin = configuration.Plugins.FirstOrDefault
+                (
+                    p => p.Metadata.Type.Equals(biz.dfch.CS.Appclusive.Scheduler.Public.Constants.PLUGIN_TYPE_DEFAULT)
+                );
                 
                 foreach (var job in scheduledJobs)
                 {

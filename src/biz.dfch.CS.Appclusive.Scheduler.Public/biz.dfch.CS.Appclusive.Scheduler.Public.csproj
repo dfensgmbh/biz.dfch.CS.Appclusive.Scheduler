@@ -177,6 +177,7 @@
     <Compile Include="AppclusiveCredentialSection.cs" />
     <Compile Include="AppclusiveEndpoints.cs" />
     <Compile Include="ConfigSectionManager.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="SchedulerAppSettings.cs" />
     <Compile Include="ISchedulerPlugin.cs" />
     <Compile Include="ISchedulerPluginData.cs" />
