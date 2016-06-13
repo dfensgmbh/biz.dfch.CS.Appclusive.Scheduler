@@ -14,6 +14,7 @@
  * limitations under the License.
  *
  */
+
 using System.Diagnostics.Contracts;
 using biz.dfch.CS.Utilities.General;
 using biz.dfch.CS.Utilities.Logging;

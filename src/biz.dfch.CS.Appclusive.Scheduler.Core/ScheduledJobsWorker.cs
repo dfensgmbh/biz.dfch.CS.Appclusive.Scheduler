@@ -14,24 +14,18 @@
  * limitations under the License.
  */
 
+using biz.dfch.CS.Appclusive.Api.Core;
+using biz.dfch.CS.Appclusive.Public;
+using biz.dfch.CS.Appclusive.Scheduler.Public;
+using biz.dfch.CS.Utilities.General;
+using biz.dfch.CS.Utilities.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
 // Install-Package Microsoft.Net.Http
 // https://www.nuget.org/packages/Microsoft.Net.Http
-using System.Net.Http;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using biz.dfch.CS.Appclusive.Scheduler.Public;
-using biz.dfch.CS.Utilities.General;
-using biz.dfch.CS.Utilities.Logging;
-using biz.dfch.CS.Appclusive.Api.Core;
-using biz.dfch.CS.Appclusive.Api.Diagnostics;
-using biz.dfch.CS.Appclusive.Public;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Core
 {
@@ -199,7 +193,7 @@ Success:
                     }
                     catch (Exception ex)
                     {
-                        var message = string.Format("Invoking {0} with plugin '{1}' FAILED. {2}", job.Id, job.Action, ex.Message);
+                        var message = string.Format("Invoking {0} with plugin '{1}' FAILED.", job.Id, job.Action);
                         Trace.WriteException(message, ex);
                     }
                 }
