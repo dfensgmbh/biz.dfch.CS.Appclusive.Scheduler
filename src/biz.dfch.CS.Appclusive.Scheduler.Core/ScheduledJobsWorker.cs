@@ -207,22 +207,28 @@ Success:
                         
                         var scheduledJobsManager = new ScheduledJobsManager(endpoints);
                         var parameters = scheduledJobsManager.ConvertJobParameters(job.Action, job.ScheduledJobParameters);
-                        
-                        Trace.WriteLine("Invoking {0} with plugin '{1}' ...", job.Id, job.Action);
+                        parameters.Add("JobId", job.Id);
+
+                        if(default(Guid) == System.Diagnostics.Trace.CorrelationManager.ActivityId)
+                        {
+                            System.Diagnostics.Trace.CorrelationManager.ActivityId = Guid.NewGuid();
+                        }
+
+                        Trace.WriteLine("Invoking {0} with plugin '{1}' [ActivityId {2}] ...", job.Id, job.Action, System.Diagnostics.Trace.CorrelationManager.ActivityId);
                         plugin.Value.Invoke(parameters, invocationResult);
 
                         if(invocationResult.Succeeded)
                         {
-                            Trace.WriteLine("Invoking {0} with plugin '{1}' SUCCEEDED.", job.Id, job.Action);
+                            Trace.WriteLine("Invoking {0} with plugin '{1}' [ActivityId {2}] SUCCEEDED.", job.Id, job.Action, System.Diagnostics.Trace.CorrelationManager.ActivityId);
                         }
                         else
                         {
-                            Trace.WriteLine("Invoking {0} with plugin '{1}' FAILED.", job.Id, job.Action);
+                            Trace.WriteLine("Invoking {0} with plugin '{1}' [ActivityId {2}] FAILED.", job.Id, job.Action, System.Diagnostics.Trace.CorrelationManager.ActivityId);
                         }
                     }
                     catch (Exception ex)
                     {
-                        var message = string.Format("Invoking {0} with plugin '{1}' FAILED.", job.Id, job.Action);
+                        var message = string.Format("Invoking {0} with plugin '{1}' [ActivityId {2}] FAILED.", job.Id, job.Action, System.Diagnostics.Trace.CorrelationManager.ActivityId);
                         Trace.WriteException(message, ex);
                     }
                 }
