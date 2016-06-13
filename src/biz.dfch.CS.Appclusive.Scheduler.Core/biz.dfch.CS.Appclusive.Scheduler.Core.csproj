@@ -132,8 +132,8 @@
       <HintPath>..\packages\biz.dfch.CS.Appclusive.Public.2.9.0\lib\biz.dfch.CS.Appclusive.Public.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="biz.dfch.CS.System.Utilities">
-      <HintPath>..\packages\biz.dfch.CS.System.Utilities.2.0.0\lib\biz.dfch.CS.System.Utilities.dll</HintPath>
+    <Reference Include="biz.dfch.CS.System.Utilities, Version=2.0.1.17294, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\biz.dfch.CS.System.Utilities.2.0.1\lib\biz.dfch.CS.System.Utilities.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
