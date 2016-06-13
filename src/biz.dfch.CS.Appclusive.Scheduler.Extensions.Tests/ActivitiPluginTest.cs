@@ -13,8 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+using System.Data.Services.Client;
+using biz.dfch.CS.Appclusive.Api.Core;
 using biz.dfch.CS.Appclusive.Public;
 using biz.dfch.CS.Appclusive.Scheduler.Core;
+using biz.dfch.CS.Appclusive.Scheduler.Public;
 using biz.dfch.CS.Utilities.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -23,6 +26,8 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Telerik.JustMock;
+using System.Net;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
 {
@@ -108,6 +113,98 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
 
             // Assert
             // N/A
+        }
+
+        [TestMethod]
+        [ExpectContractFailure]
+        public void InvokeWithInvalidParametersThrowsContractException()
+        {
+
+        }
+
+        [TestMethod]
+        public void UpdateConfigurationSucceeds()
+        {
+            // Arrange
+            var serverBaseUri = new Uri("http://www.example.com:9080/activiti-rest/service/");
+            var managementCredentialId = 5;
+            var managementUriName = SchedulerAppSettings.Keys.EXTERNAL_WORKFLOW_MANAGEMENT_URI_NAME;
+            var managementUri = new ManagementUri()
+            {
+                Id = 42
+                ,
+                Name = managementUriName
+                ,
+                ManagementCredentialId = managementCredentialId
+                ,
+                Value = string.Format("{{\"ServerUri\":\"{0}\"}}", serverBaseUri)
+            };
+            var managementUris = new List<ManagementUri>()
+            {
+                managementUri
+            };
+
+            var dataServiceQueryManagementUris = Mock.Create<DataServiceQuery<ManagementUri>>();
+            Mock.Arrange(() => dataServiceQueryManagementUris.Where(e => e.Name == managementUriName))
+                .IgnoreInstance()
+                .Returns(managementUris.AsQueryable())
+                .MustBeCalled();
+
+            var username = "arbitrary-user";
+            var password = "arbitrary-password";
+            var encryptedPassword = "encrypted-arbitrary-password";
+            var managementCredential = new ManagementCredential()
+            {
+                Id = managementCredentialId
+                ,
+                Name = managementUriName
+                ,
+                Username = username
+                ,
+                Password = password
+                ,
+                EncryptedPassword = encryptedPassword
+            };
+            var managementCredentials = new List<ManagementCredential>()
+            {
+                managementCredential
+            };
+
+            var dataServiceQueryManagementCredentials = Mock.Create<DataServiceQuery<ManagementCredential>>();
+            Mock.Arrange(() => dataServiceQueryManagementCredentials.Where(e => e.Id == managementCredentialId))
+                .IgnoreInstance()
+                .Returns(managementCredentials.AsQueryable())
+                .MustBeCalled();
+
+            var endpoints = Mock.Create<AppclusiveEndpoints>(Constructor.Mocked);
+            var apiCore = Mock.Create<Api.Core.Core>(Constructor.Mocked);
+            endpoints.Core = apiCore;
+            var parameters = new DictionaryParameters();
+            parameters.Add(typeof(AppclusiveEndpoints).ToString(), endpoints);
+
+            var sut = new ActivitiPlugin();
+            Mock.NonPublic.Arrange<string>(sut, "managementUriName")
+                .IgnoreInstance()
+                .Returns(managementUriName);
+
+            // Act
+            sut.Configuration = parameters;
+
+            // Assert
+            Mock.Assert(endpoints);
+            Mock.Assert(dataServiceQueryManagementUris);
+            Mock.Assert(dataServiceQueryManagementCredentials);
+
+            Assert.IsTrue(sut.Configuration.ContainsKey("ServerBaseUri"));
+            var actualServerBaseUri = sut.Configuration["ServerBaseUri"] as Uri;
+            Assert.IsNotNull(actualServerBaseUri);
+            Assert.AreEqual(serverBaseUri, actualServerBaseUri);
+
+            Assert.IsTrue(sut.Configuration.ContainsKey("Credential"));
+            var actualCredential = sut.Configuration["Credential"] as NetworkCredential;
+            Assert.IsNotNull(actualCredential);
+            Assert.AreEqual(username, actualCredential.UserName);
+            Assert.AreEqual(password, actualCredential.Password);
         }
     }
 }

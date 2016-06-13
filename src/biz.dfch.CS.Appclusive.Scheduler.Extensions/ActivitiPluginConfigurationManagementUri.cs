@@ -14,31 +14,20 @@
  * limitations under the License.
  */
 
+using biz.dfch.CS.Appclusive.Public;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using biz.dfch.CS.Appclusive.Scheduler.Public;
-using biz.dfch.CS.Appclusive.Public;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
 {
-    public class ActivitiPluginConfiguration : BaseDto
+    public class ActivitiPluginConfigurationManagementUri : BaseDto
     {
-        public string Description { get; set; }
-        
         [Required]
-        public NetworkCredential Credential { get; set; }
-
-        [Required]
-        public Uri ServerBaseUri { get; set; }
-
-        [Required]
-        public AppclusiveEndpoints Endpoints { get; set; }
+        public Uri ServerUri { get; set;}
     }
 }
-

@@ -24,8 +24,11 @@ using System.Threading.Tasks;
 using biz.dfch.CS.Appclusive.Scheduler.Public;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
+using biz.dfch.CS.Appclusive.Api;
 using biz.dfch.CS.Appclusive.Public;
 using biz.dfch.CS.Appclusive.Public.Plugins;
+using System.ComponentModel.DataAnnotations;
+using System.Configuration;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
 {
@@ -35,6 +38,8 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
     [ExportMetadata("Role", "default")]
     public class ActivitiPlugin : SchedulerPluginBase
     {
+        private string managementUriName { get; set;}
+
         private ActivitiPluginConfiguration configuration;
         public override DictionaryParameters Configuration 
         { 
@@ -45,12 +50,58 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
             set
             {
                 var result = UpdateConfiguration(value);
+                configuration = result;
             }
         }
 
         private ActivitiPluginConfiguration UpdateConfiguration(DictionaryParameters parameters)
         {
             Contract.Requires(parameters.IsValid());
+
+            // check for endpoint
+            var hasAppclusiveEndpointsKey = parameters.ContainsKey(typeof(AppclusiveEndpoints).ToString());
+            Contract.Assert(hasAppclusiveEndpointsKey);
+            
+            var endpoints = parameters.First(p => p.Key == typeof(AppclusiveEndpoints).ToString())
+                .Value as AppclusiveEndpoints;
+            Contract.Assert(null != endpoints);
+            parameters.Remove(typeof(AppclusiveEndpoints).ToString());
+            parameters.Add("Endpoints", endpoints);
+
+            // ManagementUri
+            //Type                   : json
+            //Value                  : {"ServerUri":"http://172.19.115.38:9080/activiti-rest/service/"}
+            //ManagementCredentialId : 6
+            //Id                     : 9
+            //Tid                    : ad8f50df-2a5d-4ea5-9fcc-05882f16a9fe
+            //Name                   : biz.dfch.PS.Activiti.Client.Setting
+            //Description            :
+            //CreatedById            : 1
+            //ModifiedById           : 1
+            //Created                : 12/15/2015 11:46:45 AM +01:00
+            //Modified               : 12/15/2015 11:46:45 AM +01:00
+            //RowVersion             : {0, 0, 0, 0...}
+            //ManagementCredential   :
+            //Tenant                 :
+            //CreatedBy              :
+            //ModifiedBy             :
+
+            var configurationManager = new ActivitiPluginConfigurationManager();
+
+            // get Activiti server
+            var managementUri = configurationManager
+                .GetManagementUri(endpoints.Core.ManagementUris, managementUriName);
+            
+            var activitiPluginConfigurationManagementUri = BaseDto
+                .DeserializeObject<ActivitiPluginConfigurationManagementUri>(managementUri.Value);
+            parameters.Add("ServerBaseUri", activitiPluginConfigurationManagementUri.ServerUri);
+
+            // get Activiti credentials
+            var managementCredential = configurationManager
+            .GetManagementCredential(endpoints.Core.ManagementCredentials, managementUri.ManagementCredentialId.Value);
+
+            var networkCredential = configurationManager.GetCredential(managementCredential);
+            parameters.Add("Credential", networkCredential);
 
             configuration = parameters.Convert<ActivitiPluginConfiguration>();
             Contract.Assert(configuration.IsValid());
@@ -62,10 +113,16 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
         {
             var result = false;
 
+            // get name of ManagementUri
+            managementUriName = new ActivitiPluginConfigurationManager().GetManagementUriName();
+                
             Configuration = parameters;
-            result = configuration.IsValid();
+            if(configuration.IsValid())
+            {
+                return result;
+            }
 
-            result &= base.Initialise(parameters, logger, activate);
+            result = base.Initialise(parameters, logger, activate);
             return result;
         }
 
