@@ -145,8 +145,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
         }
 
         [TestMethod]
-        [ExpectContractFailure]
-        public void InitialiseWithEmptyPluginNamesThrowsContractException()
+        public void InitialiseWithEmptyPluginNamesLoadsDefaultPlugin()
         {
             // Arrange
             var configuration = new PluginLoaderConfiguration();
@@ -176,6 +175,9 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
             Mock.Assert(() => Directory.Exists(Arg.Is<string>(extensionsFolder)));
 
             Assert.AreEqual(extensionsFolder, configuration.ExtensionsFolder);
+
+            Assert.AreEqual(1, configuration.PluginTypes.Count);
+            Assert.IsTrue(configuration.PluginTypes.Contains(biz.dfch.CS.Appclusive.Scheduler.Public.Constants.PLUGIN_TYPE_DEFAULT));
         }
 
         [TestMethod]
