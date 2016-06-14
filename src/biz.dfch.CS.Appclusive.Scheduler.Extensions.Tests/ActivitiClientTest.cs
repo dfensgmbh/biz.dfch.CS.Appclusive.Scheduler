@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+using System.Collections;
 using System.Net;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -23,6 +24,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Telerik.JustMock;
 using biz.dfch.CS.Activiti.Client;
+using biz.dfch.CS.Appclusive.Public;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
 {
@@ -75,6 +77,65 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
 
             // Assert
             Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void ConvertDictionaryParametersToHashtableSucceeds()
+        {
+            var key = "nodeId";
+            var value = 12345;
+            var parameters = new DictionaryParameters()
+            {
+                { key, value }
+            };
+
+            var hashtable = new Hashtable(parameters);
+
+            Assert.IsTrue(hashtable.ContainsKey(key));
+            Assert.AreEqual(value, hashtable[key]);
+        }
+
+        [TestCategory("SkipOnTeamCity")]
+        [TestMethod]
+        public void InvokeWorkflowSucceeds()
+        {
+            // Arrange
+            //var definitionKey = "arbitrary-process-definition-id";
+            var definitionKey = "com.swisscom.cms.agentbasedbackup.backupjob.v002.CheckBackupStatus";
+            var parameters = new DictionaryParameters()
+            {
+                { "nodeId", 12345 }
+            };
+            var sut = new ActivitiClient(environment.ServerBaseUri, environment.ApplicationName);
+            sut.Login(environment.Credential);
+            var definitionId = sut.GetDefinitionId(definitionKey);
+
+            // Act
+            var result = sut.InvokeWorkflowInstance(definitionId, new System.Collections.Hashtable(parameters));
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.id);
+            Assert.IsNotNull(result.processDefinitionId);
+            Assert.IsNotNull(result.ended);
+            Assert.IsNotNull(result.completed);
+            Assert.IsNotNull(result.suspended);
+        }
+
+        [TestCategory("SkipOnTeamCity")]
+        [TestMethod]
+        public void GetDefinitionIdByDefinitionKeySucceeds()
+        {
+            // Arrange
+            var definitionKey = "com.swisscom.cms.agentbasedbackup.backupjob.v002.CheckBackupStatus";
+            var sut = new ActivitiClient(environment.ServerBaseUri, environment.ApplicationName);
+            sut.Login(environment.Credential);
+
+            // Act
+            var result = sut.GetDefinitionId(definitionKey);
+
+            // Assert
+            Assert.IsNotNull(result);
         }
     }
 }

@@ -22,6 +22,8 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using biz.dfch.CS.Activiti.Client;
+using biz.dfch.CS.Appclusive.Public;
+using System.Collections;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
 {
@@ -47,6 +49,21 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
 
             var result = base.IsLoggedIn();
             return result;
+        }
+
+        public string GetDefinitionId(string definitionKey)
+        {
+            Contract.Requires(!string.IsNullOrWhiteSpace(definitionKey));
+            Contract.Ensures(null != Contract.Result<string>(), "Workflow definitionKey does not exist");
+
+            var processDefinitionResponse = GetWorkflowDefinitionByKey(definitionKey, true);
+            Contract.Assert(null != processDefinitionResponse, "Workflow definitionKey does not exist");
+
+            var processDefinitionResponseData = processDefinitionResponse.data.FirstOrDefault();
+            Contract.Assert(null != processDefinitionResponseData, "Workflow definitionKey cannot be resolved to definitionId");
+
+            var definitionId = processDefinitionResponseData.id;
+            return definitionId;
         }
     }
 }

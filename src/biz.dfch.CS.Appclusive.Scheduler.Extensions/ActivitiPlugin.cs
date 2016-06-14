@@ -136,7 +136,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
 
         public override bool Invoke(DictionaryParameters parameters, IInvocationResult jobResult)
         {
-            var activitId = Trace.CorrelationManager.ActivityId;
+            var activityId = Trace.CorrelationManager.ActivityId;
             
             var result = base.Invoke(parameters, jobResult);
             if(!result)
@@ -149,13 +149,21 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
                 var invocationParameters = parameters.Convert<ActivitiPluginInvokeParameters>();
                 var workflowInputParameters = new DictionaryParameters(invocationParameters.Parameters);
 
-                Logger.Info("JobId: '{0}'. ActivityId '{1}'. {2}({3}).", invocationParameters.JobId, activitId, invocationParameters.Id, string.Join(", ", workflowInputParameters.Keys));
+                Logger.Info("JobId: '{0}'. ActivityId '{1}'. {2}({3}).", invocationParameters.JobId, activityId, invocationParameters.Id, string.Join(", ", workflowInputParameters.Keys));
 
                 var message = string.Format("JobId: '{0}'", invocationParameters.JobId);
-                var description = string.Format("ExternalWorkflow: ActivityId '{0}'.", activitId.ToString());
+                var description = string.Format("ExternalWorkflow: ActivityId '{0}'.", activityId);
+
+                var responseData = client.InvokeWorkflowInstance(invocationParameters.Id, null);
+                var responseDataMessage = string.Format
+                    (
+                    "id '{0}'. processDefinitionId '{1}'. Suspended '{2}'. Completed '{3}'. Ended '{4}'. [JobId '{5}'. ActivityId '{6}]",
+                    responseData.id, responseData.processDefinitionId, responseData.suspended, responseData.completed, responseData.ended,
+                    invocationParameters.JobId, activityId
+                    );
+                Logger.Info(responseDataMessage);
 
                 result = true;
-
                 if (result)
                 {
                     jobResult.Code = biz.dfch.CS.Appclusive.Scheduler.Public.Constants.InvocationResultCodes.ERROR_SUCCESS;
