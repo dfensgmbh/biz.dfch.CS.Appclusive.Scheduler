@@ -186,6 +186,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActivitiClient.cs" />
     <Compile Include="ActivitiPlugin.cs" />
     <Compile Include="ActivitiPluginConfiguration.cs" />
     <Compile Include="ActivitiPluginConfigurationManager.cs" />

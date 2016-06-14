@@ -56,6 +56,12 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
         public void InitialiseSucceeds()
         {
             // Arrange
+            var client = Mock.Create<ActivitiClient>();
+            Mock.Arrange(() => client.Login(Arg.IsAny<NetworkCredential>()))
+                .IgnoreInstance()
+                .Returns(true)
+                .MustBeCalled();
+
             var serverBaseUri = new Uri("http://www.example.com:9080/activiti-rest/service/");
             var managementCredentialId = 5;
             var managementUriName = SchedulerAppSettings.Keys.EXTERNAL_WORKFLOW_MANAGEMENT_URI_NAME;
@@ -124,6 +130,8 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
 
             // Assert
             Mock.Assert(() => ConfigurationManager.AppSettings[Arg.IsAny<string>()]);
+            Mock.Assert(client);
+
             Assert.IsTrue(result);
             Assert.IsTrue(sut.IsInitialised);
             Assert.IsTrue(sut.IsActive);
@@ -149,6 +157,12 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
         public void InitialiseWithNullConfigurationThrowsContractException()
         {
             // Arrange
+            var client = Mock.Create<ActivitiClient>();
+            Mock.Arrange(() => client.Login(Arg.IsAny<NetworkCredential>()))
+                .IgnoreInstance()
+                .Returns(true)
+                .MustBeCalled();
+
             var logger = new Logger();
             var sut = new ActivitiPlugin();
 
@@ -156,13 +170,19 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
             sut.Initialise(default(DictionaryParameters), logger, true);
 
             // Assert
-            // N/A
+            Mock.Assert(client);
         }
         
         [TestMethod]
         public void LogSucceeds()
         {
             // Arrange
+            var client = Mock.Create<ActivitiClient>();
+            Mock.Arrange(() => client.Login(Arg.IsAny<NetworkCredential>()))
+                .IgnoreInstance()
+                .Returns(true)
+                .MustBeCalled();
+
             var managementUriName = SchedulerAppSettings.Keys.EXTERNAL_WORKFLOW_MANAGEMENT_URI_NAME;
             var serverBaseUri = new Uri("http://www.example.com:9080/activiti-rest/service/");
             var managementCredentialId = 5;
@@ -221,6 +241,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
             sut.Logger.WriteLine(message);
 
             // Assert
+            Mock.Assert(client);
             Mock.Assert(activitiPluginConfigurationManager);
         }
 
@@ -228,6 +249,12 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
         public void UpdateConfigurationSucceeds()
         {
             // Arrange
+            var client = Mock.Create<ActivitiClient>();
+            Mock.Arrange(() => client.Login(Arg.IsAny<NetworkCredential>()))
+                .IgnoreInstance()
+                .Returns(true)
+                .MustBeCalled();
+
             var serverBaseUri = new Uri("http://www.example.com:9080/activiti-rest/service/");
             var managementCredentialId = 5;
             var managementUriName = SchedulerAppSettings.Keys.EXTERNAL_WORKFLOW_MANAGEMENT_URI_NAME;
@@ -291,6 +318,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
             sut.Configuration = parameters;
 
             // Assert
+            Mock.Assert(client);
             Mock.Assert(endpoints);
             Mock.Assert(dataServiceQueryManagementUris);
             Mock.Assert(dataServiceQueryManagementCredentials);

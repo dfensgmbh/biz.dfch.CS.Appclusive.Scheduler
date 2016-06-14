@@ -29,6 +29,7 @@ using biz.dfch.CS.Appclusive.Public;
 using biz.dfch.CS.Appclusive.Public.Plugins;
 using System.ComponentModel.DataAnnotations;
 using System.Configuration;
+using biz.dfch.CS.Activiti.Client;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
 {
@@ -38,7 +39,11 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
     [ExportMetadata("Role", "default")]
     public class ActivitiPlugin : SchedulerPluginBase
     {
+        private const string applicationName = "AppclusiveScheduler.ExternalWorkflow";
+
         private string managementUriName { get; set;}
+
+        private ActivitiClient client;
 
         private ActivitiPluginConfiguration configuration;
         public override DictionaryParameters Configuration 
@@ -105,6 +110,10 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
 
             configuration = parameters.Convert<ActivitiPluginConfiguration>();
             Contract.Assert(configuration.IsValid());
+
+            // log in to server
+            client = new ActivitiClient(configuration.ServerBaseUri, applicationName);
+            client.Login(configuration.Credential);
 
             return configuration;
         }

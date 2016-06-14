@@ -124,6 +124,10 @@
     <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="biz.dfch.CS.Activiti.Client, Version=1.1.1.22802, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\biz.dfch.CS.Activiti.Client.1.1.1\lib\biz.dfch.CS.Activiti.Client.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="biz.dfch.CS.Appclusive.Api, Version=2.8.0.24089, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\biz.dfch.CS.Appclusive.Api.2.8.0\lib\biz.dfch.CS.Appclusive.Api.dll</HintPath>
@@ -175,9 +179,12 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="ActivitiClientTest.cs" />
     <Compile Include="ActivitiPluginConfigurationManagerTest.cs" />
     <Compile Include="ActivitiPluginConfigurationTest.cs" />
     <Compile Include="ActivitiPluginTest.cs" />
+    <Compile Include="ActivitiPluginTestEnvironment.cs" />
+    <Compile Include="ActivitiPluginTestEnvironmentTemplate.cs" />
     <Compile Include="PowerShellScriptPluginConfigurationManagerTest.cs" />
     <Compile Include="PowerShellScriptPluginConfigurationTest.cs" />
     <Compile Include="PowerShellScriptPluginTest.cs" />
