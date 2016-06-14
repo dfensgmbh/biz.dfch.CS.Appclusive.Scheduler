@@ -71,7 +71,10 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
 
             var jobResult = new JobResult();
 
-            Mock.Arrange(() => Trace.WriteLine(Arg.IsAny<string>()))
+            var schedulerPluginBase = Mock.Create<SchedulerPluginBase>();
+            Mock.Arrange(() => schedulerPluginBase.Invoke(Arg.IsAny<DictionaryParameters>(), Arg.IsAny<IInvocationResult>()))
+                .IgnoreInstance()
+                .CallOriginal()
                 .MustBeCalled();
 
             // Act
@@ -89,7 +92,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
             Assert.IsTrue(jobResult.Description.Contains(key3));
             Assert.IsTrue(jobResult.Description.Contains(value3.ToString()));
 
-            Mock.Assert(() => Trace.WriteLine(Arg.IsAny<string>()));
+            Mock.Assert(schedulerPluginBase);
         }
     }
 }

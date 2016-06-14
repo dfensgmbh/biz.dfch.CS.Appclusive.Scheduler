@@ -119,6 +119,12 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
 
             var jobResult = new JobResult();
 
+            var schedulerPluginBase = Mock.Create<SchedulerPluginBase>();
+            Mock.Arrange(() => schedulerPluginBase.Invoke(Arg.IsAny<DictionaryParameters>(), Arg.IsAny<IInvocationResult>()))
+                .IgnoreInstance()
+                .CallOriginal()
+                .MustBeCalled();
+
             // Act
             var sut = new DefaultPlugin();
             sut.Initialise(new DictionaryParameters(), new Logger(), true);
@@ -133,6 +139,8 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
             Assert.IsTrue(jobResult.Description.Contains(value2.ToString()));
             Assert.IsTrue(jobResult.Description.Contains(key3));
             Assert.IsTrue(jobResult.Description.Contains(value3.ToString()));
+        
+            Mock.Assert(schedulerPluginBase);
         }
     }
 }

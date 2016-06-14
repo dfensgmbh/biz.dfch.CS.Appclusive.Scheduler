@@ -84,15 +84,10 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
         {
             Contract.Requires("1" == jobResult.Version);
 
-            var fReturn = false;
-
-            if(!IsActive)
+            var result = base.Invoke(parameters, jobResult);
+            if(!result)
             {
-                jobResult.Succeeded = fReturn;
-                jobResult.Code = 1;
-                jobResult.Message = "Plugin inactive";
-
-                return fReturn;
+                return result;
             }
 
             var message = new StringBuilder();
@@ -109,15 +104,15 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
 
             Logger.WriteLine(message.ToString());
 
-            fReturn = true;
+            result = true;
             
-            jobResult.Succeeded = fReturn;
+            jobResult.Succeeded = result;
             jobResult.Code = 1;
             jobResult.Message = "DefaultPlugin.Invoke COMPLETED and logged the intended operation to a tracing facility.";
             jobResult.Description = message.ToString();
             jobResult.InnerJobResult = null;
 
-            return fReturn;
+            return result;
         }
     }
 }
