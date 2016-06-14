@@ -14,36 +14,37 @@
  * limitations under the License.
  */
 
-using System.Diagnostics.Contracts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.ComponentModel.Composition;
-using System.Diagnostics;
+using biz.dfch.CS.Appclusive.Public;
+using biz.dfch.CS.Appclusive.Public.Plugins;
 using biz.dfch.CS.Appclusive.Scheduler.Public;
+using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.Diagnostics.Contracts;
+using System.Text;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
 {
-    [Export(typeof(ISchedulerPlugin))]
+    [Export(typeof(IAppclusivePlugin))]
     [ExportMetadata("Type", "Default")]
-    [ExportMetadata("Priority", int.MinValue)]
-    public class DefaultPlugin : ISchedulerPlugin
+    [ExportMetadata("Priority", int.MinValue +1)]
+    [ExportMetadata("Role", "default")]
+    public class DefaultPlugin : SchedulerPluginBase
     {
-        public Dictionary<string, object> Configuration { get; set; }
-
-        public void Log(string message)
-        {
-            Trace.WriteLine(message);
-
-            return;
+        private DictionaryParameters configuration;
+        public override DictionaryParameters Configuration 
+        { 
+            get
+            {
+                return configuration;
+            }
+            set
+            {
+                configuration = UpdateConfiguration(value);
+            }
         }
 
-        public bool UpdateConfiguration(Dictionary<string, object> configuration)
+        private DictionaryParameters UpdateConfiguration(DictionaryParameters configuration)
         {
-            var fReturn = false;
-        
             var message = new StringBuilder();
             message.AppendLine("DefaultPlugin.UpdatingConfiguration ...");
             message.AppendLine();
@@ -56,43 +57,62 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
             message.AppendLine();
             message.AppendLine("DefaultPlugin.UpdatingConfiguration COMPLETED.");
             
-            Trace.WriteLine(message.ToString());
+            if (null != Logger)
+            { 
+                Logger.WriteLine(message.ToString());
+            }
 
-            fReturn = true;
-            
-            return fReturn;
+            this.configuration = configuration;
+
+            return this.configuration;
         }
 
-        public bool Invoke(Dictionary<string, object> data, ref JobResult jobResult)
+        public override bool Initialise(DictionaryParameters parameters, IAppclusivePluginLogger logger, bool activate)
+        {
+            var result = false;
+
+            result = base.Initialise(parameters, logger, activate);
+            if(!configuration.IsValid())
+            {
+                return result;
+            }
+
+            return result;
+        }
+        
+        public override bool Invoke(DictionaryParameters parameters, IInvocationResult jobResult)
         {
             Contract.Requires("1" == jobResult.Version);
-            Contract.Ensures(jobResult.IsValid());
 
-            var fReturn = false;
+            var result = base.Invoke(parameters, jobResult);
+            if(!result)
+            {
+                return result;
+            }
 
             var message = new StringBuilder();
             message.AppendLine("DefaultPlugin.Invoke ...");
             message.AppendLine();
 
-            foreach(KeyValuePair<string, object> item in data)
+            foreach(KeyValuePair<string, object> item in parameters)
             {
                 message.AppendFormat("{0}: '{1}'", item.Key, item.Value ?? item.Value.ToString());
                 message.AppendLine();
             }
             message.AppendLine("DefaultPlugin.Invoke() COMPLETED.");
             message.AppendLine();
-            
-            Trace.WriteLine(message.ToString());
 
-            fReturn = true;
+            Logger.WriteLine(message.ToString());
+
+            result = true;
             
-            jobResult.Succeeded = fReturn;
+            jobResult.Succeeded = result;
             jobResult.Code = 1;
             jobResult.Message = "DefaultPlugin.Invoke COMPLETED and logged the intended operation to a tracing facility.";
             jobResult.Description = message.ToString();
             jobResult.InnerJobResult = null;
 
-            return fReturn;
+            return result;
         }
     }
 }

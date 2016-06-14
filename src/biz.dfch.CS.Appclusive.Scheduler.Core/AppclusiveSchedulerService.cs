@@ -15,19 +15,12 @@
  *
  */
 
+using System.Diagnostics.Contracts;
 using biz.dfch.CS.Utilities.General;
 using biz.dfch.CS.Utilities.Logging;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Configuration;
-using System.Data;
-using System.Diagnostics.Contracts;
-using System.Linq;
 using System.ServiceProcess;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Core
 {
@@ -35,7 +28,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
     {
         private ManualResetEvent serviceAbortSignal = new ManualResetEvent(false);
 
-        ScheduledTaskWorker scheduledTaskWorker;
+        ScheduledJobsWorker scheduledJobsWorker;
 
         public AppclusiveSchedulerService()
         {
@@ -48,20 +41,23 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             serviceAbortSignal.Set();
         }
 
-        internal void OnStartInteractive(string[] args)
+        public void OnStartInteractive(string[] args)
         {
             var fn = Method.fn();
             Trace.WriteLine("{0}.{1}", this.GetType().FullName, fn);
 
             try
             {
+                Console.WriteLine(new ProgramHelp().GetInteractiveMessage());
+
                 OnStart(args);
                 serviceAbortSignal.WaitOne();
-                Trace.WriteLine(string.Format("CancelKeyPress detected. Stopping interactive mode."));
+                Console.WriteLine(string.Format("CancelKeyPress detected. Stopping interactive mode."));
             }
             catch (Exception ex)
             {
-                Trace.WriteException("Stopping interactive mode.", ex);
+                var message = string.Format("{0}@{1}: '{2}'\r\n[{3}]\r\n{4}", ex.GetType().Name, ex.Source, "Stopping interactive mode.", ex.Message, ex.StackTrace);
+                Console.WriteLine(message);
             }
             finally
             {
@@ -74,8 +70,8 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             var fn = Method.fn();
             Trace.WriteLine("{0}.{1}", this.GetType().FullName, fn);
 
-            var configuration = new ScheduledTaskWorkerConfiguration(new ScheduledTaskWorkerConfigurationLoader(), args);
-            scheduledTaskWorker = new ScheduledTaskWorker(configuration);
+            var configuration = new ScheduledJobsWorkerConfiguration(new ScheduledJobsWorkerConfigurationLoader(), args);
+            scheduledJobsWorker = new ScheduledJobsWorker(configuration);
 
             base.OnStart(args);
         }
@@ -85,7 +81,10 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             var fn = Method.fn();
             Trace.WriteLine("{0}.{1}", this.GetType().FullName, fn);
 
-            scheduledTaskWorker.IsActive = false;
+            if(null != scheduledJobsWorker)
+            {
+                scheduledJobsWorker.IsActive = false;
+            }
 
             base.OnStop();
         }
@@ -95,7 +94,10 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             var fn = Method.fn();
             Trace.WriteLine("{0}.{1}", this.GetType().FullName, fn);
 
-            scheduledTaskWorker.IsActive = false;
+            if(null != scheduledJobsWorker)
+            {
+                scheduledJobsWorker.IsActive = false;
+            }
 
             base.OnPause();
         }
@@ -105,8 +107,12 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             var fn = Method.fn();
             Trace.WriteLine("{0}.{1}", this.GetType().FullName, fn);
 
-            scheduledTaskWorker.IsActive = true;
-            scheduledTaskWorker.UpdateScheduledTasks();
+            if(null != scheduledJobsWorker)
+            {
+                scheduledJobsWorker.IsActive = true;
+                var isUpdateScheduledJobsSucceeded = scheduledJobsWorker.GetScheduledJobs();
+                Contract.Assert(isUpdateScheduledJobsSucceeded);
+            }
 
             base.OnContinue();
         }
@@ -132,7 +138,10 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             var fn = Method.fn();
             Trace.WriteLine("{0}.{1}", this.GetType().FullName, fn);
 
-            scheduledTaskWorker.IsActive = false;
+            if(null != scheduledJobsWorker)
+            {
+                scheduledJobsWorker.IsActive = false;
+            }
 
             base.OnShutdown();
         }

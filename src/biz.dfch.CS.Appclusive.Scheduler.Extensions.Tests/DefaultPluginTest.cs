@@ -7,6 +7,8 @@ using biz.dfch.CS.Utilities.Testing;
 using System.Collections.Specialized;
 using biz.dfch.CS.Appclusive.Scheduler.Public;
 using System.Collections.Generic;
+using biz.dfch.CS.Appclusive.Scheduler.Core;
+using biz.dfch.CS.Appclusive.Public;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
 {
@@ -18,60 +20,67 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
         {
             // Arrange
             var message = "arbitrary-message";
-
-            Mock.Arrange(() => Trace.WriteLine(Arg.Is<string>(message)))
-                .OccursOnce();
+            var logger = new Logger();
+            var sut = new DefaultPlugin();
+            sut.Initialise(new DictionaryParameters(), logger, true);
 
             // Act
-            var sut = new DefaultPlugin();
-            sut.Log(message);
+            sut.Logger.WriteLine(message);
 
             // Assert
-            Mock.Assert(() => Trace.WriteLine(Arg.Is<string>(message)));
+            // N/A
         }
 
         [TestMethod]
-        public void UpdateConfigurationSucceeds()
+        public void GetAndSetConfigurationSucceeds()
         {
             // Arrange
-            var configuration = new Dictionary<string, object>();
-
-            Mock.Arrange(() => Trace.WriteLine(Arg.IsAny<string>()))
-                .OccursOnce();
+            var configuration = new DictionaryParameters();
+            var key1 = "arbitrary-key1";
+            var value1 = "arbitrary-value";
+            configuration.Add(key1, value1);
+            var key2 = "arbitrary-key2";
+            var value2 = 42;
+            configuration.Add(key2, value2);
+            var key3 = "arbitrary-key3";
+            var value3 = new object();
+            configuration.Add(key3, value3);
 
             // Act
             var sut = new DefaultPlugin();
-            var result = sut.UpdateConfiguration(configuration);
+            sut.Configuration = configuration;
 
             // Assert
-            Assert.IsTrue(result);
-
-            Mock.Assert(() => Trace.WriteLine(Arg.IsAny<string>()));
+            Assert.AreEqual(configuration, sut.Configuration);
         }
 
         [TestMethod]
         public void InvokeConfigurationSucceeds()
         {
             // Arrange
-            var data = new Dictionary<string, object>();
+            var parameters = new DictionaryParameters();
             var key1 = "arbitrary-key1";
             var value1 = "arbitrary-value";
-            data.Add(key1, value1);
+            parameters.Add(key1, value1);
             var key2 = "arbitrary-key2";
             var value2 = 42;
-            data.Add(key2, value2);
+            parameters.Add(key2, value2);
             var key3 = "arbitrary-key3";
             var value3 = new object();
-            data.Add(key3, value3);
+            parameters.Add(key3, value3);
 
             var jobResult = new JobResult();
 
-            Mock.Arrange(() => Trace.WriteLine(Arg.IsAny<string>()))
-                .OccursOnce();
+            var schedulerPluginBase = Mock.Create<SchedulerPluginBase>();
+            Mock.Arrange(() => schedulerPluginBase.Invoke(Arg.IsAny<DictionaryParameters>(), Arg.IsAny<IInvocationResult>()))
+                .IgnoreInstance()
+                .CallOriginal()
+                .MustBeCalled();
 
             // Act
             var sut = new DefaultPlugin();
-            var result = sut.Invoke(data, ref jobResult);
+            sut.Initialise(new DictionaryParameters(), new Logger(), true);
+            var result = sut.Invoke(parameters, jobResult);
 
             // Assert
             Assert.IsTrue(result);
@@ -83,7 +92,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
             Assert.IsTrue(jobResult.Description.Contains(key3));
             Assert.IsTrue(jobResult.Description.Contains(value3.ToString()));
 
-            Mock.Assert(() => Trace.WriteLine(Arg.IsAny<string>()));
+            Mock.Assert(schedulerPluginBase);
         }
     }
 }

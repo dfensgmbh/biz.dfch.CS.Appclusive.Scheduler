@@ -13,6 +13,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "biz.dfch.CS.Appclusive.Scheduler.Public", "biz.dfch.CS.Appclusive.Scheduler.Public\biz.dfch.CS.Appclusive.Scheduler.Public.csproj", "{F3E50A54-395D-4E02-BDE6-EDEA3C3CF578}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "biz.dfch.CS.Appclusive.Scheduler.Extensions", "biz.dfch.CS.Appclusive.Scheduler.Extensions\biz.dfch.CS.Appclusive.Scheduler.Extensions.csproj", "{2EE216BB-08A6-4070-ADFF-38AA49B184C3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{ED3CBDAE-82B0-43EA-BE69-B0CAD148A209} = {ED3CBDAE-82B0-43EA-BE69-B0CAD148A209}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests", "biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests\biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests.csproj", "{D3FBB76D-242B-48F0-809C-6AE40EAEE02D}"
 EndProject

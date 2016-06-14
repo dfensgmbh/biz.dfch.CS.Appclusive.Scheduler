@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
@@ -20,16 +21,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace biz.dfch.CS.Appclusive.Scheduler.Public
+namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
 {
-    [ContractClassFor(typeof(IConfigurationLoader))]
-    abstract class ContractClassForIConfigurationLoader : IConfigurationLoader
+    public class ActivitiWorkflowInputParameters
     {
-        public void Initialise(BaseDto configuration, Dictionary<string, object> parameters)
-        {
-            Contract.Requires(null != configuration);
-            Contract.Ensures(null != configuration);
-            Contract.Ensures(configuration.IsValid());
-        }
     }
 }

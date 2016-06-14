@@ -15,17 +15,22 @@
  */
 
 using System;
-using System.Collections.Generic;
-using System.Diagnostics.Contracts;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Net;
+using biz.dfch.CS.Appclusive.Scheduler.Public;
 
-namespace biz.dfch.CS.Appclusive.Scheduler.Public
+namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
 {
-    [ContractClass(typeof(ContractClassForIConfigurationLoader))]
-    public interface IConfigurationLoader
+    public class ActivitiPluginConfiguration : SchedulerPluginConfigurationBase
     {
-        void Initialise(BaseDto configuration, Dictionary<string, object> parameters);
+        public string Description { get; set; }
+        
+        [Required]
+        public NetworkCredential Credential { get; set; }
+
+        [Required]
+        public Uri ServerBaseUri { get; set; }
     }
 }
+

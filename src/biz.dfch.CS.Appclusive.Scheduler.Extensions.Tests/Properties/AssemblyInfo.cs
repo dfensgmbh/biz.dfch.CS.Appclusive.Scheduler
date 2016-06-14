@@ -8,10 +8,10 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("d-fens GmbH")]
 [assembly: AssemblyProduct("biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests")]
-[assembly: AssemblyCopyright("Copyright ©  2016")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCopyright("Copyright © 2011-2016 d-fens GmbH")]
+[assembly: AssemblyTrademark("The d-fens logo is a registered trademark in the European Union.")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
@@ -33,4 +33,4 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+//[assembly: AssemblyFileVersion("1.0.0.0")]

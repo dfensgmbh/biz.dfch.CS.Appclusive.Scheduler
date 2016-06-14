@@ -14,29 +14,17 @@
  * limitations under the License.
  */
 
-
+using biz.dfch.CS.Appclusive.Public;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Web;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Public
 {
-    public class JobResult : BaseDto
+    public class JobResult : InvocationResultBase
     {
         public JobResult()
         {
             Version = "1";
         }
-
-        [Required]
-        public string Version { get; set; }
-        public bool Succeeded { get; set; }
-        public int Code { get; set; }
-        [Required]
-        public string Message { get; set; }
-        public string Description { get; set; }
-        public JobResult InnerJobResult { get; set; }
     }
 }

@@ -18,34 +18,47 @@ using System;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using biz.dfch.CS.Appclusive.Public.Logging;
 using biz.dfch.CS.Utilities.Testing;
 using System.Collections.Generic;
+using Telerik.JustMock;
+using biz.dfch.CS.Appclusive.Public;
+using biz.dfch.CS.Appclusive.Public.Plugins;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Public.Tests
 {
     [TestClass]
     public class ISchedulerPluginTest
     {
-        class SchedulerPluginImpl : ISchedulerPlugin
+        class SchedulerPluginImpl : SchedulerPluginBase
         {
-            public Dictionary<string, object> Configuration { get; set; }
-
-            public void Log(string message)
+            public override bool Invoke(DictionaryParameters parameters, IInvocationResult jobResult)
             {
-                throw new NotImplementedException();
-            }
+                if(!IsActive)
+                {
+                    return false;
+                }
 
-            public bool UpdateConfiguration(Dictionary<string, object> configuration)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool Invoke(Dictionary<string, object> data, ref JobResult jobResult)
-            {
                 jobResult = null;
                 
                 return true;
             }
+        }
+        
+        [TestMethod]
+        public void LogSucceeds()
+        {
+            // Arrange
+            var message = "arbitrary-message";
+            var sut = new SchedulerPluginImpl();
+            var logger = Mock.Create<IAppclusivePluginLogger>();
+            sut.Initialise(new DictionaryParameters(), logger, true);
+
+            // Act
+            sut.Logger.WriteLine(message);
+
+            // Assert
+            // N/A
         }
 
         [TestMethod]
@@ -54,7 +67,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public.Tests
         {
             // Arrange
             var sut = new SchedulerPluginImpl();
-            var configuration = default(Dictionary<string, object>);
+            var configuration = default(DictionaryParameters);
 
             // Act
             sut.Configuration = configuration;
@@ -79,45 +92,15 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public.Tests
 
         [TestMethod]
         [ExpectContractFailure]
-        public void LogEmptyThrowsContractException()
-        {
-            // Arrange
-            var sut = new SchedulerPluginImpl();
-            var message = string.Empty;
-
-            // Act
-            sut.Log(message);
-
-            // Assert
-            Assert.Fail("CodeContracts are not enabled.");
-        }
-
-        [TestMethod]
-        [ExpectContractFailure]
-        public void UpdateConfigurationNullThrowsContractException()
-        {
-            // Arrange
-            var sut = new SchedulerPluginImpl();
-            var configuration = default(Dictionary<string, object>);
-
-            // Act
-            sut.UpdateConfiguration(configuration);
-
-            // Assert
-            Assert.Fail("CodeContracts are not enabled.");
-        }
-
-        [TestMethod]
-        [ExpectContractFailure]
         public void InvokeDataNullThrowsContractException()
         {
             // Arrange
             var sut = new SchedulerPluginImpl();
-            var data = default(Dictionary<string, object>);
+            var parameters = default(DictionaryParameters);
             var jobResult = new JobResult();
 
             // Act
-            sut.Invoke(data, ref jobResult);
+            sut.Invoke(parameters, jobResult);
 
             // Assert
             Assert.Fail("CodeContracts are not enabled.");
@@ -129,11 +112,11 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public.Tests
         {
             // Arrange
             var sut = new SchedulerPluginImpl();
-            var data = new Dictionary<string, object>();
-            var jobResult = default(JobResult);
+            var parameters = new DictionaryParameters();
+            var jobResult = default(IInvocationResult);
 
             // Act
-            sut.Invoke(data, ref jobResult);
+            sut.Invoke(parameters, jobResult);
 
             // Assert
             Assert.Fail("CodeContracts are not enabled.");
@@ -145,11 +128,11 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public.Tests
         {
             // Arrange
             var sut = new SchedulerPluginImpl();
-            var data = new Dictionary<string, object>();
+            var parameters = new DictionaryParameters();
             var jobResult = new JobResult();
 
             // Act
-            sut.Invoke(data, ref jobResult);
+            sut.Invoke(parameters, jobResult);
 
             // Assert
             Assert.Fail("CodeContracts are not enabled.");

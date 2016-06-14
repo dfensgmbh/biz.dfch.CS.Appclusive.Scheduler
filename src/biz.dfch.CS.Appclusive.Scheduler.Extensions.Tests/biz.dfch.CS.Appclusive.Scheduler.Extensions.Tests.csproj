@@ -8,7 +8,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests</RootNamespace>
     <AssemblyName>biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -17,6 +17,8 @@
     <IsCodedUITest>False</IsCodedUITest>
     <TestProjectType>UnitTest</TestProjectType>
     <CodeContractsAssemblyMode>1</CodeContractsAssemblyMode>
+    <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>cdda5893</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -122,19 +124,44 @@
     <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="biz.dfch.CS.System.Utilities, Version=2.0.0.26140, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\biz.dfch.CS.System.Utilities.2.0.0\lib\biz.dfch.CS.System.Utilities.dll</HintPath>
+    <Reference Include="biz.dfch.CS.Activiti.Client, Version=1.1.1.22802, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\biz.dfch.CS.Activiti.Client.1.1.1\lib\biz.dfch.CS.Activiti.Client.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="log4net, Version=1.2.13.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
+    <Reference Include="biz.dfch.CS.Appclusive.Api, Version=2.8.0.24089, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\biz.dfch.CS.Appclusive.Api.2.8.0\lib\biz.dfch.CS.Appclusive.Api.dll</HintPath>
+    </Reference>
+    <Reference Include="biz.dfch.CS.Appclusive.Public, Version=2.9.0.17153, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\biz.dfch.CS.Appclusive.Public.2.9.0\lib\biz.dfch.CS.Appclusive.Public.dll</HintPath>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="biz.dfch.CS.System.Utilities, Version=2.0.1.17294, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\biz.dfch.CS.System.Utilities.2.0.1\lib\biz.dfch.CS.System.Utilities.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Data.Services.Client, Version=5.6.4.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.Data.Services.Client.5.6.4\lib\net40\Microsoft.Data.Services.Client.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\biz.dfch.CS.Appclusive.Public.2.9.0\lib\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\biz.dfch.CS.Appclusive.Public.2.9.0\lib\System.Net.Http.Formatting.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Http, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\biz.dfch.CS.Appclusive.Public.2.9.0\lib\System.Web.Http.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Telerik.JustMock">
       <HintPath>../JustMock/Telerik.JustMock.dll</HintPath>
     </Reference>
@@ -152,12 +179,30 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="ActivitiClientTest.cs" />
+    <Compile Include="ActivitiPluginConfigurationManagerTest.cs" />
+    <Compile Include="ActivitiPluginConfigurationTest.cs" />
+    <Compile Include="ActivitiPluginTest.cs" />
+    <Compile Include="ActivitiPluginTestEnvironment.cs" />
+    <Compile Include="ActivitiPluginTestEnvironmentTemplate.cs" />
+    <Compile Include="PowerShellScriptPluginConfigurationManagerTest.cs" />
+    <Compile Include="PowerShellScriptPluginConfigurationTest.cs" />
+    <Compile Include="PowerShellScriptPluginTest.cs" />
     <Compile Include="ISchedulerPluginTest.cs" />
     <Compile Include="CodeContractTest.cs" />
     <Compile Include="DefaultPluginTest.cs" />
+    <Compile Include="ProgrammePluginTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\biz.dfch.CS.Appclusive.Scheduler.Core\biz.dfch.CS.Appclusive.Scheduler.Core.csproj">
+      <Project>{ED3CBDAE-82B0-43EA-BE69-B0CAD148A209}</Project>
+      <Name>biz.dfch.CS.Appclusive.Scheduler.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\biz.dfch.CS.Appclusive.Scheduler.Public.Tests\biz.dfch.CS.Appclusive.Scheduler.Public.Tests.csproj">
+      <Project>{623eca49-601b-42f2-b37e-db300106db96}</Project>
+      <Name>biz.dfch.CS.Appclusive.Scheduler.Public.Tests</Name>
+    </ProjectReference>
     <ProjectReference Include="..\biz.dfch.CS.Appclusive.Scheduler.Public\biz.dfch.CS.Appclusive.Scheduler.Public.csproj">
       <Project>{f3e50a54-395d-4e02-bde6-edea3c3cf578}</Project>
       <Name>biz.dfch.CS.Appclusive.Scheduler.Public</Name>
@@ -168,6 +213,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <Choose>
@@ -190,6 +236,13 @@
   </Choose>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

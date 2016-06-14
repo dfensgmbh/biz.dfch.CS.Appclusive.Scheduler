@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
+using biz.dfch.CS.Appclusive.Public.Plugins;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Public
 {
-    public interface ISchedulerPluginData
+    public interface ISchedulerPluginData : IAppclusivePluginData
     {
-        string Type { get; }
-
-        int Priority { get; set; }
+        // N/A
     }
 }

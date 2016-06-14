@@ -18,18 +18,14 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using biz.dfch.CS.Appclusive.Public.Plugins; 
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Public
 {
-    [ContractClass(typeof(ContractClassForISchedulerPlugin))]
-    public interface ISchedulerPlugin
+    public interface ISchedulerPlugin : IAppclusivePlugin
     {
-        Dictionary<string, object> Configuration { get; set; }
-        
-        void Log(string message);
-        
-        bool UpdateConfiguration(Dictionary<string, object> configuration);
-
-        bool Invoke(Dictionary<string, object> data, ref JobResult jobResult);
+        // N/A
     }
 }

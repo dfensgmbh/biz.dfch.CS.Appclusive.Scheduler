@@ -14,46 +14,41 @@
  * limitations under the License.
  */
 
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using biz.dfch.CS.Utilities.Testing;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
 {
     [TestClass]
-    public class ScheduledTaskWorkerConfigurationTest
+    public class ProgramHelpTest
     {
         [TestMethod]
-        [ExpectContractFailure]
-        public void ServerNotReachableRetriesSettingToZeroThrowsContractException()
+        public void ProgramHelpEncryptMessage()
         {
-            // Arrange
-
-            // Act
-            var sut = new ScheduledTaskWorkerConfiguration();
-            sut.ServerNotReachableRetries = 0;
-
-            // Assert
-            // N/A
+            Assert.IsFalse(string.IsNullOrWhiteSpace(new ProgramHelp().GetEncryptMessage()));
         }
 
         [TestMethod]
-        [ExpectContractFailure]
-        public void ServerNotReachableRetriesGettingUninitialisedThrowsContractException()
+        public void ProgramHelpDecryptMessage()
         {
-            // Arrange
+            Assert.IsFalse(string.IsNullOrWhiteSpace(new ProgramHelp().GetDecryptMessage()));
+        }
 
-            // Act
-            var sut = new ScheduledTaskWorkerConfiguration();
-            var result = sut.ServerNotReachableRetries;
+        [TestMethod]
+        public void ProgramHelpHelpMessage()
+        {
+            Assert.IsFalse(string.IsNullOrWhiteSpace(new ProgramHelp().GetHelpMessage()));
+        }
 
-            // Assert
-            // N/A
+        [TestMethod]
+        public void ProgramHelpInteractiveMessage()
+        {
+            Assert.IsFalse(string.IsNullOrWhiteSpace(new ProgramHelp().GetInteractiveMessage()));
         }
     }
 }
