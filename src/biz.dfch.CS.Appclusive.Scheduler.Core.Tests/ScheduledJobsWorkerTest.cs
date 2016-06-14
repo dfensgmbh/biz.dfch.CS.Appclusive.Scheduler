@@ -65,7 +65,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
         }
 
         [TestMethod]
-        public void RunTaskSucceeds()
+        public void RunJobsSucceeds()
         {
             // Arrange
             var task = Mock.Create<ScheduledJobScheduler>();
@@ -130,7 +130,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
             var stateObject = default(object);
 
             // Act
-            sut.RunTasks(stateObject);
+            sut.RunJobs(stateObject);
 
             // Assert
             Mock.Assert(scheduledJobsManagerImpl);

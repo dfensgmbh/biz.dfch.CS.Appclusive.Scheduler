@@ -92,7 +92,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
                 result = GetScheduledJobs();
 
                 // create the timer to process all scheduled jobs periodically
-                stateTimer = new ScheduledTaskWorkerTimerFactory().CreateTimer(new TimerCallback(this.RunTasks), null, 1000, (1000 * 60) - 20);
+                stateTimer = new ScheduledTaskWorkerTimerFactory().CreateTimer(new TimerCallback(this.RunJobs), null, 1000, (1000 * 60) - 20);
             }
             catch (Exception ex)
             {
@@ -147,12 +147,11 @@ Success:
         }
 
         // The state object is necessary for a TimerCallback.
-        public void RunTasks(object stateObject)
+        public void RunJobs(object stateObject)
         {
             Contract.Assert(isInitialised);
 
             var fn = Method.fn();
-            Trace.WriteLine(Method.fn());
 
             var result = false;
             var now = DateTimeOffset.Now;
@@ -178,6 +177,7 @@ Success:
                     p => p.Metadata.Type.Equals(biz.dfch.CS.Appclusive.Scheduler.Public.Constants.PLUGIN_TYPE_DEFAULT)
                 );
                 
+                Trace.WriteLine("{0}: Processing {1} ScheduledJobs ...", fn, scheduledJobs.Count);
                 foreach (var job in scheduledJobs)
                 {
                     try
@@ -232,6 +232,7 @@ Success:
                         Trace.WriteException(message, ex);
                     }
                 }
+                Trace.WriteLine("{0}: Processing {1} ScheduledJobs COMPLETED.", fn, scheduledJobs.Count);
             }
 Success:
             if (configuration.UpdateIntervalInMinutes <= (now - lastUpdated).TotalMinutes)
