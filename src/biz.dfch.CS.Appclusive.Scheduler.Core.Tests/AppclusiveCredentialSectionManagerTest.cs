@@ -14,25 +14,33 @@
  * limitations under the License.
  */
 
+using biz.dfch.CS.Appclusive.Scheduler.Public;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Telerik.JustMock;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
 {
     [TestClass]
     public class AppclusiveCredentialSectionManagerTest
     {
-        [Ignore]
-        [TestCategory("SkipOnTeamCity")]
         [TestMethod]
         public void GettingConfigSectionSucceeds()
         {
             // Arrange
+            var configSection = new AppclusiveCredentialSection();
+            var configSectionManager = Mock.Create<ConfigSectionManager>(Constructor.Mocked);
+            Mock.Arrange(() => configSectionManager.Get(Arg.Is<string>(AppclusiveCredentialSection.SECTION_NAME)))
+                .IgnoreInstance()
+                .Returns(configSection)
+                .MustBeCalled();
+
             var sut = new AppclusiveCredentialSectionManager();
             
             // Act
             var result = sut.GetSection();
             
             // Assert
+            Mock.Assert(configSectionManager);
             Assert.IsNotNull(result);
         }
     }

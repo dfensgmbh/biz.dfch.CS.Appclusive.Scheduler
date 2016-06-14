@@ -251,7 +251,6 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
             Assert.IsFalse(string.IsNullOrWhiteSpace(jobResult.Description));
         }
 
-        [Ignore]
         [TestMethod]
         public void SetConfigurationSucceeds()
         {
@@ -266,15 +265,15 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
             Assert.AreEqual(configuration, sut.Configuration);
         }
 
-        [Ignore]
         [TestMethod]
         public void GetConfigurationSucceeds()
         {
             // Arrange
             var configuration = new DictionaryParameters();
+            var sut = new ProgrammePlugin();
+            sut.Initialise(configuration, new Logger(), true);
 
             // Act
-            var sut = new ProgrammePlugin();
             configuration = sut.Configuration;
 
             // Assert

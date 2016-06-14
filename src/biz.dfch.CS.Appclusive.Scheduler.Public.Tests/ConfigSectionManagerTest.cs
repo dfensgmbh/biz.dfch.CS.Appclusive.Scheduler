@@ -23,6 +23,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Telerik.JustMock;
 using biz.dfch.CS.Utilities.Testing;
+using System.Configuration;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Public.Tests
 {
@@ -32,17 +33,31 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public.Tests
         private readonly string exePath = "..\\..\\..\\biz.dfch.CS.Appclusive.Scheduler.Core\\bin\\Debug\\biz.dfch.CS.Appclusive.Scheduler.Core.exe";
         private readonly string sectionName = AppclusiveCredentialSection.SECTION_NAME;
 
-        [TestCategory("SkipOnTeamCity")]
         [TestMethod]
         public void GettingConfigSectionFromExecutableSucceeds()
         {
             // Arrange
+            var configurationSection = new AppclusiveCredentialSection();
+            var configuration = Mock.Create<Configuration>();
+            Mock.Arrange(() => configuration.GetSection(Arg.IsAny<string>()))
+                .IgnoreInstance()
+                .Returns(configurationSection)
+                .MustBeCalled();
+
+            Mock.SetupStatic(typeof(ConfigurationManager));
+            Mock.Arrange(() => ConfigurationManager.OpenExeConfiguration(Arg.Is<string>(exePath)))
+                .Returns(configuration)
+                .MustBeCalled();
+
             var sut = new ConfigSectionManager(exePath);
 
             // Act
             var result = sut.Get(sectionName);
 
             // Assert
+            Mock.Assert(() => configuration.GetSection(Arg.IsAny<string>()));
+            Mock.Assert(configuration);
+
             Assert.IsInstanceOfType(result, typeof(AppclusiveCredentialSection));
             var appclusiveCredentialSection = result as AppclusiveCredentialSection;
             Assert.IsNotNull(appclusiveCredentialSection);
