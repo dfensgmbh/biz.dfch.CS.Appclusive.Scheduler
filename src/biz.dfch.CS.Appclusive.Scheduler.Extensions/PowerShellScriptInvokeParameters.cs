@@ -14,26 +14,19 @@
  * limitations under the License.
  */
 
+using System.ComponentModel.DataAnnotations;
+using biz.dfch.CS.Appclusive.Scheduler.Public;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using biz.dfch.CS.Appclusive.Scheduler.Public;
-using biz.dfch.CS.Appclusive.Public;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
 {
-    public class ActivitiPluginInvokeParameters : SchedulerPluginBaseInvokeParameters
+    public class PowerShellScriptInvokeParameters : SchedulerPluginBaseInvokeParameters
     {
-        [Required]
-        public string Id { get; set; }
-
-        [Required]
-        public string Parameters { get; set; }
-
+        // DFTODO - define required parameters
     }
 }

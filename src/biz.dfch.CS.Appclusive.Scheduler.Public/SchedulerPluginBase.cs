@@ -34,7 +34,6 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public
         {
             var result = base.Invoke(parameters, jobResult);
             
-            Contract.Assert(parameters.ContainsKey("JobId"));
 
             return result;
         }

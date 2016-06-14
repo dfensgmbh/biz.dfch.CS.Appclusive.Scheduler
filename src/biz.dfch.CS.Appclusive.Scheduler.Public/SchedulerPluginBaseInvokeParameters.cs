@@ -14,26 +14,17 @@
  * limitations under the License.
  */
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using biz.dfch.CS.Appclusive.Scheduler.Public;
 using biz.dfch.CS.Appclusive.Public;
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
-namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
+namespace biz.dfch.CS.Appclusive.Scheduler.Public
 {
-    public class ActivitiPluginInvokeParameters : SchedulerPluginBaseInvokeParameters
+    public class SchedulerPluginBaseInvokeParameters : BaseDto
     {
         [Required]
-        public string Id { get; set; }
-
-        [Required]
-        public string Parameters { get; set; }
-
+        [Range(1, long.MaxValue)]
+        public long JobId { get; set; }
     }
 }

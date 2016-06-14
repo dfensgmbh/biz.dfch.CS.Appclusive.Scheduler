@@ -27,7 +27,7 @@ using biz.dfch.CS.Appclusive.Public;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
 {
-    public class ProgrammePluginInvokeParameters : BaseDto
+    public class ProgrammePluginInvokeParameters : SchedulerPluginBaseInvokeParameters
     {
         [Required]
         public string CommandLine { get; set; }
