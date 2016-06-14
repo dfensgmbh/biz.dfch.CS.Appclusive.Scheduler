@@ -127,53 +127,47 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
 
         public override bool Invoke(DictionaryParameters parameters, IInvocationResult jobResult)
         {
-            var fReturn = false;
-
-            if(!IsActive)
-            {
-                var message = "Plugin inactive";
-                var description = string.Format("ExternalWorkflow: ActivityId '{0}'.", Trace.CorrelationManager.ActivityId.ToString());
-
-                Logger.Warn("{0} {1}. Nothing to do.", description, message);
-
-                jobResult.Succeeded = fReturn;
-                jobResult.Code = 1;
-                jobResult.Description = description;
-                jobResult.Message = message;
-            }
+            var activitId = Trace.CorrelationManager.ActivityId;
             
-            var invocationParameters = parameters.Convert<ActivitiPluginInvokeParameters>();
+            var result = base.Invoke(parameters, jobResult);
+            if(!result)
+            {
+                return result;
+            }
 
             try
             {
-                Logger.Debug("ExternalWorkflow: ActivityId '{0}'. Invoke ...", Trace.CorrelationManager.ActivityId.ToString(), "");
+                var invocationParameters = parameters.Convert<ActivitiPluginInvokeParameters>();
+                var workflowInputParameters = new DictionaryParameters(invocationParameters.Parameters);
 
-                fReturn = true;
+                Logger.Info("JobId: '{0}'. ActivityId '{1}'. {2}({3}).", invocationParameters.JobId, activitId, invocationParameters.Id, string.Join(", ", workflowInputParameters.Keys));
 
                 var message = string.Format("JobId: '{0}'", invocationParameters.JobId);
-                var description = string.Format("ExternalWorkflow: ActivityId '{0}'.", Trace.CorrelationManager.ActivityId.ToString());
+                var description = string.Format("ExternalWorkflow: ActivityId '{0}'.", activitId.ToString());
 
-                if (fReturn)
+                result = true;
+
+                if (result)
                 {
-                    Logger.Info("ExternalWorkflow: ActivityId '{0}'. Invoke SUCCEEDED.", Trace.CorrelationManager.ActivityId.ToString(), "");
-                    jobResult.Code = 0;
+                    jobResult.Code = biz.dfch.CS.Appclusive.Scheduler.Public.Constants.InvocationResultCodes.ERROR_SUCCESS;
                 }
                 else
                 {
-                    Logger.Error("ExternalWorkflow: ActivityId '{0}'. Invoke FAILED.", Trace.CorrelationManager.ActivityId.ToString(), "");
-                    jobResult.Code = 1;
+                    jobResult.Code = biz.dfch.CS.Appclusive.Scheduler.Public.Constants.InvocationResultCodes.ERROR_INVALID_FUNCTION;
                 }
 
-                jobResult.Succeeded = fReturn;
+                jobResult.Succeeded = result;
                 jobResult.Description = description;
                 jobResult.Message = message;
             }
             catch(Exception ex)
             {
-                jobResult.Succeeded = fReturn;
+                jobResult.Succeeded = result;
                 jobResult.Code = ex.HResult;
                 jobResult.Message = ex.Message;
                 jobResult.Description = ex.StackTrace;
+
+                throw;
             }
 
             return jobResult.Succeeded;

@@ -214,16 +214,16 @@ Success:
                             System.Diagnostics.Trace.CorrelationManager.ActivityId = Guid.NewGuid();
                         }
 
-                        Trace.WriteLine("Invoking {0} with plugin '{1}' [ActivityId {2}] ...", job.Id, job.Action, System.Diagnostics.Trace.CorrelationManager.ActivityId);
+                        configuration.Logger.WriteLine("Invoking {0} with plugin '{1}' [ActivityId {2}] ...", job.Id, job.Action, System.Diagnostics.Trace.CorrelationManager.ActivityId);
                         plugin.Value.Invoke(parameters, invocationResult);
 
                         if(invocationResult.Succeeded)
                         {
-                            Trace.WriteLine("Invoking {0} with plugin '{1}' [ActivityId {2}] SUCCEEDED.", job.Id, job.Action, System.Diagnostics.Trace.CorrelationManager.ActivityId);
+                            configuration.Logger.Info("Invoking {0} with plugin '{1}' [ActivityId {2}] SUCCEEDED.", job.Id, job.Action, System.Diagnostics.Trace.CorrelationManager.ActivityId);
                         }
                         else
                         {
-                            Trace.WriteLine("Invoking {0} with plugin '{1}' [ActivityId {2}] FAILED.", job.Id, job.Action, System.Diagnostics.Trace.CorrelationManager.ActivityId);
+                            configuration.Logger.Error("Invoking {0} with plugin '{1}' [ActivityId {2}] FAILED.", job.Id, job.Action, System.Diagnostics.Trace.CorrelationManager.ActivityId);
                         }
                     }
                     catch (Exception ex)

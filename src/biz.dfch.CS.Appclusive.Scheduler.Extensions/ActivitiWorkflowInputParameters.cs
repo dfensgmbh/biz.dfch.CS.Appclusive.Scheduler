@@ -20,21 +20,10 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
+namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
 {
-    [TestClass]
-    public class ActivitiPluginConfigurationTest
+    public class ActivitiWorkflowInputParameters
     {
-        // test for the ActivitiPluginConfiguration class
-        // are performed in the ActivitiPluginTest class
-
-        #pragma warning disable 0169
-
-        private readonly ActivitiPluginTest activitiPluginTest 
-            = default(ActivitiPluginTest);
-        
-        #pragma warning restore 0169
     }
 }
