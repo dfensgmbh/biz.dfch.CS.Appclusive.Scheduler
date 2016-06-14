@@ -24,7 +24,7 @@ using System.Threading.Tasks;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Core
 {
-    public class ScheduledTaskWorkerTimerFactory
+    public class ScheduledJobsWorkerTimerFactory
     {
         public Timer CreateTimer(TimerCallback target, object objectState, int dueTime, int period)
         {

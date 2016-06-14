@@ -27,10 +27,10 @@ using biz.dfch.CS.Appclusive.Api.Core;
 namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
 {
     [TestClass]
-    public class ScheduledTaskTest
+    public class ScheduledJobTest
     {
         [TestMethod]
-        public void CreatingScheduledTaskSucceeds()
+        public void CreatingScheduledJobSucceeds()
         {
             // Arrange
             var job = new ScheduledJob()

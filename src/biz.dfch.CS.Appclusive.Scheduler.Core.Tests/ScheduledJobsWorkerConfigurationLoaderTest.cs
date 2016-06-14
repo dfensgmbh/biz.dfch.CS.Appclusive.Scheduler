@@ -37,7 +37,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
     {
         [TestCategory("SkipOnTeamCity")]
         [TestMethod]
-        public void ScheduledTaskWorkerConfigurationLoaderInitialiseWithConfigSectionSucceeds()
+        public void ScheduledJobsWorkerConfigurationLoaderInitialiseWithConfigSectionSucceeds()
         {
             // Arrange
             var username = "arbitrary-user";
@@ -87,7 +87,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
         
         [TestCategory("SkipOnTeamCity")]
         [TestMethod]
-        public void ScheduledTaskWorkerConfigurationLoaderWithoutConfigSectionInitialiseSucceeds()
+        public void ScheduledJobsWorkerConfigurationLoaderWithoutConfigSectionInitialiseSucceeds()
         {
             // Arrange
             Mock.SetupStatic(typeof(ConfigurationManager));

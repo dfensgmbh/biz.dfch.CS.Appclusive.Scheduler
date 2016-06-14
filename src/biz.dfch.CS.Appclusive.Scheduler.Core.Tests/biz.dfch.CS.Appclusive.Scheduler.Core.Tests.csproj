@@ -199,14 +199,14 @@
     <Compile Include="ProjectInstallerTest.cs" />
     <Compile Include="ScheduledJobsManagerTest.cs" />
     <Compile Include="ScheduledJobsMockData.cs" />
-    <Compile Include="ScheduledTaskTest.cs" />
+    <Compile Include="ScheduledJobTest.cs" />
     <Compile Include="ScheduledJobsWorkerConfigurationLoaderTest.cs" />
     <Compile Include="ScheduledJobsWorkerConfigurationTest.cs" />
     <Compile Include="ISchedulerPluginTest.cs" />
     <Compile Include="CodeContractTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScheduledJobsWorkerTest.cs" />
-    <Compile Include="ScheduledTaskWorkerTimerFactoryTest.cs" />
+    <Compile Include="ScheduledJobsWorkerTimerFactoryTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\biz.dfch.CS.Appclusive.Scheduler.Public\biz.dfch.CS.Appclusive.Scheduler.Public.csproj">

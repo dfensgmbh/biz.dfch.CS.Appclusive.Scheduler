@@ -31,7 +31,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
 {
     public class ScheduledJobsWorker
     {
-        public const long SCHEDULED_TASK_WORKER_JOBS_PER_INSTANCE_MAX = 10000;
+        public const long SCHEDULED_JOBS_WORKER_JOBS_PER_INSTANCE_MAX = 10000;
 
         private readonly bool isInitialised = false;
         private DateTimeOffset lastUpdated = DateTimeOffset.Now;
@@ -92,7 +92,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
                 result = GetScheduledJobs();
 
                 // create the timer to process all scheduled jobs periodically
-                stateTimer = new ScheduledTaskWorkerTimerFactory().CreateTimer(new TimerCallback(this.RunJobs), null, 1000, (1000 * 60) - 20);
+                stateTimer = new ScheduledJobsWorkerTimerFactory().CreateTimer(new TimerCallback(this.RunJobs), null, 1000, (1000 * 60) - 20);
             }
             catch (Exception ex)
             {
@@ -125,7 +125,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
                 var scheduledJobs = scheduledJobsManager.GetJobs();
                 var validJobs = scheduledJobsManager.GetValidJobs(scheduledJobs);
                 this.scheduledJobs = validJobs;
-                Contract.Assert(SCHEDULED_TASK_WORKER_JOBS_PER_INSTANCE_MAX >= validJobs.Count);
+                Contract.Assert(SCHEDULED_JOBS_WORKER_JOBS_PER_INSTANCE_MAX >= validJobs.Count);
             
                 configuration.Logger.Info("Loading ScheduledJobs from '{0}' SUCCEEDED. [{1}]", endpoints.Core.BaseUri.AbsoluteUri, scheduledJobs.Count);
 
@@ -186,8 +186,8 @@ Success:
                 {
                     try
                     {
-                        var task = new ScheduledJobScheduler(job);
-                        if (!task.IsScheduledToRun(now))
+                        var jobScheduler = new ScheduledJobScheduler(job);
+                        if (!jobScheduler.IsScheduledToRun(now))
                         {
                             continue;
                         }

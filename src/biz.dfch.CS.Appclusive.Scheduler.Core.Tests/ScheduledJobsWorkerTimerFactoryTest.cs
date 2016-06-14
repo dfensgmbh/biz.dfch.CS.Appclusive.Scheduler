@@ -25,22 +25,22 @@ using System.Threading.Tasks;
 namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
 {
     [TestClass]
-    public class ScheduledTaskWorkerTimerFactoryTest
+    public class ScheduledJobsWorkerTimerFactoryTest
     {
         public static bool HasTimerFired { get; set; }
 
         public Timer StateTimer { get; set; }
 
-        public void RunTimer(object stateObject)
+        public void FireTimer(object stateObject)
         {
-            ScheduledTaskWorkerTimerFactoryTest.HasTimerFired = true;
+            ScheduledJobsWorkerTimerFactoryTest.HasTimerFired = true;
         }
 
         [TestMethod]
         public void CreateTimerSucceeds()
         {
-            var sut = new ScheduledTaskWorkerTimerFactory();
-            StateTimer = sut.CreateTimer(new TimerCallback(this.RunTimer), null, 100, 100);
+            var sut = new ScheduledJobsWorkerTimerFactory();
+            StateTimer = sut.CreateTimer(new TimerCallback(this.FireTimer), null, 100, 100);
 
             Assert.IsFalse(HasTimerFired);
 

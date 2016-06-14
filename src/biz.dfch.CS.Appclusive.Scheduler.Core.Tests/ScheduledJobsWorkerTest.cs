@@ -58,7 +58,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
             Mock.Arrange(() => configuration.UpdateIntervalInMinutes).IgnoreInstance().Returns(1);
             Mock.Arrange(() => configuration.IsValid()).IgnoreInstance().Returns(true);
 
-            var timer = Mock.Create<ScheduledTaskWorkerTimerFactory>();
+            var timer = Mock.Create<ScheduledJobsWorkerTimerFactory>();
             Mock.Arrange(() => timer.CreateTimer(Arg.IsAny<TimerCallback>(), Arg.IsAny<object>(), Arg.IsAny<int>(), Arg.IsAny<int>()))
                 .IgnoreInstance()
                 .Returns(default(Timer));
@@ -68,8 +68,8 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
         public void RunJobsSucceeds()
         {
             // Arrange
-            var task = Mock.Create<ScheduledJobScheduler>();
-            Mock.Arrange(() => task.IsScheduledToRun(Arg.IsAny<DateTimeOffset>()))
+            var jobScheduler = Mock.Create<ScheduledJobScheduler>();
+            Mock.Arrange(() => jobScheduler.IsScheduledToRun(Arg.IsAny<DateTimeOffset>()))
                 .IgnoreInstance()
                 .Returns(true)
                 .MustBeCalled();
@@ -123,9 +123,9 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
                 )
             };
             var sut = new ScheduledJobsWorker(configuration);
-            var isUpdateScheduledTaskSucceeded = sut.GetScheduledJobs();
-            Contract.Assert(isUpdateScheduledTaskSucceeded);
-            sut.IsActive = isUpdateScheduledTaskSucceeded;
+            var isUpdateScheduledJobSucceeded = sut.GetScheduledJobs();
+            Contract.Assert(isUpdateScheduledJobSucceeded);
+            sut.IsActive = isUpdateScheduledJobSucceeded;
             
             var stateObject = default(object);
 
@@ -134,7 +134,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
 
             // Assert
             Mock.Assert(scheduledJobsManagerImpl);
-            Mock.Assert(task);
+            Mock.Assert(jobScheduler);
             Mock.Assert(defaultPlugin);
         }
     }
