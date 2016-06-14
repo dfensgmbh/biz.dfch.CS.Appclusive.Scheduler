@@ -31,7 +31,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
     [TestClass]
     public class ActivitiClientTest
     {
-        private readonly static ActivitiPluginTestEnvironmentTemplate environment = new ActivitiPluginTestEnvironment();
+        private readonly ActivitiPluginTestEnvironmentTemplate environment = new ActivitiPluginTestEnvironment();
 
         [ClassInitialize]
         public static void ClassInitialize(TestContext testContext)
