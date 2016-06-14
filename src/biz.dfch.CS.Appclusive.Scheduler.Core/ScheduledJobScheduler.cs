@@ -33,8 +33,6 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
         [Required]
         private readonly ScheduledJob job;
 
-        public bool IsActive { get; set; }
-        
         [Required]
         public DateTime NextOccurrence { get; set; }
 
@@ -42,7 +40,6 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
         {
             Contract.Requires(null != scheduledJob);
 
-            IsActive = true;
             NextOccurrence = DateTime.MinValue;
             job = scheduledJob;
         }
@@ -60,11 +57,6 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             var nextOccurrence = DateTime.MinValue;
             try
             {
-                if (!this.IsActive)
-                {
-                    return DateTimeOffset.MinValue;
-                }
-
                 var schedule = CrontabSchedule.Parse(job.Crontab);
                 
                 var startMinute = new DateTime(withinThisMinute.Year, 1, 1, 0, 0, 0);
@@ -84,13 +76,13 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             }
             catch (CrontabException ex)
             {
-                Trace.WriteLine(ex.Message, ex);
+                Trace.WriteException(ex.Message, ex);
 
                 return DateTimeOffset.MinValue;
             }
             catch (Exception ex)
             {
-                Trace.WriteLine(ex.Message, ex);
+                Trace.WriteException(ex.Message, ex);
 
                 throw;
             }

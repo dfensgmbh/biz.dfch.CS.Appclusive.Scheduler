@@ -197,6 +197,7 @@
     <Compile Include="ProgramHelpTest.cs" />
     <Compile Include="ProgramTest.cs" />
     <Compile Include="ProjectInstallerTest.cs" />
+    <Compile Include="ScheduledJobSchedulerTest.cs" />
     <Compile Include="ScheduledJobsManagerTest.cs" />
     <Compile Include="ScheduledJobsMockData.cs" />
     <Compile Include="ScheduledJobTest.cs" />
