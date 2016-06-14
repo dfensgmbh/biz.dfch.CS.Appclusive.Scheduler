@@ -173,6 +173,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
             var workingDirectory = "arbitrary-string";
             var credential = new NetworkCredential("arbitrary-user", "arbitrary-password", "arbitrary-domain");
             var parameters = new DictionaryParameters();
+            parameters.Add("JobId", 42);
             parameters.Add("CommandLine", commandLine);
             parameters.Add("WorkingDirectory", workingDirectory);
             parameters.Add("Credential", credential);
@@ -214,6 +215,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
             var workingDirectory = "arbitrary-string";
             var credential = new NetworkCredential("arbitrary-user", "arbitrary-password", "arbitrary-domain");
             var parameters = new DictionaryParameters();
+            parameters.Add("JobId", 42);
             parameters.Add("CommandLine", commandLine);
             parameters.Add("WorkingDirectory", workingDirectory);
             parameters.Add("Credential", credential);
