@@ -123,6 +123,9 @@
   <PropertyGroup>
     <StartupObject />
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>logo.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="biz.dfch.CS.Appclusive.Api, Version=2.8.0.24089, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\biz.dfch.CS.Appclusive.Api.2.8.0\lib\biz.dfch.CS.Appclusive.Api.dll</HintPath>
@@ -234,6 +237,9 @@
       <Project>{f3e50a54-395d-4e02-bde6-edea3c3cf578}</Project>
       <Name>biz.dfch.CS.Appclusive.Scheduler.Public</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="logo.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />

@@ -6,12 +6,12 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("biz.dfch.CS.Appclusive.Scheduler.Extensions")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Windows Scheduler Service for the Appclusive Framework")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("d-fens GmbH")]
 [assembly: AssemblyProduct("biz.dfch.CS.Appclusive.Scheduler.Extensions")]
-[assembly: AssemblyCopyright("Copyright © 2011-2016 d-fens GmbH")]
-[assembly: AssemblyTrademark("d-fens is a registered trademark in the European Union.")]
+[assembly: AssemblyCopyright("Copyright © 2011 - 2016 d-fens GmbH")]
+[assembly: AssemblyTrademark("The d-fens logo is a registered trademark in the European Union and/or other countries.")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
