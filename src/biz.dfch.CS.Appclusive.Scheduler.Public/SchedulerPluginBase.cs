@@ -15,26 +15,41 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using biz.dfch.CS.Appclusive.Public;
 using biz.dfch.CS.Appclusive.Public.Plugins;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Public
 {
-    public abstract class SchedulerPluginBase : AppclusivePluginBase
-        , 
-        ISchedulerPlugin
+    public abstract class SchedulerPluginBase 
+        : AppclusivePluginBase, ISchedulerPlugin
     {
         public override bool Invoke(DictionaryParameters parameters, IInvocationResult jobResult)
         {
-            var result = base.Invoke(parameters, jobResult);
-            
+            var result = IsActive;
 
+            var description = string.Format("ActivityId '{0}'.", System.Diagnostics.Trace.CorrelationManager.ActivityId.ToString());
+            jobResult.Description = description;
+            jobResult.Succeeded = result;
+            
+            if(!result)
+            {
+                var message = "Plugin not active";
+
+                Logger.Warn("{0} {1}. Nothing to do.", description, message);
+
+                jobResult.Code = Constants.InvocationResultCodes.ERROR_SERVICE_NOT_ACTIVE;
+                jobResult.Message = message;
+            }
+            else
+            {
+                var message = "Plugin active";
+
+                jobResult.Code = Constants.InvocationResultCodes.ERROR_INVALID_FUNCTION;
+                jobResult.Message = message;
+            }
+            
             return result;
         }
     }
