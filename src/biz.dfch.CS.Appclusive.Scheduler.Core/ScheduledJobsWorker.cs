@@ -112,12 +112,14 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
 
             if (isInitialised && !IsActive)
             {
+                configuration.Logger.Warn("Scheduler is not initialised [{0}] or not active [{1}]. Skip loading of ScheduledJobs.", isInitialised, IsActive);
                 goto Success;
             }
             
             // load ScheduledJob entities
             try
             {
+                configuration.Logger.Info("Loading ScheduledJobs from '{0}' ...", endpoints.Core.BaseUri.AbsoluteUri);
                 var scheduledJobsManager = new ScheduledJobsManager(endpoints);
 
                 var scheduledJobs = scheduledJobsManager.GetJobs();
@@ -125,6 +127,8 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
                 this.scheduledJobs = validJobs;
                 Contract.Assert(SCHEDULED_TASK_WORKER_JOBS_PER_INSTANCE_MAX >= validJobs.Count);
             
+                configuration.Logger.Info("Loading ScheduledJobs from '{0}' SUCCEEDED. [{1}]", endpoints.Core.BaseUri.AbsoluteUri, scheduledJobs.Count);
+
                 result = true;
             }
             catch(InvalidOperationException ex)

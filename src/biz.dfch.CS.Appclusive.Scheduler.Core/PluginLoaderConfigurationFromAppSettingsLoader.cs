@@ -70,7 +70,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             }
             cfg.PluginTypes = pluginTypesToBeLoaded;
 
-            Trace.WriteLine("SchedulerPluginLoader. ExtensionsFolder: '{0}'. PluginTypes '{1}'.", cfg.ExtensionsFolder, cfg.PluginTypes);
+            Trace.WriteLine("SchedulerPluginLoader. ExtensionsFolder: '{0}' (validated). PluginTypes '{1}' (normalised).", cfg.ExtensionsFolder, string.Join(", ", cfg.PluginTypes));
         }
     }
 }
