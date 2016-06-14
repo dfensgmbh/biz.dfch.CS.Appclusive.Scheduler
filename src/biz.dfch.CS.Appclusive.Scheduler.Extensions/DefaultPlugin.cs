@@ -82,8 +82,6 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
         
         public override bool Invoke(DictionaryParameters parameters, IInvocationResult jobResult)
         {
-            Contract.Requires("1" == jobResult.Version);
-
             var result = base.Invoke(parameters, jobResult);
             if(!result)
             {
