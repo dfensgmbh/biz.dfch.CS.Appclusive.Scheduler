@@ -160,6 +160,7 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Configuration" />
+    <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\biz.dfch.CS.Appclusive.Public.2.9.0\lib\System.Net.Http.Formatting.dll</HintPath>
       <Private>True</Private>
@@ -195,6 +196,7 @@
     <Compile Include="PluginLoaderConfigurationFromAppSettingsLoaderTest.cs" />
     <Compile Include="ProgramHelpTest.cs" />
     <Compile Include="ProgramTest.cs" />
+    <Compile Include="ProjectInstallerTest.cs" />
     <Compile Include="ScheduledJobsManagerTest.cs" />
     <Compile Include="ScheduledJobsMockData.cs" />
     <Compile Include="ScheduledTaskTest.cs" />
