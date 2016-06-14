@@ -59,7 +59,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
             
             if (null != Logger)
             { 
-                Logger.WriteLine(message.ToString());
+                Logger.WriteLine("[{0}] {1}", System.Diagnostics.Trace.CorrelationManager.ActivityId, message.ToString());
             }
 
             this.configuration = configuration;
@@ -100,7 +100,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
             message.AppendLine("DefaultPlugin.Invoke() COMPLETED.");
             message.AppendLine();
 
-            Logger.WriteLine(message.ToString());
+            Logger.WriteLine("[{0}] {1}", System.Diagnostics.Trace.CorrelationManager.ActivityId, message.ToString());
 
             result = true;
             
