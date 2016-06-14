@@ -25,6 +25,7 @@ using System.Threading.Tasks;
 using System.IO;
 using biz.dfch.CS.Appclusive.Public.Configuration;
 using biz.dfch.CS.Appclusive.Public.Plugins;
+using biz.dfch.CS.Utilities.Logging;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Core
 {
@@ -69,6 +70,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             }
             cfg.PluginTypes = pluginTypesToBeLoaded;
 
+            Trace.WriteLine("SchedulerPluginLoader. ExtensionsFolder: '{0}'. PluginTypes '{1}'.", cfg.ExtensionsFolder, cfg.PluginTypes);
         }
     }
 }

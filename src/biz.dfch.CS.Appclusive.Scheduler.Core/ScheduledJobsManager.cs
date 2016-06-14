@@ -142,6 +142,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
                 catch(Exception ex)
                 {
                     Trace.WriteLine("Parsing scheduled job '{0}' [{1}] FAILED. Invalid Action or ScheduledJobParameters.", job.Id.ToString(), job.Name);
+                    Trace.WriteException(ex.Message, ex);
 
                     continue;
                 }
