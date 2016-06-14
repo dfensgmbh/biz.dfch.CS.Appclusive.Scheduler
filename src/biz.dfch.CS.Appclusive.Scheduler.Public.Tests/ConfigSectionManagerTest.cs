@@ -37,6 +37,11 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public.Tests
         public void GettingConfigSectionFromExecutableSucceeds()
         {
             // Arrange
+            Mock.SetupStatic(typeof(File));
+            Mock.Arrange(() => File.Exists(Arg.Is<string>(exePath)))
+                .Returns(true)
+                .MustBeCalled();
+
             var configurationSection = new AppclusiveCredentialSection();
             var configuration = Mock.Create<Configuration>();
             Mock.Arrange(() => configuration.GetSection(Arg.IsAny<string>()))
@@ -55,7 +60,8 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public.Tests
             var result = sut.Get(sectionName);
 
             // Assert
-            Mock.Assert(() => configuration.GetSection(Arg.IsAny<string>()));
+            Mock.Assert(() => ConfigurationManager.OpenExeConfiguration(Arg.Is<string>(exePath)));
+            Mock.Assert(() => File.Exists(Arg.Is<string>(exePath)));
             Mock.Assert(configuration);
 
             Assert.IsInstanceOfType(result, typeof(AppclusiveCredentialSection));
