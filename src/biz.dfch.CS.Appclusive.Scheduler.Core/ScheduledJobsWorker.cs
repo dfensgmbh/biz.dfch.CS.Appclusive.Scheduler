@@ -196,12 +196,15 @@ Success:
                         var plugin = configuration.Plugins.FirstOrDefault(p => p.Metadata.Type.Equals(job.Action));
                         if(null == plugin)
                         {
-                            Trace.WriteLine("No plugin for Job.Id '{0}' with Job.Action '{1}' found. Using 'Default' plugin ...", job.Id, job.Action);
+                            Trace.WriteLine("No plugin for Job.Id '{0}' with Job.Action '{1}' found. Using 'Default' plugin ...", 
+                                job.Id, job.Action);
                             plugin = defaultPlugin;
                         }
                         if(null == plugin)
                         {
-                            Trace.WriteLine("No plugin for Job.Id '{0}' with Job.Action '{1}' found and no 'Default' plugin found either. Skipping.", job.Id, job.Action);
+                            Trace.WriteLine(
+                                "No plugin for Job.Id '{0}' with Job.Action '{1}' found and no '{2}' plugin found either. Skipping.", 
+                                job.Id, job.Action, biz.dfch.CS.Appclusive.Scheduler.Public.Constants.PLUGIN_TYPE_DEFAULT);
 
                             continue;
                         }
@@ -218,21 +221,21 @@ Success:
                             System.Diagnostics.Trace.CorrelationManager.ActivityId = Guid.NewGuid();
                         }
 
-                        configuration.Logger.WriteLine("Invoking {0} with plugin '{1}' [ActivityId {2}] ...", job.Id, job.Action, System.Diagnostics.Trace.CorrelationManager.ActivityId);
+                        configuration.Logger.WriteLine("Invoking {0} with Job.Action '{1}' [ActivityId {2}] ...", job.Id, job.Action, System.Diagnostics.Trace.CorrelationManager.ActivityId);
                         plugin.Value.Invoke(parameters, invocationResult);
 
                         if(invocationResult.Succeeded)
                         {
-                            configuration.Logger.Info("Invoking {0} with plugin '{1}' [ActivityId {2}] SUCCEEDED.", job.Id, job.Action, System.Diagnostics.Trace.CorrelationManager.ActivityId);
+                            configuration.Logger.Info("Invoking {0} with Job.Action '{1}' [ActivityId {2}] SUCCEEDED.", job.Id, job.Action, System.Diagnostics.Trace.CorrelationManager.ActivityId);
                         }
                         else
                         {
-                            configuration.Logger.Error("Invoking {0} with plugin '{1}' [ActivityId {2}] FAILED.", job.Id, job.Action, System.Diagnostics.Trace.CorrelationManager.ActivityId);
+                            configuration.Logger.Error("Invoking {0} with Job.Action '{1}' [ActivityId {2}] FAILED.", job.Id, job.Action, System.Diagnostics.Trace.CorrelationManager.ActivityId);
                         }
                     }
                     catch (Exception ex)
                     {
-                        var message = string.Format("Invoking {0} with plugin '{1}' [ActivityId {2}] FAILED.", job.Id, job.Action, System.Diagnostics.Trace.CorrelationManager.ActivityId);
+                        var message = string.Format("Invoking {0} with Job.Action '{1}' [ActivityId {2}] FAILED.", job.Id, job.Action, System.Diagnostics.Trace.CorrelationManager.ActivityId);
                         Trace.WriteException(message, ex);
                     }
                 }
