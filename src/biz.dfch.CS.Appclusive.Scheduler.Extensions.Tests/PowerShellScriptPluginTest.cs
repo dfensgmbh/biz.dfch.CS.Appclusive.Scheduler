@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+using Telerik.JustMock;
 using biz.dfch.CS.Appclusive.Public;
 using biz.dfch.CS.Appclusive.Scheduler.Core;
 using biz.dfch.CS.Appclusive.Scheduler.Public;
@@ -36,7 +37,9 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
             // Arrange
             var logger = new Logger();
 
+            var appclusiveEndpoints = Mock.Create<AppclusiveEndpoints>(Constructor.Mocked);
             var parameters = new DictionaryParameters();
+            parameters.Add("Endpoints", appclusiveEndpoints);
             parameters.Add("ConfigurationName", "AppclusiveScriptInvocation");
             parameters.Add("ComputerName", "localhost");
             parameters.Add("ScriptBase", "C:\\arbitrary-script-base-directory");

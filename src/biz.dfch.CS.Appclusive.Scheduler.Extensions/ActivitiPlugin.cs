@@ -30,6 +30,7 @@ using biz.dfch.CS.Appclusive.Public.Plugins;
 using System.ComponentModel.DataAnnotations;
 using System.Configuration;
 using biz.dfch.CS.Activiti.Client;
+using System.Collections;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
 {
@@ -154,7 +155,8 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
                 var message = string.Format("JobId: '{0}'", invocationParameters.JobId);
                 var description = string.Format("ExternalWorkflow: ActivityId '{0}'.", activityId);
 
-                var responseData = client.InvokeWorkflowInstance(invocationParameters.Id, null);
+                var definitionId = client.GetDefinitionId(invocationParameters.Id);
+                var responseData = client.InvokeWorkflowInstance(definitionId, new Hashtable(workflowInputParameters));
                 var responseDataMessage = string.Format
                     (
                     "id '{0}'. processDefinitionId '{1}'. Suspended '{2}'. Completed '{3}'. Ended '{4}'. [JobId '{5}'. ActivityId '{6}]",

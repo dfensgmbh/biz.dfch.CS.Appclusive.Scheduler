@@ -26,7 +26,7 @@ using System.Net;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
 {
-    public class PowerShellScriptPluginConfiguration : BaseDto
+    public class PowerShellScriptPluginConfiguration : SchedulerPluginConfigurationBase
     {
         [Required]
         public string ComputerName { get; set; }

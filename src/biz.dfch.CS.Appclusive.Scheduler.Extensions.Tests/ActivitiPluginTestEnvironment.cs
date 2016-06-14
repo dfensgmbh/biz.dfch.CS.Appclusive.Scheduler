@@ -27,8 +27,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
     public class ActivitiPluginTestEnvironment : ActivitiPluginTestEnvironmentTemplate
     {
         // use this file to insert your connection information and credentials
-        // this file is ignored by git, 
-        // so any changes you make here will NOT be pushed to the central repository
+        // so any changes you make here will NOT be pushed to an unencrypted repository
 
         public ActivitiPluginTestEnvironment()
         {

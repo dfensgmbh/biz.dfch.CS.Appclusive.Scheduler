@@ -17,20 +17,13 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Net;
-using biz.dfch.CS.Appclusive.Scheduler.Public;
+using biz.dfch.CS.Appclusive.Public;
 
-namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
+namespace biz.dfch.CS.Appclusive.Scheduler.Public
 {
-    public class ActivitiPluginConfiguration : SchedulerPluginConfigurationBase
+    public class SchedulerPluginConfigurationBase : BaseDto
     {
-        public string Description { get; set; }
-        
         [Required]
-        public NetworkCredential Credential { get; set; }
-
-        [Required]
-        public Uri ServerBaseUri { get; set; }
+        public AppclusiveEndpoints Endpoints { get; set; }
     }
 }
-

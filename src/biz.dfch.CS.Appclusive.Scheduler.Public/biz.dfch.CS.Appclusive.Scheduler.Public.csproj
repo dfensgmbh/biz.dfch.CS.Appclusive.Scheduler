@@ -193,6 +193,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SchedulerPluginBase.cs" />
     <Compile Include="SchedulerPluginBaseInvokeParameters.cs" />
+    <Compile Include="SchedulerPluginConfigurationBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

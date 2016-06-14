@@ -21,6 +21,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Telerik.JustMock;
+using biz.dfch.CS.Appclusive.Scheduler.Public;
 using biz.dfch.CS.Utilities.Testing;
 using System.Net;
 
@@ -46,7 +48,9 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
         public void PowerShellScriptPluginConfigurationIsValid()
         {
             // Arrange
+            var appclusiveEndpoints = Mock.Create<AppclusiveEndpoints>(Constructor.Mocked);
             var sut = new PowerShellScriptPluginConfiguration();
+            sut.Endpoints = appclusiveEndpoints;
             sut.ScriptBase = "C:\\arbitrary-valid-script-base-directory\\";
             sut.ComputerName = "arbitrary-valid-computername";
             sut.ConfigurationName = "arbitrary-valid-configuration-name";
