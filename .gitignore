@@ -194,3 +194,6 @@ FakesAssemblies/
 
 # Visual Studio 6 workspace options file
 *.opt
+
+# user defined exclusions
+src/biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests/ActivitiPluginTestEnvironment.cs
