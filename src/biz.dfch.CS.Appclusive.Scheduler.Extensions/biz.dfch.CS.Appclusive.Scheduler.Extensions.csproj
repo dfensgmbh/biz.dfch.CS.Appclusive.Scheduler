@@ -188,6 +188,7 @@
     <Compile Include="ActivitiPluginConfigurationManager.cs" />
     <Compile Include="ActivitiPluginInvokeParameters.cs" />
     <Compile Include="ActivitiPluginConfigurationManagementUri.cs" />
+    <Compile Include="PowerShellScriptPluginConfigurationManager.cs" />
     <Compile Include="SchedulerAppSettings.cs" />
     <Compile Include="PowerShellScriptPlugin.cs" />
     <Compile Include="PowerShellScriptPluginConfiguration.cs" />

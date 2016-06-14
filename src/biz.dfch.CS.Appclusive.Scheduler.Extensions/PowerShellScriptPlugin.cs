@@ -71,6 +71,22 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
             return Configuration;
         }
 
+        public override bool Initialise(DictionaryParameters parameters, IAppclusivePluginLogger logger, bool activate)
+        {
+            var result = false;
+
+            // get name of ManagementUri
+            //managementUriName = new ActivitiPluginConfigurationManager().GetManagementUriName();
+                
+            result = base.Initialise(parameters, logger, activate);
+            if(!configuration.IsValid())
+            {
+                return result;
+            }
+
+            return result;
+        }
+        
         public override bool Invoke(DictionaryParameters parameters, IInvocationResult invocationResult)
         {
             Contract.Requires<NotSupportedException>("2" == invocationResult.Version, "This plugin only supports non-serialisable invocation results.");
