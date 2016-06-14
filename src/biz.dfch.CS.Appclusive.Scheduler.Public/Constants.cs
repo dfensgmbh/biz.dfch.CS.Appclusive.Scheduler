@@ -26,5 +26,12 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public
     public class Constants
     {
         public const string PLUGIN_TYPE_DEFAULT = "Default";
+
+        public class InvocationResultCodes
+        {
+            public const int ERROR_SUCCESS = 0x00000000;
+            public const int ERROR_INVALID_FUNCTION = 0x00000001;
+            public const int ERROR_SERVICE_NOT_ACTIVE = 0x00000426;
+        }
     }
 }
