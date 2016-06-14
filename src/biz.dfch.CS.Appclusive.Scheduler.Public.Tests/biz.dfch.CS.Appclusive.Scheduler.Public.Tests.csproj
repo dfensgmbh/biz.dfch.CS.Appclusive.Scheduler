@@ -193,6 +193,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="AppclusiveCredentialSectionTest.cs" />
     <Compile Include="AppclusiveEndpointsTest.cs" />
     <Compile Include="ConfigSectionManagerTest.cs" />
     <Compile Include="ILoggerTest.cs" />
