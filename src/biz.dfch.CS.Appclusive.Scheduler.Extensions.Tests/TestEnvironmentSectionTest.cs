@@ -22,6 +22,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
     [TestClass]
     public class TestEnvironmentSectionTest
     {
+        [TestCategory("SkipOnTeamCity")]
         [TestMethod]
         public void GettingConfigSectionSucceeds()
         {

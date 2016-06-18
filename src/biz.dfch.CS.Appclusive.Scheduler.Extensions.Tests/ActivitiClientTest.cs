@@ -40,6 +40,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
             // N/A
         }
 
+        [TestCategory("SkipOnTeamCity")]
         [TestMethod]
         public void LoginFails()
         {
