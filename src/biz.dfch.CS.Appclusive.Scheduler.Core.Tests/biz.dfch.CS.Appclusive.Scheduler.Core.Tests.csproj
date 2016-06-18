@@ -208,6 +208,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScheduledJobsWorkerTest.cs" />
     <Compile Include="ScheduledJobsWorkerTimerFactoryTest.cs" />
+    <Compile Include="TestEnvironmentSection.cs" />
+    <Compile Include="TestEnvironmentSectionTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\biz.dfch.CS.Appclusive.Scheduler.Public\biz.dfch.CS.Appclusive.Scheduler.Public.csproj">
@@ -224,6 +226,9 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
+    <None Include="TestEnvironment.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
