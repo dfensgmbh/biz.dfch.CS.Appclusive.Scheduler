@@ -41,6 +41,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
         private readonly AppclusiveEndpoints endpoints;
 
         private List<ScheduledJob> scheduledJobs = new List<ScheduledJob>();
+        private static object _scheduledJobsLock = new object();
 
         public bool IsActive { get; set; }
 
@@ -116,33 +117,36 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
                 goto Success;
             }
             
-            // load ScheduledJob entities
-            try
+            lock(_scheduledJobsLock)
             {
-                configuration.Logger.Info("Loading ScheduledJobs from '{0}' ...", endpoints.Core.BaseUri.AbsoluteUri);
-                var scheduledJobsManager = new ScheduledJobsManager(endpoints);
+                // load ScheduledJob entities
+                try
+                {
+                    configuration.Logger.Info("Loading ScheduledJobs from '{0}' ...", endpoints.Core.BaseUri.AbsoluteUri);
+                    var scheduledJobsManager = new ScheduledJobsManager(endpoints);
 
-                var scheduledJobs = scheduledJobsManager.GetJobs();
-                var validJobs = scheduledJobsManager.GetValidJobs(scheduledJobs);
-                this.scheduledJobs = validJobs;
-                Contract.Assert(SCHEDULED_JOBS_WORKER_JOBS_PER_INSTANCE_MAX >= validJobs.Count);
+                    var allJobs = scheduledJobsManager.GetJobs();
+                    var validJobs = scheduledJobsManager.GetValidJobs(allJobs);
+                    scheduledJobs = validJobs;
+                    Contract.Assert(SCHEDULED_JOBS_WORKER_JOBS_PER_INSTANCE_MAX >= validJobs.Count);
             
-                configuration.Logger.Info("Loading ScheduledJobs from '{0}' SUCCEEDED. [{1}]", endpoints.Core.BaseUri.AbsoluteUri, scheduledJobs.Count);
+                    configuration.Logger.Info("Loading ScheduledJobs from '{0}' SUCCEEDED. [{1}]", endpoints.Core.BaseUri.AbsoluteUri, scheduledJobs.Count);
 
-                result = true;
-            }
-            catch(InvalidOperationException ex)
-            {
-                var message = string.Format("Loading ScheduledJobs from '{0}' FAILED with InvalidOperationException. Check the specified credentials.", endpoints.Core.BaseUri.AbsoluteUri);
-                Trace.WriteException(message, ex);
+                    result = true;
+                }
+                catch(InvalidOperationException ex)
+                {
+                    var message = string.Format("Loading ScheduledJobs from '{0}' FAILED with InvalidOperationException. Check the specified credentials.", endpoints.Core.BaseUri.AbsoluteUri);
+                    Trace.WriteException(message, ex);
 
-                result = false;
-            }
-            catch (Exception ex)
-            {
-                Trace.WriteException(ex.Message, ex);
+                    result = false;
+                }
+                catch (Exception ex)
+                {
+                    Trace.WriteException(ex.Message, ex);
                 
-                throw;
+                    throw;
+                }
             }
 
 Success:
@@ -169,7 +173,7 @@ Success:
                 goto Success;
             }
 
-            lock(scheduledJobs)
+            lock(_scheduledJobsLock)
             {
                 if (0 >= scheduledJobs.Count)
                 {
