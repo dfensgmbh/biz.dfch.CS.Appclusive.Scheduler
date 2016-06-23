@@ -158,7 +158,9 @@ Success:
             var fn = Method.fn();
 
             var result = false;
+            // we set "Now" to the current minute + 1 ms (as we have some strange behaviour when scheduling exactly on the minute)
             var now = DateTimeOffset.Now;
+            now = new DateTimeOffset(now.Year, now.Month, now.Day, now.Hour, now.Minute, 0, 1, now.Offset);
 
             if (!IsActive)
             {

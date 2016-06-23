@@ -14,14 +14,10 @@
  * limitations under the License.
  */
 
+using biz.dfch.CS.Appclusive.Api.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using biz.dfch.CS.Appclusive.Api.Core;
+using Telerik.JustMock;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
 {
@@ -125,6 +121,165 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
 
             // Assert
             Assert.AreEqual(DateTimeOffset.MinValue, result);
+        }
+
+        [TestMethod]
+        public void IsScheduledToRunReturnsFalse()
+        {
+            // Arrange
+            var now = DateTimeOffset.Parse("2019-04-13 08:15:42+02:00");
+            var utcNow = new DateTimeOffset(now.UtcDateTime);
+
+            Mock.SetupStatic(typeof(DateTimeOffset), Behavior.CallOriginal);
+            Mock.Arrange(() => DateTimeOffset.Now).Returns(now);
+            Mock.Arrange(() => DateTimeOffset.UtcNow).Returns(utcNow);
+            Mock.Arrange(() => DateTime.Now).Returns(now.DateTime);
+            Mock.Arrange(() => DateTime.UtcNow).Returns(utcNow.DateTime);
+
+            var job = new ScheduledJob()
+            {
+                Crontab = "* 18 * * *"
+            };
+            var sut = new ScheduledJobScheduler(job);
+
+            // Act
+            var result = sut.IsScheduledToRun();
+
+            // Assert
+            Mock.Assert(() => DateTimeOffset.Now);
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void IsScheduledToRunBeforeTheMinuteReturnsFalse()
+        {
+            // Arrange
+            var now = DateTimeOffset.Parse("2019-04-13 17:59:59.999+02:00");
+            var utcNow = new DateTimeOffset(now.UtcDateTime);
+
+            Mock.SetupStatic(typeof(DateTimeOffset), Behavior.CallOriginal);
+            Mock.Arrange(() => DateTimeOffset.Now).Returns(now);
+            Mock.Arrange(() => DateTimeOffset.UtcNow).Returns(utcNow);
+            Mock.Arrange(() => DateTime.Now).Returns(now.DateTime);
+            Mock.Arrange(() => DateTime.UtcNow).Returns(utcNow.DateTime);
+
+            var job = new ScheduledJob()
+            {
+                Crontab = "* 18 * * *"
+            };
+            var sut = new ScheduledJobScheduler(job);
+
+            // Act
+            var result = sut.IsScheduledToRun();
+
+            // Assert
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void IsScheduledToRunOnTheMinuteReturnsTrue()
+        {
+            // Arrange
+            var now = DateTimeOffset.Parse("2019-04-13 18:00:00+02:00");
+            var offsetTotalMinutes = now.Offset.TotalMinutes;
+            var utcNow = new DateTimeOffset(now.UtcDateTime);
+
+            Mock.SetupStatic(typeof(DateTimeOffset), Behavior.CallOriginal);
+            Mock.Arrange(() => DateTimeOffset.Now).Returns(now);
+            Mock.Arrange(() => DateTimeOffset.UtcNow).Returns(utcNow);
+            //Mock.Arrange(() => DateTime.Now).Returns(now.DateTime.AddMinutes(offsetTotalMinutes));
+            Mock.Arrange(() => DateTime.Now).Returns(now.DateTime);
+            Mock.Arrange(() => DateTime.UtcNow).Returns(utcNow.DateTime);
+
+            var job = new ScheduledJob()
+            {
+                Crontab = "* 18 * * *"
+            };
+            var sut = new ScheduledJobScheduler(job);
+
+            // Act
+            var result = sut.IsScheduledToRun();
+
+            // Assert
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void IsScheduledToRunAfterTheMinuteReturnsTrue()
+        {
+            // Arrange
+            var now = DateTimeOffset.Parse("2019-04-13 18:00:00.001+02:00");
+            var utcNow = new DateTimeOffset(now.UtcDateTime);
+
+            Mock.SetupStatic(typeof(DateTimeOffset), Behavior.CallOriginal);
+            Mock.Arrange(() => DateTimeOffset.Now).Returns(now);
+            Mock.Arrange(() => DateTimeOffset.UtcNow).Returns(utcNow);
+            Mock.Arrange(() => DateTime.Now).Returns(now.DateTime);
+            Mock.Arrange(() => DateTime.UtcNow).Returns(utcNow.DateTime);
+
+            var job = new ScheduledJob()
+            {
+                Crontab = "* 18 * * *"
+            };
+            var sut = new ScheduledJobScheduler(job);
+
+            // Act
+            var result = sut.IsScheduledToRun();
+
+            // Assert
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void IsScheduledToRunWithTwoHoursBeforeReturnsFalse()
+        {
+            // Arrange
+            var now = DateTimeOffset.Parse("2019-04-13 16:00:00.001+02:00");
+            var utcNow = new DateTimeOffset(now.UtcDateTime);
+
+            Mock.SetupStatic(typeof(DateTimeOffset), Behavior.CallOriginal);
+            Mock.Arrange(() => DateTimeOffset.Now).Returns(now);
+            Mock.Arrange(() => DateTimeOffset.UtcNow).Returns(utcNow);
+            Mock.Arrange(() => DateTime.Now).Returns(now.DateTime);
+            Mock.Arrange(() => DateTime.UtcNow).Returns(utcNow.DateTime);
+
+            var job = new ScheduledJob()
+            {
+                Crontab = "* 18 * * *"
+            };
+            var sut = new ScheduledJobScheduler(job);
+
+            // Act
+            var result = sut.IsScheduledToRun();
+
+            // Assert
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void IsScheduledToRunWithTwoHoursAfterReturnsFalse()
+        {
+            // Arrange
+            var now = DateTimeOffset.Parse("2019-04-13 20:00:00.001+02:00");
+            var utcNow = new DateTimeOffset(now.UtcDateTime);
+
+            Mock.SetupStatic(typeof(DateTimeOffset), Behavior.CallOriginal);
+            Mock.Arrange(() => DateTimeOffset.Now).Returns(now);
+            Mock.Arrange(() => DateTimeOffset.UtcNow).Returns(utcNow);
+            Mock.Arrange(() => DateTime.Now).Returns(now.DateTime);
+            Mock.Arrange(() => DateTime.UtcNow).Returns(utcNow.DateTime);
+
+            var job = new ScheduledJob()
+            {
+                Crontab = "* 18 * * *"
+            };
+            var sut = new ScheduledJobScheduler(job);
+
+            // Act
+            var result = sut.IsScheduledToRun();
+
+            // Assert
+            Assert.IsFalse(result);
         }
     }
 }

@@ -33,14 +33,10 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
         [Required]
         private readonly ScheduledJob job;
 
-        [Required]
-        public DateTime NextOccurrence { get; set; }
-
         public ScheduledJobScheduler(ScheduledJob scheduledJob)
         {
             Contract.Requires(null != scheduledJob);
 
-            NextOccurrence = DateTime.MinValue;
             job = scheduledJob;
         }
 
@@ -54,25 +50,69 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             Contract.Requires(null != withinThisMinute);
             Contract.Ensures(null != Contract.Result<DateTimeOffset>());
 
+            // we only add a millisecond as we get exceptions on certain Windows versions 
+            // while converting DateTime to DateTimeOffset
+            // see https://support.microsoft.com/en-us/kb/2346777 for details
+
+            if(0 == withinThisMinute.Millisecond)
+            {
+                withinThisMinute = withinThisMinute.AddMilliseconds(1);
+            }
+
+            //Test Name:	IsScheduledToRunOnTheMinuteReturnsTrue
+            //Test Outcome:	Failed
+            //Result Message:	
+            //Test method biz.dfch.CS.Appclusive.Scheduler.Core.Tests.ScheduledJobSchedulerTest.IsScheduledToRunOnTheMinuteReturnsTrue threw exception: 
+            //System.ArgumentOutOfRangeException: The UTC time represented when the offset is applied must be between year 0 and 10,000.
+            //Parameter name: offset
+            //Result StandardOutput:	
+            //2019-04-13 20:00:00,000|ERROR|ArgumentOutOfRangeException@mscorlib: 'The UTC time represented when the offset is applied must be between year 0 and 10,000.
+            //Parameter name: offset'
+            //[The UTC time represented when the offset is applied must be between year 0 and 10,000.
+            //Parameter name: offset]
+            //   at System.DateTimeOffset.ValidateDate(DateTime dateTime, TimeSpan offset)
+            //   at System.DateTimeOffset..ctor(DateTime dateTime, TimeSpan offset)
+            //   at biz.dfch.CS.Appclusive.Scheduler.Core.ScheduledJobScheduler.GetNextSchedule(DateTimeOffset withinThisMinute) 
+            // in c:\Github\biz.dfch.CS.Appclusive.Scheduler\src\biz.dfch.CS.Appclusive.Scheduler.Core\ScheduledJobScheduler.cs:line 86
+
             var nextOccurrence = DateTime.MinValue;
             try
             {
                 var schedule = CrontabSchedule.Parse(job.Crontab);
-                
-                var startMinute = new DateTime(withinThisMinute.Year, 1, 1, 0, 0, 0);
-                nextOccurrence = schedule.GetNextOccurrences(startMinute, withinThisMinute.DateTime).LastOrDefault();
-                if (null == nextOccurrence)
-                {
-                    return DateTimeOffset.MinValue;
-                }
-                
-                if(nextOccurrence.Minute < withinThisMinute.Minute)
-                {
-                    return DateTimeOffset.MinValue;
-                }
 
-                NextOccurrence = nextOccurrence;
-                return NextOccurrence;
+                var endMinute = withinThisMinute
+                    .DateTime;
+                
+                // we set the start minute to millisecond 0, 
+                // so we have an interval of at least 1 milliscond
+                var startMinute =
+                    new DateTime
+                    (
+                        endMinute.Year, 
+                        endMinute.Month, 
+                        endMinute.Day, 
+                        endMinute.Hour, 
+                        endMinute.Minute, 
+                        0
+                    )
+                    .AddMinutes(-1);
+                Contract.Assert(startMinute < endMinute);
+
+                nextOccurrence = schedule.GetNextOccurrences(startMinute, endMinute).LastOrDefault();
+                if 
+                (
+                    null == nextOccurrence
+                    ||
+                    DateTime.MinValue == nextOccurrence
+                    ||
+                    nextOccurrence.Minute < withinThisMinute.Minute
+                )
+                {
+                    return DateTimeOffset.MinValue;
+                }
+                
+                var result = new DateTimeOffset(nextOccurrence, withinThisMinute.Offset);
+                return result;
             }
             catch (CrontabException ex)
             {
