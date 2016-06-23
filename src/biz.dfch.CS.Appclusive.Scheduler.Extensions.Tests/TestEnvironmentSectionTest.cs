@@ -14,26 +14,25 @@
  * limitations under the License.
  */
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Configuration;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
 {
-    public class ActivitiPluginTestEnvironment : ActivitiPluginTestEnvironmentTemplate
+    [TestClass]
+    public class TestEnvironmentSectionTest
     {
-        // use this file to insert your connection information and credentials
-        // so any changes you make here will NOT be pushed to an unencrypted repository
-
-        public ActivitiPluginTestEnvironment()
+        [TestCategory("SkipOnTeamCity")]
+        [TestMethod]
+        public void GettingConfigSectionSucceeds()
         {
-            Credential = new NetworkCredential("real-username-here", "real-password-here");
+            // Arrange
             
-            ServerBaseUri = new Uri("http://real-server-here.example.com:9080/real-folder-here/");
+            // Act
+            var result = ConfigurationManager.GetSection(TestEnvironmentSection.SECTION_NAME) as TestEnvironmentSection;
+            
+            // Assert
+            Assert.IsNotNull(result);
         }
     }
 }

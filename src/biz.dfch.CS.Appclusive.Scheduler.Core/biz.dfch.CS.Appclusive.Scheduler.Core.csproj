@@ -211,12 +211,12 @@
     <Compile Include="ProjectInstaller.Designer.cs">
       <DependentUpon>ProjectInstaller.cs</DependentUpon>
     </Compile>
-    <Compile Include="ScheduledTaskParameters.cs" />
+    <Compile Include="ScheduledJobParameters.cs" />
     <Compile Include="ScheduledJobsWorker.cs" />
     <Compile Include="ScheduledJobScheduler.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ScheduledTaskWorkerTimerFactory.cs" />
+    <Compile Include="ScheduledJobsWorkerTimerFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

@@ -14,23 +14,16 @@
  * limitations under the License.
  */
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using biz.dfch.CS.Appclusive.Api.Core;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
 {
     [TestClass]
-    public class ScheduledTaskTest
+    public class ScheduledJobTest
     {
         [TestMethod]
-        public void CreatingScheduledTaskSucceeds()
+        public void CreatingScheduledJobSucceeds()
         {
             // Arrange
             var job = new ScheduledJob()

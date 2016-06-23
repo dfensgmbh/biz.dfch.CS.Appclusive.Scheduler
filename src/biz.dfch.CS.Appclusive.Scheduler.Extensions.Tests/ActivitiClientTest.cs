@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 using System.Collections;
+using System.Configuration;
 using System.Net;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -31,7 +32,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
     [TestClass]
     public class ActivitiClientTest
     {
-        private readonly ActivitiPluginTestEnvironmentTemplate environment = new ActivitiPluginTestEnvironment();
+        private readonly TestEnvironmentSection environment = new TestEnvironmentSection().Load();
 
         [ClassInitialize]
         public static void ClassInitialize(TestContext testContext)
@@ -39,6 +40,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
             // N/A
         }
 
+        [TestCategory("SkipOnTeamCity")]
         [TestMethod]
         public void LoginFails()
         {

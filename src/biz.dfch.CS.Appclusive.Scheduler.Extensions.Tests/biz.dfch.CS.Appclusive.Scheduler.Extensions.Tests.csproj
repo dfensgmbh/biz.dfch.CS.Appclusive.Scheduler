@@ -183,8 +183,6 @@
     <Compile Include="ActivitiPluginConfigurationManagerTest.cs" />
     <Compile Include="ActivitiPluginConfigurationTest.cs" />
     <Compile Include="ActivitiPluginTest.cs" />
-    <Compile Include="ActivitiPluginTestEnvironment.cs" />
-    <Compile Include="ActivitiPluginTestEnvironmentTemplate.cs" />
     <Compile Include="PowerShellScriptPluginConfigurationManagerTest.cs" />
     <Compile Include="PowerShellScriptPluginConfigurationTest.cs" />
     <Compile Include="PowerShellScriptPluginTest.cs" />
@@ -193,6 +191,8 @@
     <Compile Include="DefaultPluginTest.cs" />
     <Compile Include="ProgrammePluginTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestEnvironmentSection.cs" />
+    <Compile Include="TestEnvironmentSectionTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\biz.dfch.CS.Appclusive.Scheduler.Core\biz.dfch.CS.Appclusive.Scheduler.Core.csproj">
@@ -215,6 +215,9 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+    <None Include="TestEnvironment.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

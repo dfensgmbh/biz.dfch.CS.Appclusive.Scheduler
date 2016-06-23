@@ -24,7 +24,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Core
 {
-    public class ScheduledTaskParameters : BaseDto
+    public class ScheduledJobParameters : BaseDto
     {
         public bool IsActive { get; set; }
 

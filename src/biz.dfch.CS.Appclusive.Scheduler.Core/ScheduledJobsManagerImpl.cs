@@ -42,7 +42,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
                 foreach (var entity in entities)
                 {
                     scheduledJobs.Add(entity);
-                    Contract.Assert(ScheduledJobsWorker.SCHEDULED_TASK_WORKER_JOBS_PER_INSTANCE_MAX >= scheduledJobs.Count);
+                    Contract.Assert(ScheduledJobsWorker.SCHEDULED_JOBS_WORKER_JOBS_PER_INSTANCE_MAX >= scheduledJobs.Count);
                 }
 
                 var dataServiceQueryContinuation = entities.GetContinuation();

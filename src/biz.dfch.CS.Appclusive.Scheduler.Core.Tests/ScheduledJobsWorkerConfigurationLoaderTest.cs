@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+using biz.dfch.CS.Appclusive.Public;
+using biz.dfch.CS.Appclusive.Public.Logging;
+using biz.dfch.CS.Appclusive.Public.Plugins;
 using biz.dfch.CS.Appclusive.Scheduler.Public;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -24,6 +27,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Telerik.JustMock;
+using biz.dfch.CS.Utilities.Testing;
+using biz.dfch.CS.Appclusive.Public.Configuration;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
 {
@@ -32,7 +37,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
     {
         [TestCategory("SkipOnTeamCity")]
         [TestMethod]
-        public void ScheduledTaskWorkerConfigurationLoaderInitialiseWithConfigSectionSucceeds()
+        public void ScheduledJobsWorkerConfigurationLoaderInitialiseWithConfigSectionSucceeds()
         {
             // Arrange
             var username = "arbitrary-user";
@@ -82,7 +87,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
         
         [TestCategory("SkipOnTeamCity")]
         [TestMethod]
-        public void ScheduledTaskWorkerConfigurationLoaderWithoutConfigSectionInitialiseSucceeds()
+        public void ScheduledJobsWorkerConfigurationLoaderWithoutConfigSectionInitialiseSucceeds()
         {
             // Arrange
             Mock.SetupStatic(typeof(ConfigurationManager));
@@ -118,6 +123,60 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
             Assert.AreEqual(uri, config.Uri.AbsoluteUri);
             Assert.AreEqual(mgmtUriName, config.ManagementUriName);
             Assert.AreEqual(System.Net.CredentialCache.DefaultNetworkCredentials, config.Credential);
+        }
+
+        [TestMethod]
+        [ExpectContractFailure]
+        public void InitialiseWithInvalidConfigurationThrowsContractException()
+        {
+            var configuration = Mock.Create<ScheduledJobsWorkerConfiguration>();
+            var parameters = new DictionaryParameters();
+
+            var sut = new ScheduledJobsWorkerConfigurationLoader();
+            sut.Initialise(configuration, parameters);
+        }
+
+        [TestMethod]
+        public void InitialiseWithValidConfigurationSucceeds()
+        {
+            // Arrange
+            Mock.SetupStatic(typeof(ConfigurationManager));
+            Mock.Arrange(() => ConfigurationManager.AppSettings["UpdateIntervalMinutes"])
+                .Returns("5");
+            Mock.Arrange(() => ConfigurationManager.AppSettings["ServerNotReachableRetries"])
+                .Returns("5");
+            Mock.Arrange(() => ConfigurationManager.AppSettings["ManagementUri"])
+                .Returns("ManagementUri");
+            Mock.Arrange(() => ConfigurationManager.AppSettings["Uri"])
+                .Returns("http://www.example.com/arbitrary-path/");
+
+            var plugin = Mock.Create<Lazy<IAppclusivePlugin, IAppclusivePluginData>>();
+            var plugins = new List<Lazy<IAppclusivePlugin, IAppclusivePluginData>>();
+            plugins.Add(plugin);
+            var pluginLoader = Mock.Create<PluginLoader>(Constructor.Mocked);
+            Mock.Arrange(() => pluginLoader.InitialiseAndLoad())
+                .IgnoreInstance()
+                .Returns(plugins);
+
+            var configuration = Mock.Create<ScheduledJobsWorkerConfiguration>(Constructor.NotMocked);
+            Mock.Arrange(() => configuration.ManagementUriType)
+                .IgnoreInstance()
+                .Returns("ManagementUriType");
+            Mock.Arrange(() => configuration.Uri)
+                .IgnoreInstance()
+                .Returns(new Uri("http://www.example.com/arbitrary-path/"));
+            Mock.Arrange(() => configuration.IsValid())
+                .IgnoreInstance()
+                .Returns(true);
+            var parameters = new DictionaryParameters();
+
+            var sut = new ScheduledJobsWorkerConfigurationLoader();
+
+            // Act
+            sut.Initialise(configuration, parameters);
+
+            // Assert
+            // N/A
         }
     }
 }
