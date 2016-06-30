@@ -18,11 +18,14 @@ using System.Diagnostics.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.ComponentModel.Composition;
 using biz.dfch.CS.Appclusive.Public;
 using biz.dfch.CS.Appclusive.Scheduler.Public;
 using biz.dfch.CS.Appclusive.Public.Plugins;
+using System.Management.Automation;
+using System.Diagnostics;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
 {
@@ -32,8 +35,9 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
     [ExportMetadata("Role", "default")]
     public class PowerShellScriptPlugin : SchedulerPluginBase
     {
+        public const string SCRIPT_PATH_AND_NAME_KEY = "ScriptPathAndName";
+
         private PowerShellScriptPluginConfiguration configuration;
-        //private DictionaryParameters configuration;
         public override DictionaryParameters Configuration 
         { 
             get
@@ -42,42 +46,59 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
             }
             set
             {
-                var newConfiguration = UpdateConfiguration(value);
-                configuration = newConfiguration.Convert<PowerShellScriptPluginConfiguration>();
+                var result = UpdateConfiguration(value);
+                configuration = result;
             }
         }
 
-        private DictionaryParameters UpdateConfiguration(DictionaryParameters configuration)
+        private PowerShellScriptPluginConfiguration UpdateConfiguration(DictionaryParameters parameters)
         {
+            Contract.Requires(parameters.IsValid());
+
+            // check for endpoint
+            var hasAppclusiveEndpointsKey = parameters.ContainsKey(typeof(AppclusiveEndpoints).ToString());
+            Contract.Assert(hasAppclusiveEndpointsKey);
+            
+            var endpoints = parameters.First(p => p.Key == typeof(AppclusiveEndpoints).ToString())
+                .Value as AppclusiveEndpoints;
+            Contract.Assert(null != endpoints);
+            parameters.Remove(typeof(AppclusiveEndpoints).ToString());
+            parameters.Add("Endpoints", endpoints);
+
             var message = new StringBuilder();
-            message.AppendLine("DefaultPlugin.UpdatingConfiguration ...");
+            message.AppendLine("PowerShellScriptPlugin.UpdatingConfiguration ...");
             message.AppendLine();
 
-            foreach(KeyValuePair<string, object> item in configuration)
+            parameters.Add("ComputerName", "localhost");
+            parameters.Add("ConfigurationName", "default");
+            parameters.Add("ScriptBase", "C:\\data");
+            parameters.Add("ScriptName", "default.ps1");
+            var networkCredential = new NetworkCredential("arbitrary-user", "arbitrary-password", "arbitrary-domain");
+            parameters.Add("Credential", networkCredential);
+
+            foreach(KeyValuePair<string, object> item in parameters)
             {
                 message.AppendFormat("{0}: '{1}'", item.Key, item.Value ?? item.Value.ToString());
                 message.AppendLine();
             }
             message.AppendLine();
-            message.AppendLine("DefaultPlugin.UpdatingConfiguration COMPLETED.");
+            message.AppendLine("PowerShellScriptPlugin.UpdatingConfiguration COMPLETED.");
             
             if (null != Logger)
             { 
                 Logger.WriteLine(message.ToString());
             }
 
-            this.configuration = configuration.Convert<PowerShellScriptPluginConfiguration>();
+            configuration = parameters.Convert<PowerShellScriptPluginConfiguration>();
+            Contract.Assert(configuration.IsValid());
 
-            return Configuration;
+            return configuration;
         }
 
         public override bool Initialise(DictionaryParameters parameters, IAppclusivePluginLogger logger, bool activate)
         {
             var result = false;
 
-            // get name of ManagementUri
-            //managementUriName = new ActivitiPluginConfigurationManager().GetManagementUriName();
-                
             result = base.Initialise(parameters, logger, activate);
             if(!configuration.IsValid())
             {
@@ -93,25 +114,58 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
 
             var fReturn = false;
 
-            if(!IsActive)
-            {
-                invocationResult.Succeeded = fReturn;
-                invocationResult.Code = 1;
-                invocationResult.Message = "Plugin inactive";
+            //if(!IsActive)
+            //{
+            //    invocationResult.Succeeded = fReturn;
+            //    invocationResult.Code = 1;
+            //    invocationResult.Message = "Plugin inactive";
 
-                return fReturn;
+            //    return fReturn;
+            //}
+
+            var result = base.Invoke(parameters, invocationResult);
+            if(!result)
+            {
+                return result;
             }
 
             var message = new StringBuilder();
-            message.AppendLine("DefaultPlugin.Invoke ...");
+            message.AppendLine("PowerShellScriptPlugin.Invoke ...");
             message.AppendLine();
 
-            foreach(KeyValuePair<string, object> item in parameters)
+            Contract.Assert(parameters.ContainsKey(SCRIPT_PATH_AND_NAME_KEY));
+            var scriptPathAndName = parameters[SCRIPT_PATH_AND_NAME_KEY] as string;
+            Contract.Assert(!string.IsNullOrWhiteSpace(scriptPathAndName));
+
+            parameters.Remove(SCRIPT_PATH_AND_NAME_KEY);
+            Contract.Assert(!parameters.ContainsKey(SCRIPT_PATH_AND_NAME_KEY));
+
+            var scriptParameters = (Dictionary<string, object>) parameters;
+            Contract.Assert(null != scriptParameters);
+
+            var activityId = Trace.CorrelationManager.ActivityId;
+
+            Trace.CorrelationManager.StartLogicalOperation(string.Format("PowerShellScriptPlugin-{0}", activityId));
+
+            var scriptResult = new List<object>();
+            using(var scriptInvoker = new ScriptInvoker(Logger))
             {
-                message.AppendFormat("{0}: '{1}'", item.Key, item.Value ?? item.Value.ToString());
-                message.AppendLine();
+                var hasScriptSucceeded = scriptInvoker.RunPowershell(scriptPathAndName, scriptParameters, ref scriptResult);
+                Contract.Assert(true == hasScriptSucceeded);
             }
-            message.AppendLine("DefaultPlugin.Invoke() COMPLETED.");
+
+            Trace.CorrelationManager.StopLogicalOperation();
+
+            var c = 0;
+            foreach(var item in scriptResult)
+            {
+                message.AppendFormat("scriptResult[{0}]: '{1}'", c, item.ToString());
+                message.AppendLine();
+
+                c++;
+            }
+
+            message.AppendLine("PowerShellScriptPlugin.Invoke COMPLETED.");
             message.AppendLine();
             
             Logger.WriteLine(message.ToString());
@@ -120,7 +174,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
             
             invocationResult.Succeeded = fReturn;
             invocationResult.Code = 1;
-            invocationResult.Message = "DefaultPlugin.Invoke COMPLETED and logged the intended operation to a tracing facility.";
+            invocationResult.Message = "PowerShellScriptPlugin.Invoke COMPLETED and logged the intended operation to a tracing facility.";
             invocationResult.Description = message.ToString();
             invocationResult.InnerJobResult = null;
 

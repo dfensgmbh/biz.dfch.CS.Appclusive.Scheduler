@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+using System.IO;
 using Telerik.JustMock;
 using biz.dfch.CS.Appclusive.Public;
 using biz.dfch.CS.Appclusive.Scheduler.Core;
@@ -25,33 +26,162 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using biz.dfch.CS.Utilities.Testing;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
 {
     [TestClass]
     public class PowerShellScriptPluginTest
     {
+        private readonly DictionaryParameters parameters = new DictionaryParameters();
+        public DictionaryParameters Parameters
+        {
+            get { return parameters; }
+        }
+
+        private readonly Logger logger = new Logger();
+        public Logger Logger
+        {
+            get { return logger; }
+        }
+
+        private string path;
+        public string Path
+        {
+            get { return path; }
+            set { path = value; }
+        }
+
+
+        [TestInitialize]
+        public void TestInitialize()
+        {
+            var appclusiveEndpoints = Mock.Create<AppclusiveEndpoints>(Constructor.Mocked);
+            Parameters.Add("Endpoints", appclusiveEndpoints);
+            Parameters.Add("ConfigurationName", "AppclusiveScriptInvocation");
+            Parameters.Add("ComputerName", "localhost");
+            Parameters.Add("ScriptBase", "C:\\arbitrary-script-base-directory");
+            Parameters.Add("Credential", new NetworkCredential("arbitrary-user", "arbitrary-password", "arbitrary-domain"));
+
+            var uri = new UriBuilder(this.GetType().Assembly.CodeBase);
+            Path = System.IO.Path.GetDirectoryName(Uri.UnescapeDataString(uri.Path));
+        }
+
         [TestMethod]
         public void InitialiseAndActivateSucceeds()
         {
             // Arrange
-            var logger = new Logger();
-
-            var appclusiveEndpoints = Mock.Create<AppclusiveEndpoints>(Constructor.Mocked);
-            var parameters = new DictionaryParameters();
-            parameters.Add("Endpoints", appclusiveEndpoints);
-            parameters.Add("ConfigurationName", "AppclusiveScriptInvocation");
-            parameters.Add("ComputerName", "localhost");
-            parameters.Add("ScriptBase", "C:\\arbitrary-script-base-directory");
-            parameters.Add("Credential", new NetworkCredential("arbitrary-user", "arbitrary-password", "arbitrary-domain"));
             var sut = new PowerShellScriptPlugin();
 
             // Act
-            var result = sut.Initialise(parameters, logger, true);
+            var result = sut.Initialise(Parameters, logger, true);
 
             // Assert
             Assert.IsTrue(result);
             Assert.IsTrue(sut.IsActive);
+        }
+
+        [TestMethod]
+        [ExpectContractFailure]
+        public void InvokeWithEmptyParametersThrowsContractException()
+        {
+            // Arrange
+            var sut = new PowerShellScriptPlugin();
+            var initialisationResult = sut.Initialise(Parameters, logger, true);
+            Assert.IsTrue(initialisationResult);
+            Assert.IsTrue(sut.IsActive);
+
+            var parameters = new DictionaryParameters();
+            var invocationResult = new NonSerialisableJobResult();
+
+            // Act
+            var result = sut.Invoke(parameters, invocationResult);
+
+            // Assert
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        [ExpectContractFailure]
+        public void InvokeWithInexistentScriptFileThrowsContractException()
+        {
+            // Arrange
+            var sut = new PowerShellScriptPlugin();
+            var initialisationResult = sut.Initialise(Parameters, logger, true);
+            Assert.IsTrue(initialisationResult);
+            Assert.IsTrue(sut.IsActive);
+
+            var parameters = new DictionaryParameters();
+            parameters.Add(PowerShellScriptPlugin.SCRIPT_PATH_AND_NAME_KEY, "C:\\inexistent-path\\inexistents-script-ps1");
+
+            var invocationResult = new NonSerialisableJobResult();
+
+            // Act
+            var result = sut.Invoke(parameters, invocationResult);
+
+            // Assert
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void InvokeWithArbitraryScriptFileSucceeds()
+        {
+            // Arrange
+            var pathToScript = "C:\\arbitrary-path\\arbitrary-script-ps1";
+
+            var sut = new PowerShellScriptPlugin();
+            var initialisationResult = sut.Initialise(Parameters, logger, true);
+            Assert.IsTrue(initialisationResult);
+            Assert.IsTrue(sut.IsActive);
+
+            Mock.SetupStatic(typeof(File));
+            Mock.Arrange(() => File.Exists(Arg.Is<string>(pathToScript)))
+                .Returns(true);
+
+            var scriptResult = new List<object>();
+            var scriptInvokeImpl = Mock.Create<ScriptInvokerImpl>();
+            Mock.Arrange(() => scriptInvokeImpl.RunPowershell(Arg.Is<string>(pathToScript), Arg.IsAny<DictionaryParameters>(), ref scriptResult))
+                .IgnoreInstance()
+                .Returns(true)
+                .MustBeCalled();
+
+            var parameters = new DictionaryParameters();
+            parameters.Add(PowerShellScriptPlugin.SCRIPT_PATH_AND_NAME_KEY, pathToScript);
+            parameters.Add("JobId", 42L);
+
+            var invocationResult = new NonSerialisableJobResult();
+
+            // Act
+            var result = sut.Invoke(parameters, invocationResult);
+
+            // Assert
+            Mock.Assert(scriptInvokeImpl);
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void InvokeWithRealScriptFileSucceeds()
+        {
+            // Arrange
+            var scriptName = "PowerShellScriptPluginTest.ps1";
+            var pathToScript = System.IO.Path.Combine(Path, scriptName);
+
+            var sut = new PowerShellScriptPlugin();
+            var initialisationResult = sut.Initialise(Parameters, logger, true);
+            Assert.IsTrue(initialisationResult);
+            Assert.IsTrue(sut.IsActive);
+
+            var parameters = new DictionaryParameters();
+            parameters.Add(PowerShellScriptPlugin.SCRIPT_PATH_AND_NAME_KEY, pathToScript);
+            parameters.Add("JobId", 42L);
+
+            var invocationResult = new NonSerialisableJobResult();
+
+            // Act
+            var result = sut.Invoke(parameters, invocationResult);
+
+            // Assert
+            Assert.IsTrue(result);
         }
     }
 }
