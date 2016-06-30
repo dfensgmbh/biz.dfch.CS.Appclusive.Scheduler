@@ -57,7 +57,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
         public void TestInitialize()
         {
             var appclusiveEndpoints = Mock.Create<AppclusiveEndpoints>(Constructor.Mocked);
-            Parameters.Add("Endpoints", appclusiveEndpoints);
+            Parameters.Add(typeof(AppclusiveEndpoints).ToString(), appclusiveEndpoints);
             Parameters.Add("ConfigurationName", "AppclusiveScriptInvocation");
             Parameters.Add("ComputerName", "localhost");
             Parameters.Add("ScriptBase", "C:\\arbitrary-script-base-directory");
