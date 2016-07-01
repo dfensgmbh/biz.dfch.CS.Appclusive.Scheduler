@@ -1,3 +1,4 @@
+﻿#Requires -Version 5.0
 #Requires -Modules 'Microsoft.PowerShell.Utility'
 
 PARAM
