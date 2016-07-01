@@ -24,7 +24,6 @@ using System.ComponentModel.Composition;
 using biz.dfch.CS.Appclusive.Public;
 using biz.dfch.CS.Appclusive.Scheduler.Public;
 using biz.dfch.CS.Appclusive.Public.Plugins;
-using System.Management.Automation;
 using System.Diagnostics;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
@@ -68,13 +67,6 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
             var message = new StringBuilder();
             message.AppendLine("PowerShellScriptPlugin.UpdatingConfiguration ...");
             message.AppendLine();
-
-            parameters.Add("ComputerName", "localhost");
-            parameters.Add("ConfigurationName", "default");
-            parameters.Add("ScriptBase", "C:\\data");
-            parameters.Add("ScriptName", "default.ps1");
-            var networkCredential = new NetworkCredential("arbitrary-user", "arbitrary-password", "arbitrary-domain");
-            parameters.Add("Credential", networkCredential);
 
             foreach(KeyValuePair<string, object> item in parameters)
             {

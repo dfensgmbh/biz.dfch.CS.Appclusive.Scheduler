@@ -6,9 +6,6 @@ PARAM
 	[long] $JobId
 )
 
-Write-Host $JobId;
-Write-Host $Host.InstanceId.Guid;
-
 #
 # Copyright 2016 d-fens GmbH
 #
