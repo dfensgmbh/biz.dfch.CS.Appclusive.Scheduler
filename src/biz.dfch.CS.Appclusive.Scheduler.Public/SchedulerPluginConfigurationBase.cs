@@ -18,12 +18,14 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using biz.dfch.CS.Appclusive.Public;
+using biz.dfch.CS.Appclusive.Public.Converters;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Public
 {
     public class SchedulerPluginConfigurationBase : BaseDto
     {
         [Required]
+        [DictionaryParametersKey("biz.dfch.CS.Appclusive.Scheduler.Public.AppclusiveEndpoints")]
         public AppclusiveEndpoints Endpoints { get; set; }
     }
 }

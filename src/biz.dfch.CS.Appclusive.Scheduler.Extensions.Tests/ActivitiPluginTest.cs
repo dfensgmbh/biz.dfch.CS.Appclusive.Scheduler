@@ -53,6 +53,24 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
         }
 
         [TestMethod]
+        public void ConvertFromDictionaryParametersToSchedulerPluginConfigurationBaseSucceeds()
+        {
+            var uri = new Uri("http://www.example.com/");
+            var credentials = CredentialCache.DefaultNetworkCredentials;
+            var appclusiveEndpoints = new AppclusiveEndpoints(uri, credentials);
+
+            var sut = new DictionaryParameters();
+            sut.Add(typeof(AppclusiveEndpoints).ToString(), appclusiveEndpoints);
+
+            // Act
+            var result = sut.Convert<SchedulerPluginConfigurationBase>();
+
+            // Assert
+            Assert.IsTrue(result.IsValid());
+            Assert.IsNotNull(result.Endpoints);
+        }
+
+        [TestMethod]
         public void InitialiseSucceeds()
         {
             // Arrange
