@@ -45,9 +45,9 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
 
         public new bool Login(string username, string password)
         {
-            base.Login(username, password);
+            var credential = new NetworkCredential(username, password);
 
-            var result = base.IsLoggedIn();
+            var result = this.Login(credential);
             return result;
         }
 
