@@ -41,7 +41,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
         { 
             get
             {
-                return new DictionaryParameters().Convert(configuration);
+                return configuration.Convert(true);
             }
             set
             {
@@ -55,15 +55,10 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
             Contract.Requires(parameters.IsValid());
 
             // check for endpoint
-            var hasAppclusiveEndpointsKey = parameters.ContainsKey(typeof(AppclusiveEndpoints).ToString());
-            Contract.Assert(hasAppclusiveEndpointsKey);
+            var configurationBase = SchedulerPluginConfigurationBase.Convert<SchedulerPluginConfigurationBase>(parameters);
+            Contract.Assert(configurationBase.IsValid());
+            var endpoints = configurationBase.Endpoints;
             
-            var endpoints = parameters.First(p => p.Key == typeof(AppclusiveEndpoints).ToString())
-                .Value as AppclusiveEndpoints;
-            Contract.Assert(null != endpoints);
-            parameters.Remove(typeof(AppclusiveEndpoints).ToString());
-            parameters.Add("Endpoints", endpoints);
-
             var message = new StringBuilder();
             message.AppendLine("PowerShellScriptPlugin.UpdatingConfiguration ...");
             message.AppendLine();
@@ -81,7 +76,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
                 Logger.WriteLine(message.ToString());
             }
 
-            configuration = parameters.Convert<PowerShellScriptPluginConfiguration>();
+            configuration = PowerShellScriptPluginConfiguration.Convert<PowerShellScriptPluginConfiguration>(parameters, true);
             Contract.Assert(configuration.IsValid());
 
             return configuration;

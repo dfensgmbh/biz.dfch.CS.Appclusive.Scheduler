@@ -21,3 +21,10 @@ PARAM
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+$OutputParameter = @();
+
+$OutputParameter += ("JobId '{0}'" -f $JobId);
+$OutputParameter += ("Host.InstanceId '{0}'" -f $host.InstanceId.Guid);
+
+return $OutputParameter;
