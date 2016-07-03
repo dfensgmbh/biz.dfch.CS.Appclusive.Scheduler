@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -25,5 +26,34 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
 {
     public class PowerShellScriptPluginConfigurationManager
     {
+        public string GetComputerName()
+        {
+            Contract.Ensures(!string.IsNullOrWhiteSpace(Contract.Result<string>()));
+
+            return Environment.MachineName;
+        }
+
+        private const string CONFIGURATION_TEMPLATE_NAME = "AppclusiveScheduler-PowerShellSessionConfiguration-{0}";
+        public string GetConfigurationNameTemplate()
+        {
+            Contract.Ensures(!string.IsNullOrWhiteSpace(Contract.Result<string>()));
+
+            return CONFIGURATION_TEMPLATE_NAME;
+        }
+
+        private const string SCRIPT_BASE = "%ProgramFiles%\\AppclusiveSchedulerPowerShellScript";
+        public string GetScriptBase()
+        {
+            Contract.Ensures(!string.IsNullOrWhiteSpace(Contract.Result<string>()));
+
+            return SCRIPT_BASE;
+        }
+
+        public ICredentials GetCredentials()
+        {
+            Contract.Ensures(null != Contract.Result<ICredentials>());
+
+            return CredentialCache.DefaultNetworkCredentials;
+        }
     }
 }

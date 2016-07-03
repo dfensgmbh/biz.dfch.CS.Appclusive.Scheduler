@@ -86,6 +86,12 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
         {
             var result = false;
 
+            var configurationManager = new PowerShellScriptPluginConfigurationManager();
+            parameters.Add("ComputerName", configurationManager.GetComputerName());
+            parameters.Add("ConfigurationName", configurationManager.GetConfigurationNameTemplate());
+            parameters.Add("ScriptBase", configurationManager.GetScriptBase());
+            parameters.Add("Credential", configurationManager.GetCredentials());
+
             result = base.Initialise(parameters, logger, activate);
             if(!configuration.IsValid())
             {
@@ -100,15 +106,6 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
             Contract.Requires<NotSupportedException>("2" == invocationResult.Version, "This plugin only supports non-serialisable invocation results.");
 
             var fReturn = false;
-
-            //if(!IsActive)
-            //{
-            //    invocationResult.Succeeded = fReturn;
-            //    invocationResult.Code = 1;
-            //    invocationResult.Message = "Plugin inactive";
-
-            //    return fReturn;
-            //}
 
             var result = base.Invoke(parameters, invocationResult);
             if(!result)
