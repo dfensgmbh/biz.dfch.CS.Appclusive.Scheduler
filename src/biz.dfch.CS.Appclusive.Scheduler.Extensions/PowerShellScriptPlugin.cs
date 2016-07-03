@@ -71,10 +71,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
             message.AppendLine();
             message.AppendLine("PowerShellScriptPlugin.UpdatingConfiguration COMPLETED.");
             
-            if (null != Logger)
-            { 
-                Logger.WriteLine(message.ToString());
-            }
+            Logger.WriteLine(message.ToString());
 
             configuration = PowerShellScriptPluginConfiguration.Convert<PowerShellScriptPluginConfiguration>(parameters, true);
             Contract.Assert(configuration.IsValid());
