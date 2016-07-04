@@ -58,10 +58,6 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
         {
             var appclusiveEndpoints = Mock.Create<AppclusiveEndpoints>(Constructor.Mocked);
             Parameters.Add(typeof(AppclusiveEndpoints).ToString(), appclusiveEndpoints);
-            Parameters.Add("ConfigurationName", "AppclusiveScriptInvocation");
-            Parameters.Add("ComputerName", "localhost");
-            Parameters.Add("ScriptBase", "C:\\arbitrary-script-base-directory");
-            Parameters.Add("Credential", new NetworkCredential("arbitrary-user", "arbitrary-password", "arbitrary-domain"));
 
             var uri = new UriBuilder(this.GetType().Assembly.CodeBase);
             Path = System.IO.Path.GetDirectoryName(Uri.UnescapeDataString(uri.Path));

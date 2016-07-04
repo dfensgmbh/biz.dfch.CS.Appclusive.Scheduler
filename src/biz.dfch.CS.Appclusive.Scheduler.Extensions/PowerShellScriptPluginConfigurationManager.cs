@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+using System.Configuration;
+using System.IO;
+using biz.dfch.CS.Appclusive.Scheduler.Public;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
@@ -26,6 +28,15 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
 {
     public class PowerShellScriptPluginConfigurationManager
     {
+        private readonly AppclusiveEndpoints appclusiveEndpoints;
+
+        public PowerShellScriptPluginConfigurationManager(AppclusiveEndpoints endpoints)
+        {
+            Contract.Requires(null != endpoints);
+
+            appclusiveEndpoints = endpoints;
+        }
+
         public string GetComputerName()
         {
             Contract.Ensures(!string.IsNullOrWhiteSpace(Contract.Result<string>()));
@@ -41,12 +52,18 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
             return CONFIGURATION_TEMPLATE_NAME;
         }
 
-        private const string SCRIPT_BASE = "%ProgramFiles%\\AppclusiveSchedulerPowerShellScript";
+        private const string APPSETTINGS_SCRIPT_BASE_KEY = "PowerShellScriptScriptBase";
         public string GetScriptBase()
         {
             Contract.Ensures(!string.IsNullOrWhiteSpace(Contract.Result<string>()));
 
-            return SCRIPT_BASE;
+            var scriptBaseFromAppSettings = ConfigurationManager.AppSettings.Get(APPSETTINGS_SCRIPT_BASE_KEY);
+            Contract.Assert(!string.IsNullOrWhiteSpace(scriptBaseFromAppSettings));
+            
+            var scriptBaseWithExpandedEnvironmentVariables = Environment.ExpandEnvironmentVariables(scriptBaseFromAppSettings);
+            Contract.Assert(Directory.Exists(scriptBaseWithExpandedEnvironmentVariables));
+
+            return scriptBaseWithExpandedEnvironmentVariables;
         }
 
         public ICredentials GetCredentials()

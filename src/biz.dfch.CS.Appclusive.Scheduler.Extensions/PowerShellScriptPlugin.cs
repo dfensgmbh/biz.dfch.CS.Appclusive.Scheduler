@@ -57,8 +57,13 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
             // check for endpoint
             var configurationBase = SchedulerPluginConfigurationBase.Convert<SchedulerPluginConfigurationBase>(parameters);
             Contract.Assert(configurationBase.IsValid());
-            var endpoints = configurationBase.Endpoints;
             
+            var configurationManager = new PowerShellScriptPluginConfigurationManager(configurationBase.Endpoints);
+            parameters.Add("ComputerName", configurationManager.GetComputerName());
+            parameters.Add("ConfigurationName", configurationManager.GetConfigurationNameTemplate());
+            parameters.Add("ScriptBase", configurationManager.GetScriptBase());
+            parameters.Add("Credential", configurationManager.GetCredentials());
+
             var message = new StringBuilder();
             message.AppendLine("PowerShellScriptPlugin.UpdatingConfiguration ...");
             message.AppendLine();
@@ -82,12 +87,6 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
         public override bool Initialise(DictionaryParameters parameters, IAppclusivePluginLogger logger, bool activate)
         {
             var result = false;
-
-            var configurationManager = new PowerShellScriptPluginConfigurationManager();
-            parameters.Add("ComputerName", configurationManager.GetComputerName());
-            parameters.Add("ConfigurationName", configurationManager.GetConfigurationNameTemplate());
-            parameters.Add("ScriptBase", configurationManager.GetScriptBase());
-            parameters.Add("Credential", configurationManager.GetCredentials());
 
             result = base.Initialise(parameters, logger, activate);
             if(!configuration.IsValid())
