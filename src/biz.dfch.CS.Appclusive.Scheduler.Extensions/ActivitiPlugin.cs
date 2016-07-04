@@ -92,7 +92,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
 
             // get Activiti server
             var managementUri = configurationManager
-                .GetManagementUri(endpoints.Core.ManagementUris, managementUriName);
+                .GetManagementUri(endpoints.Core.ManagementUris, configurationManager.GetManagementUriName());
             
             var activitiPluginConfigurationManagementUri = BaseDto
                 .DeserializeObject<ActivitiPluginConfigurationManagementUri>(managementUri.Value);
@@ -119,9 +119,6 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
         {
             var result = false;
 
-            // get name of ManagementUri
-            managementUriName = new ActivitiPluginConfigurationManager().GetManagementUriName();
-                
             result = base.Initialise(parameters, logger, activate);
             if(!configuration.IsValid())
             {

@@ -52,14 +52,13 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
             return CONFIGURATION_TEMPLATE_NAME;
         }
 
-        private const string APPSETTINGS_SCRIPT_BASE_KEY = "PowerShellScriptScriptBase";
         public string GetScriptBase()
         {
             Contract.Ensures(!string.IsNullOrWhiteSpace(Contract.Result<string>()));
 
             string scriptBase;
 
-            var scriptBaseFromAppSettings = ConfigurationManager.AppSettings.Get(APPSETTINGS_SCRIPT_BASE_KEY);
+            var scriptBaseFromAppSettings = ConfigurationManager.AppSettings.Get(SchedulerAppSettings.Keys.POWERSHELL_SCRIPT_SCRIPT_BASE);
             if(!string.IsNullOrWhiteSpace(scriptBaseFromAppSettings))
             {
                 var scriptBaseWithExpandedEnvironmentVariables = Environment.ExpandEnvironmentVariables(scriptBaseFromAppSettings);

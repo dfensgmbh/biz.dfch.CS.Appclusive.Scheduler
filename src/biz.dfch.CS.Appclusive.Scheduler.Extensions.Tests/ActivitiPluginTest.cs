@@ -290,6 +290,11 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
         public void UpdateConfigurationSucceeds()
         {
             // Arrange
+            Mock.SetupStatic(typeof(ConfigurationManager));
+            Mock.Arrange(() => ConfigurationManager.AppSettings[Arg.IsAny<string>()])
+                .Returns(SchedulerAppSettings.Keys.EXTERNAL_WORKFLOW_MANAGEMENT_URI_NAME)
+                .MustBeCalled();
+
             var client = Mock.Create<ActivitiClient>();
             Mock.Arrange(() => client.Login(Arg.IsAny<NetworkCredential>()))
                 .IgnoreInstance()
@@ -359,6 +364,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
             sut.Configuration = parameters;
 
             // Assert
+            Mock.Arrange(() => ConfigurationManager.AppSettings[Arg.IsAny<string>()]);
             Mock.Assert(client);
             Mock.Assert(endpoints);
             Mock.Assert(dataServiceQueryManagementUris);
