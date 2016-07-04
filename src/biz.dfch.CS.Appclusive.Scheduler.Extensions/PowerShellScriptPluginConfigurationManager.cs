@@ -57,13 +57,28 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
         {
             Contract.Ensures(!string.IsNullOrWhiteSpace(Contract.Result<string>()));
 
-            var scriptBaseFromAppSettings = ConfigurationManager.AppSettings.Get(APPSETTINGS_SCRIPT_BASE_KEY);
-            Contract.Assert(!string.IsNullOrWhiteSpace(scriptBaseFromAppSettings));
-            
-            var scriptBaseWithExpandedEnvironmentVariables = Environment.ExpandEnvironmentVariables(scriptBaseFromAppSettings);
-            Contract.Assert(Directory.Exists(scriptBaseWithExpandedEnvironmentVariables));
+            string scriptBase;
 
-            return scriptBaseWithExpandedEnvironmentVariables;
+            var scriptBaseFromAppSettings = ConfigurationManager.AppSettings.Get(APPSETTINGS_SCRIPT_BASE_KEY);
+            if(!string.IsNullOrWhiteSpace(scriptBaseFromAppSettings))
+            {
+                var scriptBaseWithExpandedEnvironmentVariables = Environment.ExpandEnvironmentVariables(scriptBaseFromAppSettings);
+                Contract.Assert(Directory.Exists(scriptBaseWithExpandedEnvironmentVariables));
+
+                scriptBase = scriptBaseWithExpandedEnvironmentVariables;
+            }
+            else
+            {
+                var codeBase = this.GetType().Assembly.CodeBase;
+                var uri = new UriBuilder(codeBase);
+                var unescapedUri = Uri.UnescapeDataString(uri.Path).Replace('/', '\\');
+                var scriptBaseFromPluginLocation = Path.GetDirectoryName(unescapedUri);
+                Contract.Assert(Directory.Exists(scriptBaseFromPluginLocation));
+
+                scriptBase = scriptBaseFromPluginLocation;
+            }
+
+            return scriptBase;
         }
 
         public ICredentials GetCredentials()

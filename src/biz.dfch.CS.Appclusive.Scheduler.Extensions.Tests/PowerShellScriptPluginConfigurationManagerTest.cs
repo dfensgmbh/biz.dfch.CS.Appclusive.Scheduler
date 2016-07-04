@@ -25,6 +25,7 @@ using Telerik.JustMock;
 using biz.dfch.CS.Appclusive.Scheduler.Public;
 using System.Configuration;
 using biz.dfch.CS.Utilities.Testing;
+using System.IO;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
 {
@@ -54,8 +55,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
         }
 
         [TestMethod]
-        [ExpectContractFailure]
-        public void GetScriptBaseWithInexistentAppSettingsThrowsContractException()
+        public void GetScriptBaseWithInexistentAppSettingsReturnsDefaultDirectory()
         {
             // Arrange
             var scriptBaseFromAppSettings = default(string);
@@ -71,7 +71,9 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
             var result = sut.GetScriptBase();
 
             // Assert
-            // N/A
+            Mock.Assert(() => ConfigurationManager.AppSettings.Get(Arg.IsAny<string>()));
+
+            Assert.IsTrue(Directory.Exists(result));
         }
 
         [TestMethod]
