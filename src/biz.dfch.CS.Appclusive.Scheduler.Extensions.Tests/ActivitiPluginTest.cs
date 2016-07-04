@@ -16,6 +16,7 @@
 using System.Data.Services.Client;
 using biz.dfch.CS.Appclusive.Api.Core;
 using biz.dfch.CS.Appclusive.Public;
+using biz.dfch.CS.Appclusive.Public.Converters;
 using biz.dfch.CS.Appclusive.Scheduler.Core;
 using biz.dfch.CS.Appclusive.Scheduler.Public;
 using biz.dfch.CS.Utilities.Testing;
@@ -50,6 +51,46 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
                 ,
                 Credential = new System.Net.NetworkCredential(Username, Password)
             };
+        }
+
+        [TestMethod]
+        public void ConvertFromDictionaryParametersToSchedulerPluginConfigurationBaseSucceeds()
+        {
+            var uri = new Uri("http://www.example.com/");
+            var credentials = CredentialCache.DefaultNetworkCredentials;
+            var appclusiveEndpoints = new AppclusiveEndpoints(uri, credentials);
+
+            var sut = new DictionaryParameters();
+            sut.Add(typeof(AppclusiveEndpoints).ToString(), appclusiveEndpoints);
+
+            // Act
+            var result = SchedulerPluginConfigurationBase.Convert<SchedulerPluginConfigurationBase>(sut);
+
+            // Assert
+            Assert.IsTrue(result.IsValid());
+            Assert.IsNotNull(result.Endpoints);
+        }
+
+        [TestMethod]
+        public void ConvertToDictionaryParametersFromSchedulerPluginConfigurationBaseSucceeds()
+        {
+            var uri = new Uri("http://www.example.com/");
+            var credentials = CredentialCache.DefaultNetworkCredentials;
+            var appclusiveEndpoints = new AppclusiveEndpoints(uri, credentials);
+            var keyName = appclusiveEndpoints.GetType().FullName;
+
+            var sut = new SchedulerPluginConfigurationBase()
+            {
+                Endpoints = appclusiveEndpoints
+            };
+            Assert.IsTrue(sut.IsValid());
+
+            // Act
+            var result = sut.Convert();
+
+            // Assert
+            Assert.IsTrue(result.ContainsKey(keyName));
+            Assert.AreEqual(appclusiveEndpoints, result.Get(keyName));
         }
 
         [TestMethod]
@@ -249,6 +290,11 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
         public void UpdateConfigurationSucceeds()
         {
             // Arrange
+            Mock.SetupStatic(typeof(ConfigurationManager));
+            Mock.Arrange(() => ConfigurationManager.AppSettings[Arg.IsAny<string>()])
+                .Returns(SchedulerAppSettings.Keys.EXTERNAL_WORKFLOW_MANAGEMENT_URI_NAME)
+                .MustBeCalled();
+
             var client = Mock.Create<ActivitiClient>();
             Mock.Arrange(() => client.Login(Arg.IsAny<NetworkCredential>()))
                 .IgnoreInstance()
@@ -318,6 +364,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
             sut.Configuration = parameters;
 
             // Assert
+            Mock.Arrange(() => ConfigurationManager.AppSettings[Arg.IsAny<string>()]);
             Mock.Assert(client);
             Mock.Assert(endpoints);
             Mock.Assert(dataServiceQueryManagementUris);

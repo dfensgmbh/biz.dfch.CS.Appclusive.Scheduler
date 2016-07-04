@@ -32,7 +32,17 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public.Tests
     {
         class LoggerImpl : ILogger
         {
+            public void Write(string message)
+            {
+                return;
+            }
+
             public void Write(string format, params object[] args)
+            {
+                return;
+            }
+
+            public void WriteLine(string message)
             {
                 return;
             }
@@ -42,7 +52,17 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public.Tests
                 return;
             }
 
+            public void Debug(string message)
+            {
+                return;
+            }
+
             public void Debug(string format, params object[] args)
+            {
+                return;
+            }
+
+            public void Info(string message)
             {
                 return;
             }
@@ -52,7 +72,17 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public.Tests
                 return;
             }
 
+            public void Notice(string message)
+            {
+                return;
+            }
+
             public void Notice(string format, params object[] args)
+            {
+                return;
+            }
+
+            public void Warn(string message)
             {
                 return;
             }
@@ -62,7 +92,17 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public.Tests
                 return;
             }
 
+            public void Error(string message)
+            {
+                return;
+            }
+
             public void Error(string format, params object[] args)
+            {
+                return;
+            }
+
+            public void Alert(string message)
             {
                 return;
             }
@@ -72,7 +112,17 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public.Tests
                 return;
             }
 
+            public void Critical(string message)
+            {
+                return;
+            }
+
             public void Critical(string format, params object[] args)
+            {
+                return;
+            }
+
+            public void Emergency(string message)
             {
                 return;
             }
@@ -85,9 +135,19 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public.Tests
 
         class Logger : ILogger
         {
+            public void Write(string message)
+            {
+                new LoggerImpl().Write(message);
+            }
+
             public void Write(string format, params object[] args)
             {
                 new LoggerImpl().Write(format, args);
+            }
+
+            public void WriteLine(string message)
+            {
+                new LoggerImpl().WriteLine(message);
             }
 
             public void WriteLine(string format, params object[] args)
@@ -95,9 +155,19 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public.Tests
                 new LoggerImpl().WriteLine(format, args);
             }
 
+            public void Debug(string message)
+            {
+                new LoggerImpl().Debug(message);
+            }
+
             public void Debug(string format, params object[] args)
             {
                 new LoggerImpl().Debug(format, args);
+            }
+
+            public void Info(string message)
+            {
+                new LoggerImpl().Info(message);
             }
 
             public void Info(string format, params object[] args)
@@ -105,9 +175,19 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public.Tests
                 new LoggerImpl().Info(format, args);
             }
 
+            public void Notice(string message)
+            {
+                new LoggerImpl().Notice(message);
+            }
+
             public void Notice(string format, params object[] args)
             {
                 new LoggerImpl().Notice(format, args);
+            }
+
+            public void Warn(string message)
+            {
+                new LoggerImpl().Warn(message);
             }
 
             public void Warn(string format, params object[] args)
@@ -115,9 +195,19 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public.Tests
                 new LoggerImpl().Warn(format, args);
             }
 
+            public void Error(string message)
+            {
+                new LoggerImpl().Error(message);
+            }
+
             public void Error(string format, params object[] args)
             {
                 new LoggerImpl().Error(format, args);
+            }
+
+            public void Alert(string message)
+            {
+                new LoggerImpl().Alert(message);
             }
 
             public void Alert(string format, params object[] args)
@@ -125,9 +215,19 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public.Tests
                 new LoggerImpl().Alert(format, args);
             }
 
+            public void Critical(string message)
+            {
+                new LoggerImpl().Critical(message);
+            }
+
             public void Critical(string format, params object[] args)
             {
                 new LoggerImpl().Critical(format, args);
+            }
+
+            public void Emergency(string message)
+            {
+                new LoggerImpl().Emergency(message);
             }
 
             public void Emergency(string format, params object[] args)

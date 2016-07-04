@@ -21,6 +21,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Telerik.JustMock;
+using biz.dfch.CS.Appclusive.Scheduler.Public;
+using System.Configuration;
+using biz.dfch.CS.Utilities.Testing;
+using System.IO;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
 {
@@ -28,9 +33,69 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
     public class PowerShellScriptPluginConfigurationManagerTest
     {
         [TestMethod]
-        public void Test()
+        public void GetScriptBaseSucceeds()
         {
+            // Arrange
+            var scriptBaseFromAppSettings = "%ProgramFiles%";
+            Mock.SetupStatic(typeof(ConfigurationManager));
+            Mock.Arrange(() => ConfigurationManager.AppSettings.Get(Arg.IsAny<string>()))
+                .Returns(scriptBaseFromAppSettings)
+                .MustBeCalled();
 
+            var appclusiveEndpoints = Mock.Create<AppclusiveEndpoints>();
+            var sut = new PowerShellScriptPluginConfigurationManager(appclusiveEndpoints);
+
+            // Act
+            var result = sut.GetScriptBase();
+
+            // Assert
+            Mock.Assert(() => ConfigurationManager.AppSettings.Get(Arg.IsAny<string>()));
+
+            Assert.AreEqual(Environment.ExpandEnvironmentVariables(scriptBaseFromAppSettings), result);
         }
+
+        [TestMethod]
+        public void GetScriptBaseWithInexistentAppSettingsReturnsDefaultDirectory()
+        {
+            // Arrange
+            var scriptBaseFromAppSettings = default(string);
+            Mock.SetupStatic(typeof(ConfigurationManager));
+            Mock.Arrange(() => ConfigurationManager.AppSettings.Get(Arg.IsAny<string>()))
+                .Returns(scriptBaseFromAppSettings)
+                .MustBeCalled();
+
+            var appclusiveEndpoints = Mock.Create<AppclusiveEndpoints>();
+            var sut = new PowerShellScriptPluginConfigurationManager(appclusiveEndpoints);
+
+            // Act
+            var result = sut.GetScriptBase();
+
+            // Assert
+            Mock.Assert(() => ConfigurationManager.AppSettings.Get(Arg.IsAny<string>()));
+
+            Assert.IsTrue(Directory.Exists(result));
+        }
+
+        [TestMethod]
+        [ExpectContractFailure]
+        public void GetScriptBaseWithInexistentDirectoryThrowsContractException()
+        {
+            // Arrange
+            var scriptBaseFromAppSettings = "C:\\inexistent-folder";
+            Mock.SetupStatic(typeof(ConfigurationManager));
+            Mock.Arrange(() => ConfigurationManager.AppSettings.Get(Arg.IsAny<string>()))
+                .Returns(scriptBaseFromAppSettings)
+                .MustBeCalled();
+
+            var appclusiveEndpoints = Mock.Create<AppclusiveEndpoints>();
+            var sut = new PowerShellScriptPluginConfigurationManager(appclusiveEndpoints);
+
+            // Act
+            var result = sut.GetScriptBase();
+
+            // Assert
+            // N/A
+        }
+
     }
 }

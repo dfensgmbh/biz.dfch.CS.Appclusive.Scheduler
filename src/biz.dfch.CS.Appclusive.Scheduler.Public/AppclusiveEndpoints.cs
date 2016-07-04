@@ -13,14 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 using System.Net;
-using biz.dfch.CS.Appclusive.Api;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using biz.dfch.CS.Utilities.Logging;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Public
@@ -39,7 +36,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public
 
             credential = credential ?? CredentialCache.DefaultNetworkCredentials;
 
-            Trace.WriteLine(string.Format("Initialising Appclusive endpoints from '{0}' ...", baseUri.AbsoluteUri));
+            Trace.WriteLine("Initialising Appclusive endpoints from '{0}' ...", baseUri.AbsoluteUri, "");
 
             Uri uri;
             
@@ -68,7 +65,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Public
             Cmp.Credentials = credential;
             Cmp.Format.UseJson();
 
-            Trace.WriteLine(string.Format("Initialising Appclusive endpoints from '{0}' COMPLETED.", baseUri.AbsoluteUri));
+            Trace.WriteLine("Initialising Appclusive endpoints from '{0}' COMPLETED.", baseUri.AbsoluteUri, "");
         }
 
         [ContractInvariantMethod]

@@ -28,6 +28,8 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
         public class Keys
         {
             public const string EXTERNAL_WORKFLOW_MANAGEMENT_URI_NAME = "ExternalWorkflowManagementUriName";
+
+            public const string POWERSHELL_SCRIPT_SCRIPT_BASE = "PowerShellScriptScriptBase";
         }
     }
 }

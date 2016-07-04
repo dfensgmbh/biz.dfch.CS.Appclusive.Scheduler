@@ -51,7 +51,8 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
         { 
             get
             {
-                return new DictionaryParameters().Convert(configuration);
+                return configuration.Convert(true);
+                //return new DictionaryParameters().Convert(configuration);
             }
             set
             {
@@ -65,14 +66,9 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
             Contract.Requires(parameters.IsValid());
 
             // check for endpoint
-            var hasAppclusiveEndpointsKey = parameters.ContainsKey(typeof(AppclusiveEndpoints).ToString());
-            Contract.Assert(hasAppclusiveEndpointsKey);
-            
-            var endpoints = parameters.First(p => p.Key == typeof(AppclusiveEndpoints).ToString())
-                .Value as AppclusiveEndpoints;
-            Contract.Assert(null != endpoints);
-            parameters.Remove(typeof(AppclusiveEndpoints).ToString());
-            parameters.Add("Endpoints", endpoints);
+            var configurationBase = SchedulerPluginConfigurationBase.Convert<SchedulerPluginConfigurationBase>(parameters);
+            Contract.Assert(configurationBase.IsValid());
+            var endpoints = configurationBase.Endpoints;
 
             // ManagementUri
             //Type                   : json
@@ -96,7 +92,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
 
             // get Activiti server
             var managementUri = configurationManager
-                .GetManagementUri(endpoints.Core.ManagementUris, managementUriName);
+                .GetManagementUri(endpoints.Core.ManagementUris, configurationManager.GetManagementUriName());
             
             var activitiPluginConfigurationManagementUri = BaseDto
                 .DeserializeObject<ActivitiPluginConfigurationManagementUri>(managementUri.Value);
@@ -109,7 +105,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
             var networkCredential = configurationManager.GetCredential(managementCredential);
             parameters.Add("Credential", networkCredential);
 
-            configuration = parameters.Convert<ActivitiPluginConfiguration>();
+            configuration = ActivitiPluginConfiguration.Convert<ActivitiPluginConfiguration>(parameters, true);
             Contract.Assert(configuration.IsValid());
 
             // log in to server
@@ -123,9 +119,6 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
         {
             var result = false;
 
-            // get name of ManagementUri
-            managementUriName = new ActivitiPluginConfigurationManager().GetManagementUriName();
-                
             result = base.Initialise(parameters, logger, activate);
             if(!configuration.IsValid())
             {

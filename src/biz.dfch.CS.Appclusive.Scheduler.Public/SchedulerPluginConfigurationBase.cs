@@ -18,12 +18,30 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using biz.dfch.CS.Appclusive.Public;
+using biz.dfch.CS.Appclusive.Public.Converters;
+using System.Diagnostics.Contracts;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Public
 {
-    public class SchedulerPluginConfigurationBase : BaseDto
+    public class SchedulerPluginConfigurationBase : DictionaryParametersBaseDto
     {
         [Required]
+        [DictionaryParametersKey("biz.dfch.CS.Appclusive.Scheduler.Public.AppclusiveEndpoints")]
         public AppclusiveEndpoints Endpoints { get; set; }
+
+        public static T Convert<T>(DictionaryParameters parameters)
+            where T : SchedulerPluginConfigurationBase, new()
+        {
+            return Convert<T>(parameters, false);
+        }
+
+        public static T Convert<T>(DictionaryParameters parameters, bool includeAllProperties)
+            where T : SchedulerPluginConfigurationBase, new()
+        {
+            Contract.Requires(null != parameters);
+            Contract.Ensures(null != Contract.Result<T>());
+
+            return DictionaryParametersConverter.Convert<T>(parameters, includeAllProperties);
+        }
     }
 }

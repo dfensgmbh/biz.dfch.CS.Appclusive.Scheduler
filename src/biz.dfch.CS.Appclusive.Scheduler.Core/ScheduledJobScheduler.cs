@@ -116,13 +116,15 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             }
             catch (CrontabException ex)
             {
-                Trace.WriteException(ex.Message, ex);
+                var message = string.Format("JobId '{0}': {1}", this.job.Id, ex.Message);
+                Trace.WriteException(message, ex);
 
                 return DateTimeOffset.MinValue;
             }
             catch (Exception ex)
             {
-                Trace.WriteException(ex.Message, ex);
+                var message = string.Format("JobId '{0}': {1}", this.job.Id, ex.Message);
+                Trace.WriteException(message, ex);
 
                 throw;
             }

@@ -23,15 +23,30 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
 {
     public class Logger : IAppclusivePluginLogger
     {
+        public void Write(string message)
+        {
+            Trace.Write(message);
+        }
+
         public void Write(string format, params object[] args)
         {
             var message = string.Format(format, args);
             Trace.Write(message);
         }
 
+        public void WriteLine(string message)
+        {
+            Trace.WriteLine(message);
+        }
+
         public void WriteLine(string format, params object[] args)
         {
             var message = string.Format(format, args);
+            Trace.WriteLine(message);
+        }
+
+        public void Debug(string message)
+        {
             Trace.WriteLine(message);
         }
 
@@ -41,9 +56,19 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             Trace.WriteLine(message);
         }
 
+        public void Info(string message)
+        {
+            Trace.WriteLine(message);
+        }
+
         public void Info(string format, params object[] args)
         {
             var message = string.Format(format, args);
+            Trace.WriteLine(message);
+        }
+
+        public void Notice(string message)
+        {
             Trace.WriteLine(message);
         }
 
@@ -53,9 +78,19 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             Trace.WriteLine(message);
         }
 
+        public void Warn(string message)
+        {
+            Trace.WriteLine(message);
+        }
+
         public void Warn(string format, params object[] args)
         {
             var message = string.Format(format, args);
+            Trace.WriteLine(message);
+        }
+
+        public void Error(string message)
+        {
             Trace.WriteLine(message);
         }
 
@@ -65,15 +100,30 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             Trace.WriteLine(message);
         }
 
+        public void Alert(string message)
+        {
+            Trace.WriteLine(message);
+        }
+
         public void Alert(string format, params object[] args)
         {
             var message = string.Format(format, args);
             Trace.WriteLine(message);
         }
 
+        public void Critical(string message)
+        {
+            Trace.WriteLine(message);
+        }
+
         public void Critical(string format, params object[] args)
         {
             var message = string.Format(format, args);
+            Trace.WriteLine(message);
+        }
+
+        public void Emergency(string message)
+        {
             Trace.WriteLine(message);
         }
 

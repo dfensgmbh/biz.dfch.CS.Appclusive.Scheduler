@@ -1,5 +1,5 @@
 ﻿/**
- * Copyright 2016 d-fens GmbH
+ * Copyright 2015 d-fens GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,26 @@
  * limitations under the License.
  */
 
-using System.ComponentModel.DataAnnotations;
-using biz.dfch.CS.Appclusive.Scheduler.Public;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Management.Automation;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
 {
-    public class PowerShellScriptInvokeParameters : SchedulerPluginBaseInvokeParameters
+    [ContractClass(typeof(ContractClassForIScriptInvoker))]
+    public interface IScriptInvoker : IDisposable
     {
-        // DFTODO - define required parameters
+        PowerShell Powershell { get; }
+
+        List<string> RunPowershell(string pathToScriptFile, Dictionary<string, object> parameters);
+
+        bool RunPowershell(string pathToScriptFile, Dictionary<string, object> parameters, ref List<object> scriptResult);
+
+        bool RunPowershell(string pathToScriptFile, Dictionary<string, object> parameters, ref List<string> scriptResult);
+
     }
 }

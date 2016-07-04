@@ -67,6 +67,32 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
             Assert.IsFalse(result);
         }
 
+        [TestMethod]
+        public void LoginFailsWithBaseMock()
+        {
+            // Arrange
+            environment.Credential = new NetworkCredential("invalid-user", "invalid-password");
+
+            var processEngine = Mock.Create<ProcessEngine>();
+            Mock.Arrange(() => processEngine.Login(Arg.IsAny<NetworkCredential>()))
+                .IgnoreInstance()
+                .DoNothing()
+                .MustBeCalled();
+            Mock.Arrange(() => processEngine.IsLoggedIn())
+                .IgnoreInstance()
+                .Returns(false)
+                .MustBeCalled();
+
+            var sut = new ActivitiClient(environment.ServerBaseUri, environment.ApplicationName);
+
+            // Act
+            var result = sut.Login(environment.Credential.UserName, environment.Credential.Password);
+
+            // Assert
+            Mock.Assert(processEngine);
+            Assert.IsFalse(result);
+        }
+        
         [TestCategory("SkipOnTeamCity")]
         [TestMethod]
         public void LoginSucceeds()
@@ -138,6 +164,49 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
 
             // Assert
             Assert.IsNotNull(result);
+        }
+
+        [TestMethod]
+        public void GetDefinitionIdByDefinitionKeyWithBaseMockSucceeds()
+        {
+            // Arrange
+            var processEngine = Mock.Create<ProcessEngine>();
+            Mock.Arrange(() => processEngine.Login(Arg.IsAny<NetworkCredential>()))
+                .IgnoreInstance()
+                .DoNothing()
+                .MustBeCalled();
+            Mock.Arrange(() => processEngine.IsLoggedIn())
+                .IgnoreInstance()
+                .Returns(true)
+                .MustBeCalled();
+            var workflowDefinitionId = "arbitrary-id";
+            var data = new List<ProcessDefinitionResponseData>()
+            {
+                new ProcessDefinitionResponseData()
+                {
+                    id = workflowDefinitionId
+                }
+            };
+            var processDefinitionsResponse = new ProcessDefinitionsResponse()
+            {
+                data = data
+            };
+            Mock.Arrange(() => processEngine.GetWorkflowDefinitionByKey(Arg.IsAny<string>(), Arg.IsAny<bool>()))
+                .IgnoreInstance()
+                .Returns(processDefinitionsResponse)
+                .MustBeCalled();
+
+            var definitionKey = "com.swisscom.cms.agentbasedbackup.backupjob.v002.CheckBackupStatus";
+            var sut = new ActivitiClient(environment.ServerBaseUri, environment.ApplicationName);
+            sut.Login(environment.Credential);
+
+            // Act
+            var result = sut.GetDefinitionId(definitionKey);
+
+            // Assert
+            Mock.Assert(processEngine);
+
+            Assert.AreEqual(workflowDefinitionId, result);
         }
     }
 }
