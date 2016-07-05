@@ -24,6 +24,7 @@ using System.Threading.Tasks;
 using biz.dfch.CS.Appclusive.Api.Core;
 using biz.dfch.CS.Appclusive.Public;
 using biz.dfch.CS.Appclusive.Scheduler.Public;
+using biz.dfch.CS.Utilities.Logging;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Core
 {
@@ -34,29 +35,44 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             Contract.Requires(null != endpoints);
             Contract.Ensures(null != Contract.Result<List<ScheduledJob>>());
 
-            var scheduledJobs = new List<ScheduledJob>();
-
-            var entities = endpoints.Core.ScheduledJobs.Execute() as QueryOperationResponse<ScheduledJob>;
-            while(null != entities)
+            try
             {
-                foreach (var entity in entities)
+                var scheduledJobs = new List<ScheduledJob>();
+
+                var entities = endpoints.Core.ScheduledJobs.Execute() as QueryOperationResponse<ScheduledJob>;
+                while(null != entities)
                 {
-                    scheduledJobs.Add(entity);
-                    Contract.Assert(ScheduledJobsWorker.SCHEDULED_JOBS_WORKER_JOBS_PER_INSTANCE_MAX >= scheduledJobs.Count);
+                    foreach (var entity in entities)
+                    {
+                        scheduledJobs.Add(entity);
+                        Contract.Assert(ScheduledJobsWorker.SCHEDULED_JOBS_WORKER_JOBS_PER_INSTANCE_MAX >= scheduledJobs.Count);
+                    }
+
+                    var dataServiceQueryContinuation = entities.GetContinuation();
+                    if (null != dataServiceQueryContinuation)
+                    {
+                        entities = endpoints.Core.Execute(dataServiceQueryContinuation);
+                    }
+                    else
+                    {
+                        entities = null;
+                    }
+                }
+                
+                return scheduledJobs;
+            }
+            catch (DataServiceQueryException ex)
+            {
+                if(null == ex.InnerException || !(ex.InnerException is DataServiceClientException))
+                {
+                    throw;
                 }
 
-                var dataServiceQueryContinuation = entities.GetContinuation();
-                if (null != dataServiceQueryContinuation)
-                {
-                    entities = endpoints.Core.Execute(dataServiceQueryContinuation);
-                }
-                else
-                {
-                    entities = null;
-                }
+                var exInner = (DataServiceClientException) ex.InnerException;
+                var message = string.Format("Loading ScheduledJobs from '{0}' FAILED with DataServiceClientException. The StatusCode was {1}. '{2}'", endpoints.Core.BaseUri.AbsoluteUri, exInner.StatusCode, exInner.Message);
+                Trace.WriteException(message, ex);
+                throw;
             }
-                
-            return scheduledJobs;
         }
     }
 }
