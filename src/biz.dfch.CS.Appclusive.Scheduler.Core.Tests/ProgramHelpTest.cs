@@ -50,5 +50,18 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
         {
             Assert.IsFalse(string.IsNullOrWhiteSpace(new ProgramHelp().GetInteractiveMessage()));
         }
+
+        [TestMethod]
+        public void ProgramHelpGetVersionSucceeds()
+        {
+            // Arrange
+            var sut = new ProgramHelp();
+
+            // Act
+            var result = sut.GetVersion();
+
+            // Assert
+            Assert.IsTrue(0 < result.Major);
+        }
     }
 }

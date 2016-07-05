@@ -13,33 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+using System;
+using System.Diagnostics;
+using System.Diagnostics.Contracts;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Core
 {
     public class ProgramHelp
     {
-        const string ENCRYPT_MESSAGE = @"d-fens AppclusiveScheduler
+        const string ENCRYPT_MESSAGE = @"d-fens AppclusiveScheduler {0}
 Copyright (C) d-fens GmbH. Source code licensed under Apache 2.0 license.
 
 Encrypting app.config credential section...";
 
         public string GetEncryptMessage()
         {
-            return ENCRYPT_MESSAGE;
+            return string.Format(ENCRYPT_MESSAGE, GetVersion().ToString());
         }
 
-        const string DECRYPT_MESSAGE = @"d-fens AppclusiveScheduler
+        const string DECRYPT_MESSAGE = @"d-fens AppclusiveScheduler {0}
 Copyright (C) d-fens GmbH. Source code licensed under Apache 2.0 license.
 
 Decrypting app.config credential section...";
 
         public string GetDecryptMessage()
         {
-            return DECRYPT_MESSAGE;
+            return string.Format(DECRYPT_MESSAGE, GetVersion().ToString());
         }
 
-        const string HELP_MESSAGE = @"d-fens AppclusiveScheduler
+        const string HELP_MESSAGE = @"d-fens AppclusiveScheduler {0}
 Copyright (C) d-fens GmbH. Source code licensed under Apache 2.0 license.
 
 The AppclusiveScheduler is a Windows service application that executes 
@@ -64,24 +66,32 @@ MGMTURI:
 Specify the Appclusive ManagementUri (and override its app.config setting)
 
 HELP:
-Show this helpd screen
+Show this help screen
 
 When started interactively, you can press Ctrl-C at any time to shutdown.
 ";
 
         public string GetHelpMessage()
         {
-            return HELP_MESSAGE;
+            return string.Format(HELP_MESSAGE, GetVersion().ToString());
         }
 
-        const string INTERACTIVE_MESSAGE = @"d-fens AppclusiveScheduler
+        const string INTERACTIVE_MESSAGE = @"d-fens AppclusiveScheduler {0}
 Copyright (C) d-fens GmbH. Source code licensed under Apache 2.0 license.
 
 Starting service interactively. Press Ctrl-C to abort ...";
 
         public string GetInteractiveMessage()
         {
-            return INTERACTIVE_MESSAGE;
+            return string.Format(INTERACTIVE_MESSAGE, GetVersion().ToString());
+        }
+
+        public Version GetVersion()
+        {
+            Contract.Ensures(null != Contract.Result<Version>());
+
+            var version = this.GetType().Assembly.GetName().Version;
+            return version;
         }
 
     }
