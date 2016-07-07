@@ -193,6 +193,8 @@
     <Compile Include="ActivitiPluginInvokeParameters.cs" />
     <Compile Include="ActivitiPluginConfigurationManagementUri.cs" />
     <Compile Include="ActivitiWorkflowInputParameters.cs" />
+    <Compile Include="ThreadPoolUserWorkItem.cs" />
+    <Compile Include="ThreadPoolUserWorkItemParameters.cs" />
     <Compile Include="ScriptInvoker.cs" />
     <Compile Include="ScriptInvokerImpl.cs" />
     <Compile Include="ContractClassForIScriptInvoker.cs" />
