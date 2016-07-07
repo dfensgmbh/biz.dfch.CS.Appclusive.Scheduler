@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.Contracts;
 using System;
 using System.Collections.Generic;
@@ -25,6 +25,7 @@ using biz.dfch.CS.Appclusive.Public;
 using biz.dfch.CS.Appclusive.Scheduler.Public;
 using biz.dfch.CS.Appclusive.Public.Plugins;
 using System.Diagnostics;
+using System.Threading;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
 {
@@ -96,7 +97,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
 
             return result;
         }
-        
+
         public override bool Invoke(DictionaryParameters parameters, IInvocationResult invocationResult)
         {
             Contract.Requires<NotSupportedException>("2" == invocationResult.Version, "This plugin only supports non-serialisable invocation results.");
@@ -113,39 +114,36 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
             message.AppendLine("PowerShellScriptPlugin.Invoke ...");
             message.AppendLine();
 
-            Contract.Assert(parameters.ContainsKey(SCRIPT_PATH_AND_NAME_KEY));
-            var scriptPathAndName = parameters[SCRIPT_PATH_AND_NAME_KEY] as string;
-            Contract.Assert(!string.IsNullOrWhiteSpace(scriptPathAndName));
+            Logger.WriteLine(message.ToString());
+            message.Clear();
 
-            parameters.Remove(SCRIPT_PATH_AND_NAME_KEY);
-            Contract.Assert(!parameters.ContainsKey(SCRIPT_PATH_AND_NAME_KEY));
+            var scriptPathAndName = parameters["ScriptName"] as string;
 
             var scriptParameters = (Dictionary<string, object>) parameters;
             Contract.Assert(null != scriptParameters);
 
             var activityId = Trace.CorrelationManager.ActivityId;
 
-            Trace.CorrelationManager.StartLogicalOperation(string.Format("PowerShellScriptPlugin-{0}", activityId));
-
-            var scriptResult = new List<object>();
-            using(var scriptInvoker = new ScriptInvoker(Logger))
+            foreach(var item in scriptParameters)
             {
-                var hasScriptSucceeded = scriptInvoker.RunPowershell(scriptPathAndName, scriptParameters, ref scriptResult);
-                Contract.Assert(true == hasScriptSucceeded);
+                message.AppendFormat("{0} - {1}", item.Key, item.Value);
             }
+            Logger.WriteLine(message.ToString());
+            message.Clear();
 
-            Trace.CorrelationManager.StopLogicalOperation();
-
-            var c = 0;
-            foreach(var item in scriptResult)
+            var data = new ThreadPoolUserWorkItemParameters()
             {
-                message.AppendFormat("scriptResult[{0}]: '{1}'", c, item.ToString());
-                message.AppendLine();
+                ActivityId = activityId
+                ,
+                Logger = Logger
+                ,
+                ScriptParameters = scriptParameters
+                ,
+                ScriptPathAndName = scriptPathAndName
+            };
+            ThreadPool.QueueUserWorkItem(new WaitCallback(ThreadPoolUserWorkItem.ThreadProc), data);
 
-                c++;
-            }
-
-            message.AppendLine("PowerShellScriptPlugin.Invoke COMPLETED.");
+            message.AppendLine("PowerShellScriptPlugin.Invoke DISPATCHED.");
             message.AppendLine();
             
             Logger.WriteLine(message.ToString());
