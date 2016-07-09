@@ -127,6 +127,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
             foreach(var item in scriptParameters)
             {
                 message.AppendFormat("{0} - {1}", item.Key, item.Value);
+                message.AppendLine();
             }
             Logger.WriteLine(message.ToString());
             message.Clear();
