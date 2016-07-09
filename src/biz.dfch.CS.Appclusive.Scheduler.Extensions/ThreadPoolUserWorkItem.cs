@@ -29,44 +29,53 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
         public static void ThreadProc(Object data)
         {
             Contract.Requires(data is ThreadPoolUserWorkItemParameters);
-            
+
             var parameters = data as ThreadPoolUserWorkItemParameters;
             Contract.Assert(null != parameters);
             Contract.Assert(parameters.IsValid());
 
-            parameters.Logger.WriteLine("{0}: Invoking '{1}' ...", parameters.ActivityId, parameters.ScriptPathAndName);
-
-            Trace.CorrelationManager.StartLogicalOperation(string.Format("PowerShellScriptPlugin-{0}", parameters.ActivityId));
-
-            var scriptResult = new List<object>();
-            using(var scriptInvoker = new ScriptInvoker(parameters.Logger))
+            try
             {
-                var hasScriptSucceeded = scriptInvoker.RunPowershell(parameters.ScriptPathAndName, parameters.ScriptParameters, ref scriptResult);
-                if (!hasScriptSucceeded)
+
+                parameters.Logger.WriteLine("{0}: Invoking '{1}' ...", parameters.ActivityId, parameters.ScriptPathAndName);
+
+                Trace.CorrelationManager.StartLogicalOperation(string.Format("PowerShellScriptPlugin-{0}", parameters.ActivityId));
+
+                var scriptResult = new List<object>();
+                using(var scriptInvoker = new ScriptInvoker(parameters.Logger))
                 {
-                    parameters.Logger.Error("{0}: Invoking '{1}' FAILED.", parameters.ActivityId, parameters.ScriptPathAndName);
+                    var hasScriptSucceeded = scriptInvoker.RunPowershell(parameters.ScriptPathAndName, parameters.ScriptParameters, ref scriptResult);
+                    if (!hasScriptSucceeded)
+                    {
+                        parameters.Logger.Error("{0}: Invoking '{1}' FAILED.", parameters.ActivityId, parameters.ScriptPathAndName);
+                        return;
+                    }
+                }
+        
+                Trace.CorrelationManager.StopLogicalOperation();
+
+                if(null == scriptResult)
+                {
+                    parameters.Logger.Error("{0}: Invoking '{1}' COMPLETED but returned an invalid ScriptResult (incorrectly set to null).", parameters.ActivityId, parameters.ScriptPathAndName);
+                
                     return;
                 }
-            }
-        
-            Trace.CorrelationManager.StopLogicalOperation();
 
-            if(null == scriptResult)
+                var c = 0;
+                foreach(var item in scriptResult)
+                {
+                    parameters.Logger.WriteLine("{0}: scriptResult[{1}]: '{2}'", parameters.ActivityId, c, item.ToString());
+
+                    c++;
+                }
+
+                parameters.Logger.WriteLine("{0}: Invoking '{1}' SUCCEEDED.", parameters.ActivityId, parameters.ScriptPathAndName);
+            }
+            catch(Exception ex)
             {
-                parameters.Logger.Error("{0}: Invoking '{1}' COMPLETED but returned an invalid ScriptResult (incorrectly set to null).", parameters.ActivityId, parameters.ScriptPathAndName);
-                
-                return;
+                var message = string.Format("{0}@{1}, {2}\r\n{3}", ex.Message, ex.GetType().Name, ex.Source, ex.StackTrace);
+                parameters.Logger.WriteLine(message);
             }
-
-            var c = 0;
-            foreach(var item in scriptResult)
-            {
-                parameters.Logger.WriteLine("{0}: scriptResult[{1}]: '{2}'", parameters.ActivityId, c, item.ToString());
-
-                c++;
-            }
-
-            parameters.Logger.WriteLine("{0}: Invoking '{1}' SUCCEEDED.", parameters.ActivityId, parameters.ScriptPathAndName);
         }
     }
 }
