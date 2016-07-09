@@ -35,7 +35,17 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
         public static void Main(string[] args)
         {
             var fn = Method.fn();
-            Debug.WriteLine("d-fens AppclusiveScheduler {0}. {1}: Environment.UserInteractive '{2}'", new ProgramHelp().GetVersion(), fn, Environment.UserInteractive);
+            
+            var programHelp = new ProgramHelp();
+
+            Debug.WriteLine
+                (
+                    "d-fens AppclusiveScheduler {0} {1}. {2}: Environment.UserInteractive '{3}'", 
+                    programHelp.GetVersion(), 
+                    programHelp.GetArchitecture(), 
+                    fn, 
+                    Environment.UserInteractive
+                );
 
             if (Environment.UserInteractive)
             {

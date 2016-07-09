@@ -21,27 +21,27 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
 {
     public class ProgramHelp
     {
-        const string ENCRYPT_MESSAGE = @"d-fens AppclusiveScheduler {0}
+        const string ENCRYPT_MESSAGE = @"d-fens AppclusiveScheduler {0} {1}
 Copyright (C) d-fens GmbH. Source code licensed under Apache 2.0 license.
 
 Encrypting app.config credential section...";
 
         public string GetEncryptMessage()
         {
-            return string.Format(ENCRYPT_MESSAGE, GetVersion().ToString());
+            return string.Format(ENCRYPT_MESSAGE, GetVersion().ToString(), GetArchitecture());
         }
 
-        const string DECRYPT_MESSAGE = @"d-fens AppclusiveScheduler {0}
+        const string DECRYPT_MESSAGE = @"d-fens AppclusiveScheduler {0} {1}
 Copyright (C) d-fens GmbH. Source code licensed under Apache 2.0 license.
 
 Decrypting app.config credential section...";
 
         public string GetDecryptMessage()
         {
-            return string.Format(DECRYPT_MESSAGE, GetVersion().ToString());
+            return string.Format(DECRYPT_MESSAGE, GetVersion().ToString(), GetArchitecture());
         }
 
-        const string HELP_MESSAGE = @"d-fens AppclusiveScheduler {0}
+        const string HELP_MESSAGE = @"d-fens AppclusiveScheduler {0} {1}
 Copyright (C) d-fens GmbH. Source code licensed under Apache 2.0 license.
 
 The AppclusiveScheduler is a Windows service application that executes 
@@ -73,17 +73,17 @@ When started interactively, you can press Ctrl-C at any time to shutdown.
 
         public string GetHelpMessage()
         {
-            return string.Format(HELP_MESSAGE, GetVersion().ToString());
+            return string.Format(HELP_MESSAGE, GetVersion().ToString(), GetArchitecture());
         }
 
-        const string INTERACTIVE_MESSAGE = @"d-fens AppclusiveScheduler {0}
+        const string INTERACTIVE_MESSAGE = @"d-fens AppclusiveScheduler {0} {1}
 Copyright (C) d-fens GmbH. Source code licensed under Apache 2.0 license.
 
 Starting service interactively. Press Ctrl-C to abort ...";
 
         public string GetInteractiveMessage()
         {
-            return string.Format(INTERACTIVE_MESSAGE, GetVersion().ToString());
+            return string.Format(INTERACTIVE_MESSAGE, GetVersion().ToString(), GetArchitecture());
         }
 
         public Version GetVersion()
@@ -92,6 +92,15 @@ Starting service interactively. Press Ctrl-C to abort ...";
 
             var version = this.GetType().Assembly.GetName().Version;
             return version;
+        }
+
+        public string GetArchitecture()
+        {
+            var application = Environment.Is64BitProcess ? "x64" : "x86";
+            var operatingSystem = Environment.Is64BitOperatingSystem ? "x64" : "x86";
+
+            var result = string.Format("[{0}/{1}]", application, operatingSystem);
+            return result;
         }
 
     }

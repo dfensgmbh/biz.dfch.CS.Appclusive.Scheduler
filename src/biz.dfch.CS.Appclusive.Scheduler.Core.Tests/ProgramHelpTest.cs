@@ -21,6 +21,7 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Telerik.JustMock;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
 {
@@ -62,6 +63,32 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
 
             // Assert
             Assert.IsTrue(0 < result.Major);
+        }
+
+        [TestMethod]
+        public void ProgramHelpGetArchitectureSucceeds()
+        {
+            // Arrange
+            var sut = new ProgramHelp();
+
+            Mock.SetupStatic(typeof(Environment));
+            Mock.Arrange(() => Environment.Is64BitProcess)
+                .Returns(true)
+                .MustBeCalled();
+            Mock.Arrange(() => Environment.Is64BitOperatingSystem)
+                .Returns(true)
+                .MustBeCalled();
+
+            var application = Environment.Is64BitProcess ? "x64" : "x86";
+
+            // Act
+            var result = sut.GetArchitecture();
+
+            // Assert
+            Mock.Assert(() => Environment.Is64BitProcess);
+            Mock.Assert(() => Environment.Is64BitOperatingSystem);
+
+            Assert.IsTrue(result.Contains(application));
         }
     }
 }
