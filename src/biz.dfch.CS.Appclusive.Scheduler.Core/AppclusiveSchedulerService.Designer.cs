@@ -17,6 +17,10 @@
             {
                 components.Dispose();
             }
+            
+            // fix CA2213 "Disposable fields should be disposed"
+            serviceAbortSignal.Dispose();
+
             base.Dispose(disposing);
         }
 
