@@ -34,8 +34,6 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
             Contract.Assert(null != parameters);
             Contract.Assert(parameters.IsValid());
 
-            parameters.Logger.WriteLine("{0}: ThreadProc ActivityId '{1}'", parameters.ActivityId, System.Diagnostics.Trace.CorrelationManager.ActivityId);
-
             parameters.Logger.WriteLine("{0}: Invoking '{1}' ...", parameters.ActivityId, parameters.ScriptPathAndName);
 
             Trace.CorrelationManager.StartLogicalOperation(string.Format("PowerShellScriptPlugin-{0}", parameters.ActivityId));
