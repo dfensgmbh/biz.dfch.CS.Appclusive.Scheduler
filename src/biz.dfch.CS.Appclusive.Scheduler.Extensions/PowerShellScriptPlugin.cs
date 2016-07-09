@@ -100,7 +100,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
 
         public override bool Invoke(DictionaryParameters parameters, IInvocationResult invocationResult)
         {
-            Contract.Requires<NotSupportedException>("2" == invocationResult.Version, "This plugin only supports non-serialisable invocation results.");
+            Contract.Requires("2" == invocationResult.Version, "This plugin only supports non-serialisable invocation results.");
 
             var fReturn = false;
 
