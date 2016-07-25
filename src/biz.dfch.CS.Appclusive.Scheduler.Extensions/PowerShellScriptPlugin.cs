@@ -117,7 +117,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
             Logger.WriteLine(message.ToString());
             message.Clear();
 
-            var scriptPathAndName = parameters[SCRIPT_NAME_KEY] as string;
+            var scriptPathAndName = parameters.GetOrDefault(SCRIPT_NAME_KEY, "") as string;
             parameters.Remove(SCRIPT_NAME_KEY);
 
             var scriptParameters = (Dictionary<string, object>) parameters;
