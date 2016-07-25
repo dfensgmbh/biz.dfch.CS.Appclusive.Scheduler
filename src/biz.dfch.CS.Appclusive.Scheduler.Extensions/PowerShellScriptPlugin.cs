@@ -118,6 +118,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
             message.Clear();
 
             var scriptPathAndName = parameters[SCRIPT_NAME_KEY] as string;
+            parameters.Remove(SCRIPT_NAME_KEY);
 
             var scriptParameters = (Dictionary<string, object>) parameters;
             Contract.Assert(null != scriptParameters);
