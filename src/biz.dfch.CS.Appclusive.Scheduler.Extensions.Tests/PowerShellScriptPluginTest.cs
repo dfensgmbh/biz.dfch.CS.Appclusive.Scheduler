@@ -119,6 +119,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
             Assert.IsTrue(result);
         }
 
+        [TestCategory("SkipOnTeamCity")]
         [TestMethod]
         public void InvokeWithArbitraryScriptFileSucceeds()
         {

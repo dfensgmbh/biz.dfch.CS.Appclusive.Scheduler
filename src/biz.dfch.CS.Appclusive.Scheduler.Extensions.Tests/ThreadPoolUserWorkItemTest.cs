@@ -47,10 +47,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
             };
 
             Mock.SetupStatic(typeof(File));
-            Mock.Arrange(() => File.Exists(Arg.IsAny<string>()))
-                .Returns(true)
-                .MustBeCalled();
-
+            
             var scriptResult = new List<object>();
             var scriptInvoker = Mock.Create<ScriptInvoker>();
             Mock.Arrange(() => scriptInvoker.RunPowershell(Arg.IsAny<string>(), Arg.IsAny<Dictionary<string, object>>(), ref scriptResult))
@@ -62,7 +59,6 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
             ThreadPoolUserWorkItem.ThreadProc(data);
 
             // Assert
-            Mock.Assert(() => File.Exists(Arg.IsAny<string>()));
             Mock.Assert(scriptInvoker);
         }
 
