@@ -109,6 +109,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
 
             var parameters = new DictionaryParameters();
             parameters.Add(PowerShellScriptPlugin.SCRIPT_NAME_KEY, "C:\\inexistent-path\\inexistents-script-ps1");
+            parameters.Add("SampleKey", "SampleValue");
 
             var invocationResult = new NonSerialisableJobResult();
 
