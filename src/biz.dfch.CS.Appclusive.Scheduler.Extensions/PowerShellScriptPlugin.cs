@@ -35,7 +35,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
     [ExportMetadata("Role", "default")]
     public class PowerShellScriptPlugin : SchedulerPluginBase
     {
-        public const string SCRIPT_PATH_AND_NAME_KEY = "ScriptPathAndName";
+        public const string SCRIPT_NAME_KEY = "ScriptName";
 
         private PowerShellScriptPluginConfiguration configuration;
         public override DictionaryParameters Configuration 
@@ -117,7 +117,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
             Logger.WriteLine(message.ToString());
             message.Clear();
 
-            var scriptPathAndName = parameters["ScriptName"] as string;
+            var scriptPathAndName = parameters[SCRIPT_NAME_KEY] as string;
 
             var scriptParameters = (Dictionary<string, object>) parameters;
             Contract.Assert(null != scriptParameters);

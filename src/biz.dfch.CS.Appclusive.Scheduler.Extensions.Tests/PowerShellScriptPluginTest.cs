@@ -108,7 +108,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
             Assert.IsTrue(sut.IsActive);
 
             var parameters = new DictionaryParameters();
-            parameters.Add(PowerShellScriptPlugin.SCRIPT_PATH_AND_NAME_KEY, "C:\\inexistent-path\\inexistents-script-ps1");
+            parameters.Add(PowerShellScriptPlugin.SCRIPT_NAME_KEY, "C:\\inexistent-path\\inexistents-script-ps1");
 
             var invocationResult = new NonSerialisableJobResult();
 
@@ -143,7 +143,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
                 .MustBeCalled();
 
             var parameters = new DictionaryParameters();
-            parameters.Add(PowerShellScriptPlugin.SCRIPT_PATH_AND_NAME_KEY, pathToScript);
+            parameters.Add(PowerShellScriptPlugin.SCRIPT_NAME_KEY, pathToScript);
             parameters.Add("JobId", 42L);
 
             var invocationResult = new NonSerialisableJobResult();
@@ -170,7 +170,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
             Assert.IsTrue(sut.IsActive);
 
             var parameters = new DictionaryParameters();
-            parameters.Add(PowerShellScriptPlugin.SCRIPT_PATH_AND_NAME_KEY, pathToScript);
+            parameters.Add(PowerShellScriptPlugin.SCRIPT_NAME_KEY, pathToScript);
             parameters.Add("JobId", 42L);
 
             var invocationResult = new NonSerialisableJobResult();
