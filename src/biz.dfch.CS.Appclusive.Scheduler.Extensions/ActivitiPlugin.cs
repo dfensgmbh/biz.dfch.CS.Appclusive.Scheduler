@@ -24,12 +24,9 @@ using System.Threading.Tasks;
 using biz.dfch.CS.Appclusive.Scheduler.Public;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
-using biz.dfch.CS.Appclusive.Api;
 using biz.dfch.CS.Appclusive.Public;
 using biz.dfch.CS.Appclusive.Public.Plugins;
-using System.ComponentModel.DataAnnotations;
 using System.Configuration;
-using biz.dfch.CS.Activiti.Client;
 using System.Collections;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Extensions

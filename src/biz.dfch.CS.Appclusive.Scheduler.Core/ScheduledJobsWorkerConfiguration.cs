@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 using System.Net;
 using biz.dfch.CS.Appclusive.Public;
 using biz.dfch.CS.Appclusive.Public.Configuration;
-using biz.dfch.CS.Appclusive.Scheduler.Public;
-using biz.dfch.CS.Utilities.Logging;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

@@ -16,7 +16,6 @@
 using System.Data.Services.Client;
 using biz.dfch.CS.Appclusive.Api.Core;
 using biz.dfch.CS.Appclusive.Public;
-using biz.dfch.CS.Appclusive.Public.Converters;
 using biz.dfch.CS.Appclusive.Scheduler.Core;
 using biz.dfch.CS.Appclusive.Scheduler.Public;
 using biz.dfch.CS.Utilities.Testing;

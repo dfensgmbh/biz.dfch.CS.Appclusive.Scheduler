@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 using System.ServiceProcess;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -22,7 +23,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Telerik.JustMock;
-using biz.dfch.CS.Utilities.Logging;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
 {

@@ -18,7 +18,6 @@ using System;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using biz.dfch.CS.Appclusive.Public.Logging;
 using biz.dfch.CS.Utilities.Testing;
 using System.Collections.Generic;
 using Telerik.JustMock;
