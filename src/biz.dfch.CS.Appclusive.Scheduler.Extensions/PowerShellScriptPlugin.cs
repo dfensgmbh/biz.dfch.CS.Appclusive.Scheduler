@@ -118,8 +118,10 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
             Logger.WriteLine(message.ToString());
             message.Clear();
 
+            Contract.Assert(parameters.ContainsKey(SCRIPT_NAME_KEY));
             var scriptPathAndName = parameters.GetOrDefault(SCRIPT_NAME_KEY, "") as string;
             parameters.Remove(SCRIPT_NAME_KEY);
+            Contract.Assert(!parameters.ContainsKey(SCRIPT_NAME_KEY));
 
             var scriptParameters = (Dictionary<string, object>) parameters;
             Contract.Assert(null != scriptParameters);
