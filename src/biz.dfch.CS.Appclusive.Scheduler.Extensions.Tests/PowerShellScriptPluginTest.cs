@@ -99,8 +99,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
         }
 
         [TestMethod]
-        [ExpectContractFailure]
-        public void InvokeWithInexistentScriptFileThrowsContractException()
+        public void InvokeWithInexistentScriptFileReturnsTrue()
         {
             // Arrange
             var sut = new PowerShellScriptPlugin();
