@@ -36,6 +36,8 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
             }
         }
 
+        // disable warning for missing call to dispose as this is only a ContractClass
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly")]
         public void Dispose()
         {
             return;
