@@ -65,7 +65,6 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
             Assert.IsTrue(0 < result.Major);
         }
 
-        [TestCategory("SkipOnTeamCity")]
         [TestMethod]
         public void ProgramHelpGetArchitectureSucceeds()
         {
