@@ -166,7 +166,6 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
             Assert.IsNotNull(result);
         }
 
-        [TestCategory("SkipOnTeamCity")]
         [TestMethod]
         public void GetDefinitionIdByDefinitionKeyWithBaseMockSucceeds()
         {
