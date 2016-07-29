@@ -19,7 +19,10 @@
             }
             
             // fix CA2213 "Disposable fields should be disposed"
-            serviceAbortSignal.Dispose();
+            if (null != serviceAbortSignal)
+            {
+                serviceAbortSignal.Dispose();
+            }
 
             base.Dispose(disposing);
         }
