@@ -21,7 +21,6 @@ using System.Diagnostics.Contracts;
 using System.IO;
 using System.Management.Automation;
 using biz.dfch.CS.Appclusive.Public.Plugins;
-using biz.dfch.CS.Utilities.General;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
 {

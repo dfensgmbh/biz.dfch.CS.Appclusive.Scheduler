@@ -22,7 +22,6 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using biz.dfch.CS.Activiti.Client;
-using biz.dfch.CS.Appclusive.Public;
 using System.Collections;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Extensions

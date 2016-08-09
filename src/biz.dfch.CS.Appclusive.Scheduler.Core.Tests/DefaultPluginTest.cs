@@ -16,7 +16,6 @@
 
 using System;
 using System.Diagnostics;
-using System.Diagnostics.Contracts;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Telerik.JustMock;
 using biz.dfch.CS.Appclusive.Public;
@@ -24,7 +23,6 @@ using biz.dfch.CS.Utilities.Testing;
 using System.Collections.Specialized;
 using biz.dfch.CS.Appclusive.Scheduler.Public;
 using System.Collections.Generic;
-using biz.dfch.CS.Appclusive.Scheduler.Core;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
 {

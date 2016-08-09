@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 using System.IO;
 using Telerik.JustMock;
 using biz.dfch.CS.Appclusive.Public;
@@ -98,8 +99,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
         }
 
         [TestMethod]
-        [ExpectContractFailure]
-        public void InvokeWithInexistentScriptFileThrowsContractException()
+        public void InvokeWithInexistentScriptFileReturnsTrue()
         {
             // Arrange
             var sut = new PowerShellScriptPlugin();
@@ -108,7 +108,8 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
             Assert.IsTrue(sut.IsActive);
 
             var parameters = new DictionaryParameters();
-            parameters.Add(PowerShellScriptPlugin.SCRIPT_PATH_AND_NAME_KEY, "C:\\inexistent-path\\inexistents-script-ps1");
+            parameters.Add(PowerShellScriptPlugin.SCRIPT_NAME_KEY, "C:\\inexistent-path\\inexistents-script-ps1");
+            parameters.Add("SampleKey", "SampleValue");
 
             var invocationResult = new NonSerialisableJobResult();
 
@@ -119,6 +120,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
             Assert.IsTrue(result);
         }
 
+        [TestCategory("SkipOnTeamCity")]
         [TestMethod]
         public void InvokeWithArbitraryScriptFileSucceeds()
         {
@@ -142,7 +144,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
                 .MustBeCalled();
 
             var parameters = new DictionaryParameters();
-            parameters.Add(PowerShellScriptPlugin.SCRIPT_PATH_AND_NAME_KEY, pathToScript);
+            parameters.Add(PowerShellScriptPlugin.SCRIPT_NAME_KEY, pathToScript);
             parameters.Add("JobId", 42L);
 
             var invocationResult = new NonSerialisableJobResult();
@@ -169,7 +171,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
             Assert.IsTrue(sut.IsActive);
 
             var parameters = new DictionaryParameters();
-            parameters.Add(PowerShellScriptPlugin.SCRIPT_PATH_AND_NAME_KEY, pathToScript);
+            parameters.Add(PowerShellScriptPlugin.SCRIPT_NAME_KEY, pathToScript);
             parameters.Add("JobId", 42L);
 
             var invocationResult = new NonSerialisableJobResult();

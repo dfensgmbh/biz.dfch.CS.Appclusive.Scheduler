@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.Contracts;
 using System;
@@ -35,7 +36,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
     [ExportMetadata("Role", "default")]
     public class PowerShellScriptPlugin : SchedulerPluginBase
     {
-        public const string SCRIPT_PATH_AND_NAME_KEY = "ScriptPathAndName";
+        public const string SCRIPT_NAME_KEY = "ScriptName";
 
         private PowerShellScriptPluginConfiguration configuration;
         public override DictionaryParameters Configuration 
@@ -117,7 +118,10 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Extensions
             Logger.WriteLine(message.ToString());
             message.Clear();
 
-            var scriptPathAndName = parameters["ScriptName"] as string;
+            Contract.Assert(parameters.ContainsKey(SCRIPT_NAME_KEY));
+            var scriptPathAndName = parameters.GetOrDefault(SCRIPT_NAME_KEY, "") as string;
+            parameters.Remove(SCRIPT_NAME_KEY);
+            Contract.Assert(!parameters.ContainsKey(SCRIPT_NAME_KEY));
 
             var scriptParameters = (Dictionary<string, object>) parameters;
             Contract.Assert(null != scriptParameters);
