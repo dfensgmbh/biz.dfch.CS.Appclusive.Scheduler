@@ -21,6 +21,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "biz.dfch.CS.Appclusive.Sche
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "biz.dfch.CS.Appclusive.Scheduler.Public.Tests", "biz.dfch.CS.Appclusive.Scheduler.Public.Tests\biz.dfch.CS.Appclusive.Scheduler.Public.Tests.csproj", "{623ECA49-601B-42F2-B37E-DB300106DB96}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Release", "Release", "{A65013C9-80C1-468E-8E17-40A2D9B29E73}"
+	ProjectSection(SolutionItems) = preProject
+		AssemblyVersion.cs = AssemblyVersion.cs
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
