@@ -247,6 +247,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\AssemblyVersion.cs">
+      <Link>Properties\AssemblyVersion.cs</Link>
+    </Compile>
     <Compile Include="ActivitiClient.cs" />
     <Compile Include="ActivitiPlugin.cs" />
     <Compile Include="ActivitiPluginConfiguration.cs" />

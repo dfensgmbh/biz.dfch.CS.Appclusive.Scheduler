@@ -209,6 +209,9 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="..\AssemblyVersion.cs">
+      <Link>Properties\AssemblyVersion.cs</Link>
+    </Compile>
     <Compile Include="AppclusiveCredentialSectionManagerTest.cs" />
     <Compile Include="DefaultPluginTest.cs" />
     <Compile Include="PluginLoaderConfigurationFromAppSettingsLoaderTest.cs" />

@@ -257,6 +257,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\AssemblyVersion.cs">
+      <Link>Properties\AssemblyVersion.cs</Link>
+    </Compile>
     <Compile Include="AppclusiveCredentialSectionManager.cs" />
     <Compile Include="AppclusiveSchedulerService.cs">
       <SubType>Component</SubType>
