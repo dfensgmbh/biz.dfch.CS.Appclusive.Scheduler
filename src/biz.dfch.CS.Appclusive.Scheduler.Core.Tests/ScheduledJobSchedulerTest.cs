@@ -434,7 +434,8 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
             var result = sut.GetNextScheduleFromQuartzExpression(withinThisMinute);
 
             // Assert
-            Assert.AreEqual(expected, result);
+            Assert.AreNotEqual(DateTimeOffset.MinValue, result);
+            Assert.IsTrue(Math.Floor(Math.Abs((expected - result).TotalMilliseconds)).Equals(0));
         }
     }
 }

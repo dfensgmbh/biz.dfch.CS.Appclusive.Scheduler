@@ -167,8 +167,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
                 
                 if (isWithinTheNextMinute)
                 {
-                    //result = new DateTimeOffset(nextOccurrence.Value.DateTime, withinThisMinute.Offset);
-                    result = nextOccurrence.Value;
+                    result = new DateTimeOffset(nextOccurrence.Value.DateTime.AddMinutes(withinThisMinute.Offset.TotalMinutes), withinThisMinute.Offset);
                 }
             }
 
