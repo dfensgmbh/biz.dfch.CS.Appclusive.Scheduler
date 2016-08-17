@@ -25,6 +25,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Net;
+using Quartz;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Core
 {
@@ -75,51 +76,24 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             //   at biz.dfch.CS.Appclusive.Scheduler.Core.ScheduledJobScheduler.GetNextSchedule(DateTimeOffset withinThisMinute) 
             // in c:\Github\biz.dfch.CS.Appclusive.Scheduler\src\biz.dfch.CS.Appclusive.Scheduler.Core\ScheduledJobScheduler.cs:line 86
 
-            var nextOccurrence = DateTime.MinValue;
             try
             {
-                var schedule = CrontabSchedule.Parse(job.Crontab);
+                DateTimeOffset nextSchedule = DateTimeOffset.MinValue;
 
-                var endMinute = withinThisMinute
-                    .DateTime;
-                
-                // we set the start minute to millisecond 0, 
-                // so we have an interval of at least 1 milliscond
-                var startMinute =
-                    new DateTime
-                    (
-                        endMinute.Year, 
-                        endMinute.Month, 
-                        endMinute.Day, 
-                        endMinute.Hour, 
-                        endMinute.Minute, 
-                        0
-                    )
-                    .AddMinutes(-1);
-                Contract.Assert(startMinute < endMinute);
-
-                nextOccurrence = schedule.GetNextOccurrences(startMinute, endMinute).LastOrDefault();
-                if 
-                (
-                    null == nextOccurrence
-                    ||
-                    DateTime.MinValue == nextOccurrence
-                    ||
-                    nextOccurrence.Minute < withinThisMinute.Minute
-                )
+                if (IsCrontabExpression())
                 {
-                    return DateTimeOffset.MinValue;
+                    nextSchedule = GetNextScheduleFromCrontabExpression(withinThisMinute);
                 }
-                
-                var result = new DateTimeOffset(nextOccurrence, withinThisMinute.Offset);
-                return result;
-            }
-            catch (CrontabException ex)
-            {
-                var message = string.Format("JobId '{0}': {1}", this.job.Id, ex.Message);
-                Trace.WriteException(message, ex);
+                else if(IsQuartzExpression())
+                {
+                    nextSchedule = GetNextScheduleFromQuartzExpression(withinThisMinute);
+                }
+                else
+                {
+                    Trace.WriteLine("JobId '{0}': invalid Crontab or Quartz expression '{1}'", this.job.Id, job.Crontab);
+                }
 
-                return DateTimeOffset.MinValue;
+                return nextSchedule;
             }
             catch (Exception ex)
             {
@@ -128,6 +102,98 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
 
                 throw;
             }
+        }
+
+        public DateTimeOffset GetNextScheduleFromCrontabExpression(DateTimeOffset withinThisMinute)
+        {
+            var schedule = CrontabSchedule.Parse(job.Crontab);
+
+            var endMinute = withinThisMinute.DateTime;
+                
+            // we set the start minute to millisecond 0, 
+            // so we have an interval of at least 1 milliscond
+            var startMinute =
+                new DateTime
+                (
+                    endMinute.Year, 
+                    endMinute.Month, 
+                    endMinute.Day, 
+                    endMinute.Hour, 
+                    endMinute.Minute, 
+                    0
+                )
+                .AddMinutes(-1);
+            Contract.Assert(startMinute < endMinute);
+
+            // hint: LastOrDefault() returns "default(DateTime)" (which equals "DateTime.MinValue") if no match is found and not "null"
+            var nextOccurrence = schedule.GetNextOccurrences(startMinute, endMinute).LastOrDefault();
+            if(DateTime.MinValue == nextOccurrence || nextOccurrence.Minute < withinThisMinute.Minute)
+            {
+                return DateTimeOffset.MinValue;
+            }
+                
+            var result = new DateTimeOffset(nextOccurrence, withinThisMinute.Offset);
+            return result;
+        }
+
+        public DateTimeOffset GetNextScheduleFromQuartzExpression(DateTimeOffset withinThisMinute)
+        {
+            var expression = new CronExpression(job.Crontab);
+            
+            var endMinute = withinThisMinute.DateTime;
+                
+            // we set the start minute to millisecond 0, 
+            // so we have an interval of at least 1 milliscond
+            var startMinute =
+                new DateTime
+                (
+                    endMinute.Year, 
+                    endMinute.Month, 
+                    endMinute.Day, 
+                    endMinute.Hour, 
+                    endMinute.Minute, 
+                    0
+                )
+                .AddMinutes(-1);
+            Contract.Assert(startMinute < endMinute);
+            
+            var result = DateTimeOffset.MinValue;
+
+            var nextOccurrence = expression.GetTimeAfter(startMinute);
+            if (nextOccurrence.HasValue)
+            {
+                var isWithinTheNextMinute = 
+                    new TimeSpan(0, 0, 60).TotalSeconds > (withinThisMinute - nextOccurrence.Value).TotalSeconds;
+                
+                if (isWithinTheNextMinute)
+                {
+                    result = new DateTimeOffset(nextOccurrence.Value.DateTime.AddMinutes(withinThisMinute.Offset.TotalMinutes), withinThisMinute.Offset);
+                }
+            }
+
+            return result;
+        }
+
+        [Pure]
+        public bool IsCrontabExpression()
+        {
+            var result = false;
+
+            var schedule = CrontabSchedule.TryParse(job.Crontab);
+            if (null != schedule)
+            {
+                result = true;
+            }
+
+            return result;
+        }
+
+        [Pure]
+        public bool IsQuartzExpression()
+        {
+            var result = CronExpression.IsValidExpression(job.Crontab);
+
+            return result;
         }
 
         [Pure]
