@@ -143,12 +143,12 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="biz.dfch.CS.Appclusive.Api">
-      <HintPath>..\packages\biz.dfch.CS.Appclusive.Api.2.8.0\lib\biz.dfch.CS.Appclusive.Api.dll</HintPath>
+    <Reference Include="biz.dfch.CS.Appclusive.Api, Version=4.3.0.18906, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\biz.dfch.CS.Appclusive.Api.4.3.0\lib\biz.dfch.CS.Appclusive.Api.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="biz.dfch.CS.Appclusive.Public, Version=2.17.0.14324, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\biz.dfch.CS.Appclusive.Public.2.17.0\lib\biz.dfch.CS.Appclusive.Public.dll</HintPath>
+    <Reference Include="biz.dfch.CS.Appclusive.Public, Version=3.7.5.18935, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\biz.dfch.CS.Appclusive.Public.3.7.5\lib\biz.dfch.CS.Appclusive.Public.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="biz.dfch.CS.System.Utilities, Version=2.0.1.17294, Culture=neutral, processorArchitecture=MSIL">
@@ -172,7 +172,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\biz.dfch.CS.Appclusive.Public.2.17.0\lib\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\biz.dfch.CS.Appclusive.Public.3.7.5\lib\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -180,7 +180,7 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\biz.dfch.CS.Appclusive.Public.2.17.0\lib\System.Net.Http.Formatting.dll</HintPath>
+      <HintPath>..\packages\biz.dfch.CS.Appclusive.Public.3.7.5\lib\System.Net.Http.Formatting.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.ServiceProcess" />
@@ -189,7 +189,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Web.Http, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\biz.dfch.CS.Appclusive.Public.2.17.0\lib\System.Web.Http.dll</HintPath>
+      <HintPath>..\packages\biz.dfch.CS.Appclusive.Public.3.7.5\lib\System.Web.Http.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Telerik.JustMock">
