@@ -17,6 +17,7 @@
 using biz.dfch.CS.Appclusive.Api.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Linq;
 using Telerik.JustMock;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
@@ -280,6 +281,160 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
 
             // Assert
             Assert.IsFalse(result);
+        }
+
+        // self assuring tests regarding DateTime
+        [TestMethod]
+        public void DateTimeDefaultIsEqualToDateTimeMinValue()
+        {
+            var sut = default(DateTime);
+
+            Assert.AreEqual(DateTime.MinValue, sut);
+        }
+
+        [TestMethod]
+        public void DateTimeDefaultIsNotEqualNull()
+        {
+            var sut = default(DateTime);
+
+            Assert.AreNotEqual(null, sut);
+        }
+
+        [TestMethod]
+        public void LastOrDefaultReturnsDefaultDateTimeAndNotNull()
+        {
+            var dateTimes = new DateTime[]
+            {
+                // empty array
+            };
+
+            var result = dateTimes.FirstOrDefault();
+
+            Assert.AreNotEqual(null, result);
+        }
+
+        [TestMethod]
+        public void IsValidCrontabExpressionWithValidExpressionReturnsTrue()
+        {
+            // Arrange
+            var job = new ScheduledJob()
+            {
+                Crontab = "* 18 * * *"
+            };
+            var sut = new ScheduledJobScheduler(job);
+
+            // Act
+            var result = sut.IsCrontabExpression();
+
+            // Assert
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void IsValidCrontabExpressionWithInvalidExpressionReturnsFalse()
+        {
+            // Arrange
+            var job = new ScheduledJob()
+            {
+                Crontab = "* 18 * **"
+            };
+            var sut = new ScheduledJobScheduler(job);
+
+            // Act
+            var result = sut.IsCrontabExpression();
+
+            // Assert
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void IsValidCrontabExpressionWithValidQuartzExpressionReturnsFalse()
+        {
+            // Arrange
+            var job = new ScheduledJob()
+            {
+                Crontab = "0 0/1 * 1/1 * ? *"
+            };
+            var sut = new ScheduledJobScheduler(job);
+
+            // Act
+            var result = sut.IsCrontabExpression();
+
+            // Assert
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void IsValidQuartzssionWithValidCrontabExpressionReturnsFalse()
+        {
+            // Arrange
+            var job = new ScheduledJob()
+            {
+                Crontab = "* 18 * * *"
+            };
+            var sut = new ScheduledJobScheduler(job);
+
+            // Act
+            var result = sut.IsQuartzExpression();
+
+            // Assert
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void IsValidQuartzExpressionWithInvalidExpressionReturnsFalse()
+        {
+            // Arrange
+            var job = new ScheduledJob()
+            {
+                Crontab = "* 18 * **"
+            };
+            var sut = new ScheduledJobScheduler(job);
+
+            // Act
+            var result = sut.IsQuartzExpression();
+
+            // Assert
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void IsValidQuartzExpressionWithValidQuartzExpressionReturnsTrue()
+        {
+            // Arrange
+            var job = new ScheduledJob()
+            {
+                Crontab = "0 0/1 * 1/1 * ? *"
+            };
+            var sut = new ScheduledJobScheduler(job);
+
+            // Act
+            var result = sut.IsQuartzExpression();
+
+            // Assert
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void GetNextScheduleFromQuartzExpressionSucceeds()
+        {
+            // Arrange
+            var withinThisMinute = DateTimeOffset.Now;
+            var expected = withinThisMinute;
+            expected = expected.AddSeconds(-1 * expected.Second);
+            expected = expected.AddMilliseconds(-1 * expected.Millisecond);
+            
+            var job = new ScheduledJob()
+            {
+                Crontab = "0 0/1 * 1/1 * ? *"
+            };
+            var sut = new ScheduledJobScheduler(job);
+
+            // Act
+            var result = sut.GetNextScheduleFromQuartzExpression(withinThisMinute);
+
+            // Assert
+            Assert.AreEqual(expected, result);
         }
     }
 }
