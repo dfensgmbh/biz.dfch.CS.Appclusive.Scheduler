@@ -142,8 +142,8 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="biz.dfch.CS.Appclusive.Api, Version=4.3.0.18906, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\biz.dfch.CS.Appclusive.Api.4.3.0\lib\biz.dfch.CS.Appclusive.Api.dll</HintPath>
+    <Reference Include="biz.dfch.CS.Appclusive.Api, Version=4.9.0.18197, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\biz.dfch.CS.Appclusive.Api.4.9.0\lib\biz.dfch.CS.Appclusive.Api.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="biz.dfch.CS.Appclusive.Public, Version=3.17.0.23822, Culture=neutral, processorArchitecture=MSIL">
