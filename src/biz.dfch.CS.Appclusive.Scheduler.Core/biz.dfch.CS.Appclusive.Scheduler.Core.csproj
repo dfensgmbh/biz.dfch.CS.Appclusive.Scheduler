@@ -195,8 +195,8 @@
       <HintPath>..\packages\biz.dfch.CS.Appclusive.Api.4.3.0\lib\biz.dfch.CS.Appclusive.Api.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="biz.dfch.CS.Appclusive.Public, Version=3.7.5.18935, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\biz.dfch.CS.Appclusive.Public.3.7.5\lib\biz.dfch.CS.Appclusive.Public.dll</HintPath>
+    <Reference Include="biz.dfch.CS.Appclusive.Public, Version=3.17.0.23822, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\biz.dfch.CS.Appclusive.Public.3.17.0\lib\biz.dfch.CS.Appclusive.Public.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="biz.dfch.CS.System.Utilities, Version=2.0.1.17294, Culture=neutral, processorArchitecture=MSIL">
@@ -232,7 +232,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\biz.dfch.CS.Appclusive.Public.3.7.5\lib\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\biz.dfch.CS.Appclusive.Public.3.17.0\lib\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Quartz, Version=2.3.3.0, Culture=neutral, PublicKeyToken=f6b8c98a402cc8a4, processorArchitecture=MSIL">
@@ -251,7 +251,7 @@
     </Reference>
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\biz.dfch.CS.Appclusive.Public.3.7.5\lib\System.Net.Http.Formatting.dll</HintPath>
+      <HintPath>..\packages\biz.dfch.CS.Appclusive.Public.3.17.0\lib\System.Net.Http.Formatting.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Spatial, Version=5.6.4.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -259,7 +259,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Web.Http, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\biz.dfch.CS.Appclusive.Public.3.7.5\lib\System.Web.Http.dll</HintPath>
+      <HintPath>..\packages\biz.dfch.CS.Appclusive.Public.3.17.0\lib\System.Web.Http.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Xml.Linq" />
