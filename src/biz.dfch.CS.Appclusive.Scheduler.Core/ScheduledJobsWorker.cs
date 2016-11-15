@@ -145,7 +145,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
                             continue;
                         }
                         
-                        if (!existingJob.RowVersion.Equals(job.RowVersion))
+                        if (!existingJob.Crontab.Equals(job.Crontab))
                         {
                             Trace.WriteLine("Updated: Id {0} ('{1}'): '{2}'.", job.Id, job.Crontab, job.Modified.ToString("yyyy-MM-dd HH:mm:sszzz"));
                         }
