@@ -38,10 +38,10 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
         private readonly Timer stateTimer = null;
 
         private readonly ScheduledJobsWorkerConfiguration configuration;
-        private readonly AppclusiveEndpoints endpoints;
+        private AppclusiveEndpoints endpoints;
 
-        private List<ScheduledJob> scheduledJobs = new List<ScheduledJob>();
-        private static object _scheduledJobsLock = new object();
+        private static List<ScheduledJob> _scheduledJobs = new List<ScheduledJob>();
+        private static readonly object _lock = new object();
 
         public bool IsActive { get; set; }
 
@@ -70,17 +70,20 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
                     {
                         Trace.WriteLine("Initialising plugin '{0}' [{1}, {2}] ...", plugin.Metadata.Type, plugin.Metadata.Role, plugin.Metadata.Priority);
 
-                        var pluginParameters = new DictionaryParameters();
-                        pluginParameters.Add(typeof(AppclusiveEndpoints).ToString(), endpoints);
+                        var pluginParameters = new DictionaryParameters
+                        {
+                            {typeof(AppclusiveEndpoints).ToString(), endpoints}
+                        };
                         plugin.Value.Initialise(pluginParameters, configuration.Logger, true);
 
-                        Trace.WriteLine(
+                        Trace.WriteLine
+                        (
                             "Initialising plugin '{0}' [{1}, {2}] COMPLETED. IsInitialised {3}. IsActive {4}."
                             , 
                             plugin.Metadata.Type, plugin.Metadata.Role, plugin.Metadata.Priority
                             ,
                             plugin.Value.IsInitialised, plugin.Value.IsActive
-                            );
+                        );
                     }
                     catch (Exception ex)
                     {
@@ -93,7 +96,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
                 result = GetScheduledJobs();
 
                 // create the timer to process all scheduled jobs periodically
-                stateTimer = new ScheduledJobsWorkerTimerFactory().CreateTimer(new TimerCallback(this.RunJobs), null, 1000, (1000 * 60) - 20);
+                stateTimer = new ScheduledJobsWorkerTimerFactory().CreateTimer(new TimerCallback(RunJobs), null, 1000, 1000 * 60);
             }
             catch (Exception ex)
             {
@@ -117,36 +120,45 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
                 goto Success;
             }
             
-            lock(_scheduledJobsLock)
+            // load ScheduledJob entities
+            try
             {
-                // load ScheduledJob entities
-                try
-                {
-                    configuration.Logger.Info("Loading ScheduledJobs from '{0}' ...", endpoints.Core.BaseUri.AbsoluteUri);
-                    var scheduledJobsManager = new ScheduledJobsManager(endpoints);
+                // connect to Appclusive server
+                var baseUri = new Uri(string.Format("{0}api", configuration.Uri.AbsoluteUri));
+                endpoints = new AppclusiveEndpoints(baseUri, configuration.Credential);
 
-                    var allJobs = scheduledJobsManager.GetJobs();
-                    var validJobs = scheduledJobsManager.GetValidJobs(allJobs);
-                    scheduledJobs = validJobs;
-                    Contract.Assert(SCHEDULED_JOBS_WORKER_JOBS_PER_INSTANCE_MAX >= validJobs.Count);
+                configuration.Logger.Info("Loading ScheduledJobs from '{0}' ...", endpoints.Core.BaseUri.AbsoluteUri);
+                var scheduledJobsManager = new ScheduledJobsManager(endpoints);
+
+                var allScheduledJobs = scheduledJobsManager.GetJobs();
+                var validScheduledJobs = scheduledJobsManager.GetValidJobs(allScheduledJobs);
+                Contract.Assert(SCHEDULED_JOBS_WORKER_JOBS_PER_INSTANCE_MAX >= validScheduledJobs.Count);
+
+                foreach (var job in validScheduledJobs)
+                {
+                    Trace.WriteLine("Updated: Id {0} ('{1}'): '{2}'.", job.Id, job.Crontab, job.Modified.ToString("yyyy-MM-dd HH:mm:sszzz"));
+                }
+                lock (_lock)
+                {
+                    _scheduledJobs = validScheduledJobs.ToList();
+                }
             
-                    configuration.Logger.Info("Loading ScheduledJobs from '{0}' SUCCEEDED. [{1}]", endpoints.Core.BaseUri.AbsoluteUri, scheduledJobs.Count);
+                configuration.Logger.Info("Loading ScheduledJobs from '{0}' SUCCEEDED. [{1}]", endpoints.Core.BaseUri.AbsoluteUri, allScheduledJobs.Count);
 
-                    result = true;
-                }
-                catch(InvalidOperationException ex)
-                {
-                    var message = string.Format("Loading ScheduledJobs from '{0}' FAILED with InvalidOperationException. Check the specified credentials.", endpoints.Core.BaseUri.AbsoluteUri);
-                    Trace.WriteException(message, ex);
+                result = true;
+            }
+            catch(InvalidOperationException ex)
+            {
+                var message = string.Format("Loading ScheduledJobs from '{0}' FAILED with InvalidOperationException. Check the specified credentials.", endpoints.Core.BaseUri.AbsoluteUri);
+                Trace.WriteException(message, ex);
 
-                    result = false;
-                }
-                catch (Exception ex)
-                {
-                    Trace.WriteException(ex.Message, ex);
+                result = false;
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteException(ex.Message, ex);
                 
-                    throw;
-                }
+                throw;
             }
 
 Success:
@@ -161,7 +173,6 @@ Success:
 
             var fn = Method.fn();
 
-            var result = false;
             // we set "Now" to the current minute + 1 ms (as we have some strange behaviour when scheduling exactly on the minute)
             var now = DateTimeOffset.Now;
             now = new DateTimeOffset(now.Year, now.Month, now.Day, now.Hour, now.Minute, 0, 1, now.Offset);
@@ -173,84 +184,88 @@ Success:
                 goto Success;
             }
 
-            lock(_scheduledJobsLock)
+            // copy jobs into local instance specific list
+            List<ScheduledJob> scheduledJobs;
+            lock(_lock)
             {
-                if (0 >= scheduledJobs.Count)
-                {
-                    Trace.WriteLine("{0}: No scheduled jobs found. Nothing to do.", fn, "");
-                    
-                    goto Success;
-                }
-
-                var defaultPlugin = configuration.Plugins.FirstOrDefault
-                (
-                    p => p.Metadata.Type.Equals(biz.dfch.CS.Appclusive.Scheduler.Public.Constants.PLUGIN_TYPE_DEFAULT)
-                );
-                
-                Trace.WriteLine("{0}: Processing {1} ScheduledJobs ...", fn, scheduledJobs.Count);
-                foreach (var job in scheduledJobs)
-                {
-                    try
-                    {
-                        var jobScheduler = new ScheduledJobScheduler(job);
-                        if (!jobScheduler.IsScheduledToRun(now))
-                        {
-                            continue;
-                        }
-
-                        // get plugin for ScheduledJob
-                        var plugin = configuration.Plugins.FirstOrDefault(p => p.Metadata.Type.Equals(job.Action));
-                        if(null == plugin)
-                        {
-                            Trace.WriteLine("No plugin for Job.Id '{0}' with Job.Action '{1}' found. Using 'Default' plugin ...", 
-                                job.Id, job.Action);
-                            plugin = defaultPlugin;
-                        }
-                        if(null == plugin)
-                        {
-                            Trace.WriteLine(
-                                "No plugin for Job.Id '{0}' with Job.Action '{1}' found and no '{2}' plugin found either. Skipping.", 
-                                job.Id, job.Action, biz.dfch.CS.Appclusive.Scheduler.Public.Constants.PLUGIN_TYPE_DEFAULT);
-
-                            continue;
-                        }
-
-                        // invoke plugin
-                        var invocationResult = new NonSerialisableJobResult();
-                        
-                        var scheduledJobsManager = new ScheduledJobsManager(endpoints);
-                        var parameters = scheduledJobsManager.ConvertJobParameters(job.Action, job.ScheduledJobParameters);
-                        parameters.Add("JobId", job.Id);
-
-                        if(default(Guid) == System.Diagnostics.Trace.CorrelationManager.ActivityId)
-                        {
-                            System.Diagnostics.Trace.CorrelationManager.ActivityId = Guid.NewGuid();
-                        }
-
-                        configuration.Logger.WriteLine("Invoking {0} with Job.Action '{1}' [ActivityId {2}] ...", job.Id, job.Action, System.Diagnostics.Trace.CorrelationManager.ActivityId);
-                        plugin.Value.Invoke(parameters, invocationResult);
-
-                        if(invocationResult.Succeeded)
-                        {
-                            configuration.Logger.Info("Invoking {0} with Job.Action '{1}' [ActivityId {2}] SUCCEEDED.", job.Id, job.Action, System.Diagnostics.Trace.CorrelationManager.ActivityId);
-                        }
-                        else
-                        {
-                            configuration.Logger.Error("Invoking {0} with Job.Action '{1}' [ActivityId {2}] FAILED.", job.Id, job.Action, System.Diagnostics.Trace.CorrelationManager.ActivityId);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        var message = string.Format("Invoking {0} with Job.Action '{1}' [ActivityId {2}] FAILED.", job.Id, job.Action, System.Diagnostics.Trace.CorrelationManager.ActivityId);
-                        Trace.WriteException(message, ex);
-                    }
-                }
-                Trace.WriteLine("{0}: Processing {1} ScheduledJobs COMPLETED.", fn, scheduledJobs.Count);
+                scheduledJobs = _scheduledJobs.ToList();
             }
+
+            if (0 >= scheduledJobs.Count)
+            {
+                Trace.WriteLine("{0}: No scheduled jobs found. Nothing to do.", fn, "");
+                    
+                goto Success;
+            }
+
+            var defaultPlugin = configuration.Plugins.FirstOrDefault
+            (
+                p => p.Metadata.Type.Equals(Public.Constants.PLUGIN_TYPE_DEFAULT)
+            );
+                
+            Trace.WriteLine("{0}: Processing {1} ScheduledJobs ...", fn, scheduledJobs.Count);
+            foreach (var job in scheduledJobs)
+            {
+                try
+                {
+                    var jobScheduler = new ScheduledJobScheduler(job);
+                    if (!jobScheduler.IsScheduledToRun(now))
+                    {
+                        continue;
+                    }
+
+                    // get plugin for ScheduledJob
+                    var plugin = configuration.Plugins.FirstOrDefault(p => p.Metadata.Type.Equals(job.Action));
+                    if(null == plugin)
+                    {
+                        Trace.WriteLine("No plugin for Job.Id '{0}' with Job.Action '{1}' found. Using 'Default' plugin ...", 
+                            job.Id, job.Action);
+                        plugin = defaultPlugin;
+                    }
+                    if(null == plugin)
+                    {
+                        Trace.WriteLine(
+                            "No plugin for Job.Id '{0}' with Job.Action '{1}' found and no '{2}' plugin found either. Skipping.", 
+                            job.Id, job.Action, biz.dfch.CS.Appclusive.Scheduler.Public.Constants.PLUGIN_TYPE_DEFAULT);
+
+                        continue;
+                    }
+
+                    // invoke plugin
+                    var invocationResult = new NonSerialisableJobResult();
+                        
+                    var scheduledJobsManager = new ScheduledJobsManager(endpoints);
+                    var parameters = scheduledJobsManager.ConvertJobParameters(job.Action, job.ScheduledJobParameters);
+                    parameters.Add("JobId", job.Id);
+
+                    if(default(Guid) == System.Diagnostics.Trace.CorrelationManager.ActivityId)
+                    {
+                        System.Diagnostics.Trace.CorrelationManager.ActivityId = Guid.NewGuid();
+                    }
+
+                    configuration.Logger.WriteLine("Invoking {0} with Job.Action '{1}' [ActivityId {2}] ...", job.Id, job.Action, System.Diagnostics.Trace.CorrelationManager.ActivityId);
+                    plugin.Value.Invoke(parameters, invocationResult);
+
+                    if(invocationResult.Succeeded)
+                    {
+                        configuration.Logger.Info("Invoking {0} with Job.Action '{1}' [ActivityId {2}] SUCCEEDED.", job.Id, job.Action, System.Diagnostics.Trace.CorrelationManager.ActivityId);
+                    }
+                    else
+                    {
+                        configuration.Logger.Error("Invoking {0} with Job.Action '{1}' [ActivityId {2}] FAILED.", job.Id, job.Action, System.Diagnostics.Trace.CorrelationManager.ActivityId);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    var message = string.Format("Invoking {0} with Job.Action '{1}' [ActivityId {2}] FAILED.", job.Id, job.Action, System.Diagnostics.Trace.CorrelationManager.ActivityId);
+                    Trace.WriteException(message, ex);
+                }
+            }
+            Trace.WriteLine("{0}: Processing {1} ScheduledJobs COMPLETED.", fn, scheduledJobs.Count);
 Success:
             if (configuration.UpdateIntervalInMinutes <= (now - lastUpdated).TotalMinutes)
             {
-                result = GetScheduledJobs();
+                var result = GetScheduledJobs();
                 Contract.Assert(result);
             }
 

@@ -23,7 +23,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Telerik.JustMock;
 using biz.dfch.CS.Appclusive.Scheduler.Core;
-using biz.dfch.CS.Utilities.Testing;
+using biz.dfch.CS.Testing.Attributes;
 using System.IO;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests

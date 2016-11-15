@@ -18,7 +18,7 @@ using biz.dfch.CS.Appclusive.Api.Core;
 using biz.dfch.CS.Appclusive.Public;
 using biz.dfch.CS.Appclusive.Scheduler.Core;
 using biz.dfch.CS.Appclusive.Scheduler.Public;
-using biz.dfch.CS.Utilities.Testing;
+using biz.dfch.CS.Testing.Attributes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;

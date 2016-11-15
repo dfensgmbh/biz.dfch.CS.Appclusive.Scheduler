@@ -44,7 +44,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             {
                 extensionsFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, extensionsFolder);
             }
-            Contract.Assert(Directory.Exists(extensionsFolder));
+            Contract.Assert(Directory.Exists(extensionsFolder), extensionsFolder);
 
             cfg.ExtensionsFolder = extensionsFolder;
 

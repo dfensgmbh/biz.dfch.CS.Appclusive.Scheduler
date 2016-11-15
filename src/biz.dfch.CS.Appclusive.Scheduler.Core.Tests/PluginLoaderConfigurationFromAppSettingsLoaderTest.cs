@@ -24,7 +24,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Telerik.JustMock;
 using System.IO;
-using biz.dfch.CS.Utilities.Testing;
+using biz.dfch.CS.Testing.Attributes;
 using biz.dfch.CS.Appclusive.Scheduler.Public;
 using biz.dfch.CS.Appclusive.Public.Plugins;
 

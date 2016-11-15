@@ -19,7 +19,7 @@ using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Telerik.JustMock;
 using biz.dfch.CS.Appclusive.Public;
-using biz.dfch.CS.Utilities.Testing;
+using biz.dfch.CS.Testing.Attributes;
 using System.Collections.Specialized;
 using biz.dfch.CS.Appclusive.Scheduler.Public;
 using System.Collections.Generic;
