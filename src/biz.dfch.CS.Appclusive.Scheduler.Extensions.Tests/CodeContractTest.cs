@@ -18,7 +18,7 @@ using System;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using biz.dfch.CS.Utilities.Testing;
+using biz.dfch.CS.Testing.Attributes;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Extensions.Tests
 {

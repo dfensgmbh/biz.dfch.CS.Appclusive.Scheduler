@@ -20,11 +20,8 @@ using biz.dfch.CS.Utilities.Logging;
 using NCrontab;
 using System;
 using System.ComponentModel.DataAnnotations;
-// Install-Package ncrontab 
-// https://www.nuget.org/packages/ncrontab/
 using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Net;
 using Quartz;
 
 namespace biz.dfch.CS.Appclusive.Scheduler.Core
@@ -78,7 +75,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
 
             try
             {
-                DateTimeOffset nextSchedule = DateTimeOffset.MinValue;
+                var nextSchedule = DateTimeOffset.MinValue;
 
                 if (IsCrontabExpression())
                 {
@@ -125,50 +122,43 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
                 .AddMinutes(-1);
             Contract.Assert(startMinute < endMinute);
 
+            var result = DateTimeOffset.MinValue;
+
             // hint: LastOrDefault() returns "default(DateTime)" (which equals "DateTime.MinValue") if no match is found and not "null"
             var nextOccurrence = schedule.GetNextOccurrences(startMinute, endMinute).LastOrDefault();
-            if(DateTime.MinValue == nextOccurrence || nextOccurrence.Minute < withinThisMinute.Minute)
+
+            var isWithinTheNextMinute = !(DateTime.MinValue == nextOccurrence || nextOccurrence.Minute < withinThisMinute.Minute);
+            Trace.WriteLine("CronTab: Id {0} ('{1}'): '{2}' [{3}].", job.Id, job.Crontab, nextOccurrence.ToString("yyyy-MM-dd HH:mm:sszzz"), isWithinTheNextMinute);
+            if(isWithinTheNextMinute)
             {
-                return DateTimeOffset.MinValue;
+                result = new DateTimeOffset(nextOccurrence, withinThisMinute.Offset);
             }
                 
-            var result = new DateTimeOffset(nextOccurrence, withinThisMinute.Offset);
             return result;
         }
 
         public DateTimeOffset GetNextScheduleFromQuartzExpression(DateTimeOffset withinThisMinute)
         {
             var expression = new CronExpression(job.Crontab);
-            
-            var endMinute = withinThisMinute.DateTime;
-                
-            // we set the start minute to millisecond 0, 
-            // so we have an interval of at least 1 milliscond
-            var startMinute =
-                new DateTime
-                (
-                    endMinute.Year, 
-                    endMinute.Month, 
-                    endMinute.Day, 
-                    endMinute.Hour, 
-                    endMinute.Minute, 
-                    0
-                )
-                .AddMinutes(-1);
-            Contract.Assert(startMinute < endMinute);
-            
+
+            var startMinute = new DateTimeOffset(withinThisMinute.Year, withinThisMinute.Month, withinThisMinute.Day, withinThisMinute.Hour, withinThisMinute.Minute, 0, 0, withinThisMinute.Offset);
+            startMinute = startMinute.AddMilliseconds(-1);
+
             var result = DateTimeOffset.MinValue;
 
-            var nextOccurrence = expression.GetTimeAfter(startMinute);
+            var nextOccurrence = expression.GetTimeAfter(startMinute.ToUniversalTime());
             if (nextOccurrence.HasValue)
             {
-                var isWithinTheNextMinute = 
-                    new TimeSpan(0, 0, 60).TotalSeconds > (withinThisMinute - nextOccurrence.Value).TotalSeconds;
-                
+                var isWithinTheNextMinute = 60 > Math.Abs((nextOccurrence.Value.LocalDateTime - startMinute).TotalSeconds);
+                Trace.WriteLine("CronExp: Id {0} ('{1}'): '{2}' [{3}].", job.Id, job.Crontab, nextOccurrence.Value.ToString("yyyy-MM-dd HH:mm:sszzz"), isWithinTheNextMinute);
                 if (isWithinTheNextMinute)
                 {
-                    result = new DateTimeOffset(nextOccurrence.Value.DateTime.AddMinutes(withinThisMinute.Offset.TotalMinutes), withinThisMinute.Offset);
+                    result = nextOccurrence.Value.LocalDateTime;
                 }
+            }
+            else
+            {
+                Trace.WriteLine("CronExp: Id {0} ('{1}'): '{2}' [{3}].", job.Id, job.Crontab, result.ToString("yyyy-MM-dd HH:mm:sszzz"), false);
             }
 
             return result;
@@ -194,12 +184,6 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
             var result = CronExpression.IsValidExpression(job.Crontab);
 
             return result;
-        }
-
-        [Pure]
-        public bool IsScheduledToRun()
-        {
-            return IsScheduledToRun(DateTimeOffset.Now);
         }
 
         [Pure]
