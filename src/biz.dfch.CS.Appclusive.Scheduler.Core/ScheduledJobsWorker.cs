@@ -134,12 +134,23 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core
                 var validScheduledJobs = scheduledJobsManager.GetValidJobs(allScheduledJobs);
                 Contract.Assert(SCHEDULED_JOBS_WORKER_JOBS_PER_INSTANCE_MAX >= validScheduledJobs.Count);
 
-                foreach (var job in validScheduledJobs)
-                {
-                    Trace.WriteLine("Updated: Id {0} ('{1}'): '{2}'.", job.Id, job.Crontab, job.Modified.ToString("yyyy-MM-dd HH:mm:sszzz"));
-                }
                 lock (_lock)
                 {
+                    foreach (var job in validScheduledJobs)
+                    {
+                        var existingJob = _scheduledJobs.FirstOrDefault(e => e.Id == job.Id);
+                        if (null == existingJob)
+                        {
+                            Trace.WriteLine("Added  : Id {0} ('{1}'): '{2}'.", job.Id, job.Crontab, job.Modified.ToString("yyyy-MM-dd HH:mm:sszzz"));
+                            continue;
+                        }
+                        
+                        if (!existingJob.RowVersion.Equals(job.RowVersion))
+                        {
+                            Trace.WriteLine("Updated: Id {0} ('{1}'): '{2}'.", job.Id, job.Crontab, job.Modified.ToString("yyyy-MM-dd HH:mm:sszzz"));
+                        }
+                    }
+
                     _scheduledJobs = validScheduledJobs.ToList();
                 }
             

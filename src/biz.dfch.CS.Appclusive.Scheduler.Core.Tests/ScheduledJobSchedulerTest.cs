@@ -300,7 +300,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
         [TestMethod]
         public void GetNextScheduleFromQuartzExpressionThatIsWithinThisMinuteSucceeds1()
         {
-            var withinThisMinute = new DateTimeOffset(2016, 11, 16, 23, 59, 0, 0, DateTimeOffset.Now.Offset);
+            var withinThisMinute = new DateTimeOffset(2016, 11, 17, 0, 0, 0, 0, DateTimeOffset.Now.Offset);
             var expected = new DateTimeOffset(2016, 11, 17, 0, 0, 0, 0, withinThisMinute.Offset);
             
             var job = new ScheduledJob()
@@ -319,7 +319,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
         [TestMethod]
         public void GetNextScheduleFromQuartzExpressionThatIsWithinThisMinuteSucceeds2()
         {
-            var withinThisMinute = new DateTimeOffset(2016, 11, 16, 23, 59, 13, 123, DateTimeOffset.Now.Offset);
+            var withinThisMinute = new DateTimeOffset(2016, 11, 17, 0, 0, 0, 0, DateTimeOffset.Now.Offset);
             var expected = new DateTimeOffset(2016, 11, 17, 0, 0, 0, 0, withinThisMinute.Offset);
             
             var job = new ScheduledJob()
@@ -357,7 +357,7 @@ namespace biz.dfch.CS.Appclusive.Scheduler.Core.Tests
         [TestMethod]
         public void GetNextScheduleFromQuartzExpressionThatIsWithinThisMinuteSucceeds4()
         {
-            var withinThisMinute = new DateTimeOffset(2016, 11, 14, 14, 6, 0, 0, DateTimeOffset.Now.Offset);
+            var withinThisMinute = new DateTimeOffset(2016, 11, 14, 14, 7, 0, 0, DateTimeOffset.Now.Offset);
             var expected = new DateTimeOffset(2016, 11, 14, 14, 7, 0, 0, withinThisMinute.Offset);
             
             var job = new ScheduledJob()
